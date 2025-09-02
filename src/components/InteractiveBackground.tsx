@@ -15,17 +15,17 @@ export default function InteractiveBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // Create initial particles
+    // Create fewer, more professional particles
     const initialParticles: Particle[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 12; i++) {
       initialParticles.push({
         id: i,
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        size: Math.random() * 4 + 1,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        opacity: Math.random() * 0.5 + 0.2
+        size: Math.random() * 3 + 1,
+        speedX: (Math.random() - 0.5) * 0.2,
+        speedY: (Math.random() - 0.5) * 0.2,
+        opacity: Math.random() * 0.3 + 0.1
       });
     }
     setParticles(initialParticles);
@@ -57,7 +57,7 @@ export default function InteractiveBackground() {
       }));
     };
 
-    const interval = setInterval(animateParticles, 50);
+    const interval = setInterval(animateParticles, 100);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -67,11 +67,11 @@ export default function InteractiveBackground() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
-      {/* Animated particles */}
+      {/* Professional floating particles */}
       {particles.map(particle => (
         <div
           key={particle.id}
-          className="absolute w-1 h-1 bg-primary-glow rounded-full animate-pulse"
+          className="absolute w-1 h-1 bg-primary-glow rounded-full animate-gentle-pulse"
           style={{
             left: particle.x,
             top: particle.y,
@@ -81,12 +81,12 @@ export default function InteractiveBackground() {
         />
       ))}
       
-      {/* Mouse glow effect */}
+      {/* Subtle mouse interaction */}
       <div
-        className="absolute w-32 h-32 bg-gradient-radial from-primary-glow/20 to-transparent rounded-full pointer-events-none transition-all duration-300"
+        className="absolute w-24 h-24 bg-gradient-radial from-primary-glow/10 to-transparent rounded-full pointer-events-none transition-all duration-500"
         style={{
-          left: mousePosition.x - 64,
-          top: mousePosition.y - 64,
+          left: mousePosition.x - 48,
+          top: mousePosition.y - 48,
         }}
       />
     </div>

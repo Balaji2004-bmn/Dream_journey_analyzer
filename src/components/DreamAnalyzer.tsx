@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Brain, Sparkles, Video, Heart, Zap, Moon } from "lucide-react";
+import { Brain, Sparkles, Video, Heart, Zap, Moon, Mic, MicOff, Camera, Upload, X } from "lucide-react";
+import { CosmicButton } from "@/components/ui/cosmic-button";
+import { toast } from "sonner";
 
 interface AnalysisResult {
   keywords: string[];
@@ -13,12 +15,28 @@ interface AnalysisResult {
   storyline: string;
   videoStatus: "idle" | "analyzing" | "generating" | "complete";
   videoProgress: number;
+  attachedPhoto?: string;
+}
+
+interface VoiceRecognition {
+  isSupported: boolean;
+  isListening: boolean;
+  transcript: string;
 }
 
 export default function DreamAnalyzer() {
   const [dreamText, setDreamText] = useState("");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [attachedPhoto, setAttachedPhoto] = useState<string | null>(null);
+  const [voiceRecognition, setVoiceRecognition] = useState<VoiceRecognition>({
+    isSupported: 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window,
+    isListening: false,
+    transcript: ""
+  });
+  
+  const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAnalyze = async () => {
     if (!dreamText.trim()) return;
@@ -44,6 +62,81 @@ export default function DreamAnalyzer() {
       setAnalysis(mockAnalysis);
       setIsAnalyzing(false);
     }, 2500);
+  };
+
+  const startVoiceRecognition = useCallback(() => {
+    if (!voiceRecognition.isSupported) {
+      toast.error("Voice recognition is not supported in your browser");
+      return;
+    }
+
+    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    recognitionRef.current = new SpeechRecognition();
+    
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.lang = 'en-US';
+
+    recognitionRef.current.onstart = () => {
+      setVoiceRecognition(prev => ({ ...prev, isListening: true }));
+      toast.success("Voice recording started. Describe your dream...");
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      let finalTranscript = '';
+      for (let i = 0; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        }
+      }
+      
+      if (finalTranscript) {
+        setDreamText(prev => prev + (prev ? ' ' : '') + finalTranscript);
+      }
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error('Voice recognition error:', event.error);
+      setVoiceRecognition(prev => ({ ...prev, isListening: false }));
+      toast.error("Voice recognition error. Please try again.");
+    };
+
+    recognitionRef.current.onend = () => {
+      setVoiceRecognition(prev => ({ ...prev, isListening: false }));
+    };
+
+    recognitionRef.current.start();
+  }, [voiceRecognition.isSupported]);
+
+  const stopVoiceRecognition = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setVoiceRecognition(prev => ({ ...prev, isListening: false }));
+      toast.success("Voice recording stopped");
+    }
+  }, []);
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAttachedPhoto(e.target?.result as string);
+          toast.success("Photo attached successfully!");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast.error("Please select a valid image file");
+      }
+    }
+  };
+
+  const removePhoto = () => {
+    setAttachedPhoto(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleGenerateVideo = () => {
@@ -76,19 +169,83 @@ export default function DreamAnalyzer() {
           <DreamCard className="p-8">
             <DreamCardHeader>
               <DreamCardTitle className="flex items-center gap-3">
-                <Moon className="w-8 h-8 text-primary-glow animate-pulse-glow" />
+                <Moon className="w-8 h-8 text-primary-glow" />
                 Tell Me Your Dream
               </DreamCardTitle>
             </DreamCardHeader>
             <DreamCardContent>
               <div className="space-y-6">
-                <Textarea
-                  placeholder="Describe your dream in detail... The more vivid the description, the better the analysis will be."
-                  value={dreamText}
-                  onChange={(e) => setDreamText(e.target.value)}
-                  className="min-h-32 bg-input/50 border-border/30 focus:border-primary/50 text-foreground placeholder:text-muted-foreground resize-none backdrop-blur-sm"
-                />
-                <Button 
+                <div className="relative">
+                  <Textarea
+                    placeholder="Describe your dream in detail... The more vivid the description, the better the analysis will be."
+                    value={dreamText}
+                    onChange={(e) => setDreamText(e.target.value)}
+                    className="min-h-32 bg-input/50 border-border/30 focus:border-primary/50 text-foreground placeholder:text-muted-foreground resize-none backdrop-blur-sm pr-20"
+                  />
+                  
+                  {/* Voice Recognition Button */}
+                  <div className="absolute top-3 right-3 flex gap-2">
+                    {voiceRecognition.isSupported && (
+                      <CosmicButton
+                        variant={voiceRecognition.isListening ? "nebula" : "ghost"}
+                        size="icon"
+                        onClick={voiceRecognition.isListening ? stopVoiceRecognition : startVoiceRecognition}
+                        className="h-8 w-8"
+                      >
+                        {voiceRecognition.isListening ? (
+                          <MicOff className="h-4 w-4" />
+                        ) : (
+                          <Mic className="h-4 w-4" />
+                        )}
+                      </CosmicButton>
+                    )}
+                  </div>
+                </div>
+
+                {/* Photo Attachment Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoUpload}
+                      className="hidden"
+                    />
+                    <CosmicButton
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <Camera className="h-4 w-4" />
+                      Attach Photo
+                    </CosmicButton>
+                    {attachedPhoto && (
+                      <span className="text-sm text-muted-foreground">Photo attached</span>
+                    )}
+                  </div>
+
+                  {/* Photo Preview */}
+                  {attachedPhoto && (
+                    <div className="relative group">
+                      <img
+                        src={attachedPhoto}
+                        alt="Attached photo"
+                        className="w-full max-w-xs h-32 object-cover rounded-lg border border-border/30"
+                      />
+                      <CosmicButton
+                        variant="ghost"
+                        size="icon"
+                        onClick={removePhoto}
+                        className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3" />
+                      </CosmicButton>
+                    </div>
+                  )}
+                </div>
+
+                <CosmicButton 
                   onClick={handleAnalyze}
                   disabled={!dreamText.trim() || isAnalyzing}
                   variant="cosmic"
@@ -106,7 +263,7 @@ export default function DreamAnalyzer() {
                       Analyze My Dream
                     </>
                   )}
-                </Button>
+                </CosmicButton>
               </div>
             </DreamCardContent>
           </DreamCard>
@@ -125,8 +282,7 @@ export default function DreamAnalyzer() {
                       <Badge 
                         key={index} 
                         variant="cosmic"
-                        className="animate-float"
-                        style={{ animationDelay: `${index * 0.2}s` }}
+                        className="transition-all duration-300 hover:scale-105"
                       >
                         {keyword}
                       </Badge>
