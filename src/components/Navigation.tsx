@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   Brain, 
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { path: "/", label: "Dream Analyzer", icon: Brain },
@@ -64,11 +65,11 @@ export default function Navigation() {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
               <LogIn className="w-4 h-4 mr-2" />
               Login
             </Button>
-            <Button variant="cosmic" size="sm">
+            <Button variant="cosmic" size="sm" onClick={() => navigate('/')}>
               Sign Up
             </Button>
           </div>
@@ -105,11 +106,11 @@ export default function Navigation() {
                 </NavLink>
               ))}
               <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border/20">
-                <Button variant="ghost" size="sm" className="justify-start">
+                <Button variant="ghost" size="sm" className="justify-start" onClick={() => {navigate('/'); setIsOpen(false);}}>
                   <LogIn className="w-4 h-4 mr-2" />
                   Login
                 </Button>
-                <Button variant="cosmic" size="sm">
+                <Button variant="cosmic" size="sm" onClick={() => {navigate('/'); setIsOpen(false);}}>
                   Sign Up
                 </Button>
               </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -38,6 +39,7 @@ interface RecentActivity {
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = useState("week");
+  const navigate = useNavigate();
 
   const stats: DreamStats = {
     totalDreams: 47,
@@ -258,17 +260,17 @@ export default function Dashboard() {
             </DreamCardHeader>
             <DreamCardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button variant="cosmic" className="h-20 flex-col gap-2">
+                <Button variant="cosmic" className="h-20 flex-col gap-2" onClick={() => navigate('/')}>
                   <Plus className="w-6 h-6" />
                   New Dream Analysis
                 </Button>
-                <Button variant="nebula" className="h-20 flex-col gap-2">
+                <Button variant="nebula" className="h-20 flex-col gap-2" onClick={() => navigate('/gallery')}>
                   <Video className="w-6 h-6" />
-                  Generate Video
+                  View Gallery
                 </Button>
-                <Button variant="ghost" className="h-20 flex-col gap-2 border border-border/20 hover:bg-accent/10">
+                <Button variant="ghost" className="h-20 flex-col gap-2 border border-border/20 hover:bg-accent/10" onClick={() => navigate('/')}>
                   <Calendar className="w-6 h-6" />
-                  Dream Journal
+                  Dream Analyzer
                 </Button>
               </div>
             </DreamCardContent>

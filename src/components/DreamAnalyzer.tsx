@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Brain, Sparkles, Video, Heart, Zap, Moon, Mic, MicOff, Camera, Upload, X, Save, Wand2 } from "lucide-react";
+import { Brain, Sparkles, Video, Heart, Zap, Moon, Mic, MicOff, Camera, Upload, X, Save, Wand2, Download } from "lucide-react";
 import { CosmicButton } from "@/components/ui/cosmic-button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -257,7 +257,7 @@ export default function DreamAnalyzer() {
         .insert({
           title: `Dream from ${new Date().toLocaleDateString()}`,
           content: dreamText,
-          analysis: analysis as any, // Cast to Json type for Supabase
+          analysis: analysis as any,
           user_id: 'demo-user', // In real app, use auth.uid()
           video_status: analysis.videoStatus
         });
@@ -269,6 +269,33 @@ export default function DreamAnalyzer() {
       console.error('Save error:', error);
       toast.error("Failed to save dream. Please try again.");
     }
+  };
+
+  const downloadDream = () => {
+    if (!analysis || !dreamText.trim()) {
+      toast.error("Please analyze your dream first");
+      return;
+    }
+
+    const dreamData = {
+      title: `Dream from ${new Date().toLocaleDateString()}`,
+      content: dreamText,
+      analysis: analysis,
+      timestamp: new Date().toISOString(),
+      attachedPhoto: attachedPhoto
+    };
+
+    const dataStr = JSON.stringify(dreamData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `dream-${Date.now()}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast.success("Dream downloaded successfully! 📥");
   };
 
   return (
@@ -377,14 +404,24 @@ export default function DreamAnalyzer() {
                   </CosmicButton>
                   
                   {analysis && (
-                    <CosmicButton 
-                      onClick={saveDream}
-                      variant="outline"
-                      size="lg"
-                    >
-                      <Save className="w-5 h-5 mr-2" />
-                      Save
-                    </CosmicButton>
+                    <>
+                      <CosmicButton 
+                        onClick={saveDream}
+                        variant="outline"
+                        size="lg"
+                      >
+                        <Save className="w-5 h-5 mr-2" />
+                        Save
+                      </CosmicButton>
+                      <CosmicButton 
+                        onClick={downloadDream}
+                        variant="ghost"
+                        size="lg"
+                      >
+                        <Download className="w-5 h-5 mr-2" />
+                        Download
+                      </CosmicButton>
+                    </>
                   )}
                 </div>
               </div>
