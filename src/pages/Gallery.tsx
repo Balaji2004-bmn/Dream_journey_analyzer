@@ -206,7 +206,7 @@ export default function Gallery() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredVideos.map((video) => (
-                <DreamCard key={video.id} className="group hover:scale-105 transition-all duration-300">
+                <DreamCard key={video.id} className="group transition-all duration-300 hover:shadow-glow-primary">
                   <div className="relative">
                     <img
                       src={video.thumbnail_url}

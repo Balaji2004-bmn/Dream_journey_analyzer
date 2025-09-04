@@ -8,7 +8,7 @@ const DreamCard = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg bg-gradient-card backdrop-blur-md border border-border/20 shadow-cosmic hover:shadow-dream transition-all duration-300 hover:scale-[1.02] animate-float",
+      "rounded-lg bg-gradient-card backdrop-blur-md border border-border/20 shadow-cosmic hover:shadow-dream transition-all duration-300 animate-gentle-float",
       className
     )}
     {...props}

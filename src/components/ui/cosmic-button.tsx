@@ -8,8 +8,8 @@ const cosmicButtonVariants = cva(
   {
     variants: {
       variant: {
-        cosmic: "bg-gradient-dream text-primary-foreground hover:shadow-glow-primary hover:scale-105 transition-all duration-300",
-        nebula: "bg-gradient-nebula text-primary-foreground hover:shadow-glow-accent hover:scale-105 transition-all duration-300",
+        cosmic: "bg-gradient-dream text-primary-foreground hover:shadow-glow-primary transition-all duration-300",
+        nebula: "bg-gradient-nebula text-primary-foreground hover:shadow-glow-accent transition-all duration-300",
         ghost: "hover:bg-accent/10 hover:text-accent-foreground border border-accent/20 backdrop-blur-sm",
         outline: "border border-primary/30 bg-background/50 backdrop-blur-sm hover:bg-primary/10 hover:text-primary",
       },
