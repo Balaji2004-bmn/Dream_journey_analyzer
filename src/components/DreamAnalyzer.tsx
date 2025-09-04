@@ -1,13 +1,14 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Brain, Sparkles, Video, Heart, Zap, Moon, Mic, MicOff, Camera, Upload, X, Save, Wand2, Download } from "lucide-react";
+import { Brain, Sparkles, Video, Heart, Zap, Moon, Mic, MicOff, Camera, Upload, X, Save, Wand2, Download, Lock } from "lucide-react";
 import { CosmicButton } from "@/components/ui/cosmic-button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AnalysisResult {
   keywords: string[];
@@ -26,6 +27,7 @@ interface VoiceRecognition {
 }
 
 export default function DreamAnalyzer() {
+  const { user, loading } = useAuth();
   const [dreamText, setDreamText] = useState("");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -38,6 +40,38 @@ export default function DreamAnalyzer() {
   
   const recognitionRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Check for authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Brain className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <Lock className="w-16 h-16 mx-auto mb-6 text-primary" />
+          <h1 className="text-2xl font-bold mb-4">Sign In Required</h1>
+          <p className="text-muted-foreground mb-6">
+            Please sign in to analyze your dreams and create personalized dream videos.
+          </p>
+          <CosmicButton 
+            onClick={() => window.location.href = '/auth'}
+            className="w-full"
+          >
+            Sign In to Continue
+          </CosmicButton>
+        </div>
+      </div>
+    );
+  }
 
   const handleAnalyze = async () => {
     if (!dreamText.trim()) return;
@@ -251,15 +285,27 @@ export default function DreamAnalyzer() {
       return;
     }
 
+    if (!user) {
+      toast.error("Please sign in to save your dream");
+      return;
+    }
+
     try {
+      // Generate a video URL if the video was completed
+      const videoUrl = analysis.videoStatus === "complete" 
+        ? `https://example.com/dream-videos/${Date.now()}.mp4` 
+        : null;
+
       const { data, error } = await supabase
         .from('dreams')
         .insert({
+          user_id: user.id,
           title: `Dream from ${new Date().toLocaleDateString()}`,
           content: dreamText,
           analysis: analysis as any,
-          user_id: 'demo-user', // In real app, use auth.uid()
-          video_status: analysis.videoStatus
+          video_url: videoUrl,
+          video_status: analysis.videoStatus,
+          is_public: false
         });
 
       if (error) throw error;
@@ -442,7 +488,7 @@ export default function DreamAnalyzer() {
                       <Badge 
                         key={index} 
                         variant="cosmic"
-                        className="transition-all duration-300 hover:scale-105"
+                        className="transition-all duration-200"
                       >
                         {keyword}
                       </Badge>

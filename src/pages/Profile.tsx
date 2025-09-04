@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { toast } from "sonner";
 import { 
   User,
   Settings,
@@ -20,7 +22,8 @@ import {
   Phone,
   Calendar,
   MapPin,
-  Edit
+  Edit,
+  Upload
 } from "lucide-react";
 
 interface UserProfile {
@@ -50,6 +53,7 @@ interface PrivacySettings {
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState<UserProfile>({
     name: "Dream Explorer",
@@ -93,8 +97,24 @@ export default function Profile() {
 
   const handleSave = () => {
     setIsEditing(false);
-    // In a real app, this would save to backend
+    toast.success("Profile updated successfully!");
     console.log("Profile saved:", profile);
+  };
+
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setProfile(prev => ({ ...prev, avatar: e.target?.result as string }));
+          toast.success("Profile photo updated!");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toast.error("Please select a valid image file");
+      }
+    }
   };
 
   return (
@@ -115,18 +135,25 @@ export default function Profile() {
           <DreamCard className="p-8">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="relative">
-                <img
-                  src={profile.avatar}
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full object-cover border-4 border-primary/20"
+                <Avatar className="w-24 h-24 border-4 border-primary/20">
+                  <AvatarImage src={profile.avatar} alt="Profile" />
+                  <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {isEditing && (
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute -bottom-2 -right-2 bg-primary hover:bg-primary/90 rounded-full p-2 transition-colors"
+                  >
+                    <Camera className="w-4 h-4 text-primary-foreground" />
+                  </button>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
                 />
-                <Button
-                  size="icon"
-                  variant="cosmic"
-                  className="absolute -bottom-2 -right-2 w-8 h-8"
-                >
-                  <Camera className="w-4 h-4" />
-                </Button>
               </div>
               <div className="text-center md:text-left space-y-2">
                 <h2 className="text-2xl font-bold text-foreground">{profile.name}</h2>
