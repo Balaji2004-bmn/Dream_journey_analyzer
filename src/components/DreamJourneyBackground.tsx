@@ -72,14 +72,11 @@ export default function DreamJourneyBackground() {
       {stars.map(star => (
         <div
           key={star.id}
-          className="absolute w-1 h-1 bg-white rounded-full animate-gentle-pulse"
+          className="absolute w-1 h-1 bg-white rounded-full opacity-60"
           style={{
             left: `${star.x}%`,
             top: `${star.y}%`,
-            opacity: star.opacity,
-            transform: `scale(${star.size})`,
-            animationDelay: `${star.twinkleDelay}s`,
-            animationDuration: '3s'
+            opacity: star.opacity * 0.8
           }}
         />
       ))}
@@ -102,8 +99,8 @@ export default function DreamJourneyBackground() {
 
       {/* Subtle aurora effect */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-0 w-full h-32 bg-gradient-to-r from-transparent via-primary/5 to-transparent transform -rotate-12 animate-gentle-float opacity-30" />
-        <div className="absolute top-1/3 right-0 w-full h-24 bg-gradient-to-r from-transparent via-accent/5 to-transparent transform rotate-12 animate-gentle-float opacity-20" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/4 left-0 w-full h-32 bg-gradient-to-r from-transparent via-primary/3 to-transparent opacity-30" />
+        <div className="absolute top-1/3 right-0 w-full h-24 bg-gradient-to-r from-transparent via-accent/3 to-transparent opacity-20" />
       </div>
 
       {/* Cosmic dust particles */}
@@ -111,7 +108,7 @@ export default function DreamJourneyBackground() {
         {Array.from({ length: 20 }).map((_, i) => (
           <div
             key={i}
-            className="absolute w-0.5 h-0.5 bg-primary-glow/30 rounded-full animate-gentle-pulse"
+            className="absolute w-0.5 h-0.5 bg-primary-glow/20 rounded-full opacity-60"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,

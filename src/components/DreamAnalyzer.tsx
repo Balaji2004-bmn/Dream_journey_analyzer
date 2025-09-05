@@ -370,7 +370,7 @@ export default function DreamAnalyzer() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Brain className="w-12 h-12 mx-auto mb-4 text-primary animate-pulse" />
+          <Brain className="w-12 h-12 mx-auto mb-4 text-primary opacity-80" />
           <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
@@ -460,7 +460,7 @@ export default function DreamAnalyzer() {
                       </Button>
                       {voiceRecognition.isListening && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-red-500 rounded-full opacity-80"></div>
                           Recording...
                         </div>
                       )}
@@ -516,7 +516,7 @@ export default function DreamAnalyzer() {
                   >
                     {isAnalyzing ? (
                       <>
-                        <Brain className="w-5 h-5 mr-2 animate-pulse" />
+                        <Brain className="w-5 h-5 mr-2 opacity-80" />
                         Analyzing Dream...
                       </>
                     ) : (

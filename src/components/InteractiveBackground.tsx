@@ -71,12 +71,11 @@ export default function InteractiveBackground() {
       {particles.map(particle => (
         <div
           key={particle.id}
-          className="absolute w-1 h-1 bg-primary-glow rounded-full animate-gentle-pulse"
+          className="absolute w-1 h-1 bg-primary-glow rounded-full opacity-60"
           style={{
             left: particle.x,
             top: particle.y,
-            opacity: particle.opacity,
-            transform: `scale(${particle.size})`
+            opacity: particle.opacity * 0.8
           }}
         />
       ))}
