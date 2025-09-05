@@ -109,7 +109,7 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
-        <div className="animate-gentle-pulse text-primary-glow">Loading...</div>
+        <div className="opacity-80 text-primary-glow">Loading...</div>
       </div>
     );
   }
@@ -221,7 +221,7 @@ export default function Profile() {
                     className="absolute -bottom-2 -right-2 bg-primary hover:bg-primary/90 rounded-full p-2 transition-colors disabled:opacity-50"
                   >
                     {uploading ? (
-                      <div className="w-4 h-4 animate-gentle-pulse">⏳</div>
+                      <div className="w-4 h-4 opacity-70">⏳</div>
                     ) : (
                       <Camera className="w-4 h-4 text-primary-foreground" />
                     )}
