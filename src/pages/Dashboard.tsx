@@ -136,7 +136,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">Total Dreams</p>
                   <p className="text-3xl font-bold text-foreground">{stats.totalDreams}</p>
                 </div>
-                <Brain className="w-8 h-8 text-primary-glow animate-pulse-glow" />
+                <Brain className="w-8 h-8 text-primary-glow animate-gentle-pulse" />
               </div>
             </DreamCard>
 
@@ -146,7 +146,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">Videos Created</p>
                   <p className="text-3xl font-bold text-foreground">{stats.videosGenerated}</p>
                 </div>
-                <Video className="w-8 h-8 text-accent animate-pulse-glow" />
+                <Video className="w-8 h-8 text-accent animate-gentle-pulse" />
               </div>
             </DreamCard>
 
@@ -156,7 +156,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">Total Views</p>
                   <p className="text-3xl font-bold text-foreground">{stats.totalViews.toLocaleString()}</p>
                 </div>
-                <TrendingUp className="w-8 h-8 text-secondary animate-pulse-glow" />
+                <TrendingUp className="w-8 h-8 text-secondary animate-gentle-pulse" />
               </div>
             </DreamCard>
 
@@ -166,7 +166,7 @@ export default function Dashboard() {
                   <p className="text-sm text-muted-foreground">Dream Streak</p>
                   <p className="text-3xl font-bold text-foreground">{stats.streakDays} days</p>
                 </div>
-                <Zap className="w-8 h-8 text-primary-glow animate-pulse-glow" />
+                <Zap className="w-8 h-8 text-primary-glow animate-gentle-pulse" />
               </div>
             </DreamCard>
           </div>

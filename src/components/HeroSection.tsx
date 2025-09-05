@@ -58,7 +58,7 @@ export default function HeroSection() {
               onClick={scrollToAnalyzer}
               variant="cosmic" 
               size="lg"
-              className="text-lg px-8 py-6 h-auto animate-pulse-glow"
+              className="text-lg px-8 py-6 h-auto animate-gentle-pulse"
             >
               <Sparkles className="w-6 h-6 mr-3" />
               Start Your Dream Journey
