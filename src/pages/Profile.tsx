@@ -60,28 +60,15 @@ export default function Profile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
-  // Redirect to auth if not logged in
-  if (!loading && !user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  // Show loading while auth is checking
-  if (loading) {
-    return (
-      <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
-        <div className="animate-gentle-pulse">Loading...</div>
-      </div>
-    );
-  }
-
+  // Initialize profile state with default values first
   const [profile, setProfile] = useState<UserProfile>({
-    name: user?.user_metadata?.display_name || user?.email?.split('@')[0] || "Dream Explorer",
-    email: user?.email || "",
-    phone: user?.user_metadata?.phone || "",
+    name: "Dream Explorer",
+    email: "",
+    phone: "",
     bio: "Passionate about exploring the mysteries of dreams and the subconscious mind.",
-    location: user?.user_metadata?.location || "",
-    joinDate: new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-    avatar: user?.user_metadata?.avatar_url || "",
+    location: "",
+    joinDate: "January 2024",
+    avatar: "",
     dreamStreak: 0
   });
 
@@ -97,6 +84,36 @@ export default function Profile() {
     dreamsPublic: false,
     analyticsSharing: true
   });
+
+  // Update profile when user data is available
+  useEffect(() => {
+    if (user) {
+      setProfile({
+        name: user.user_metadata?.display_name || user.email?.split('@')[0] || "Dream Explorer",
+        email: user.email || "",
+        phone: user.user_metadata?.phone || "",
+        bio: user.user_metadata?.bio || "Passionate about exploring the mysteries of dreams and the subconscious mind.",
+        location: user.user_metadata?.location || "",
+        joinDate: new Date(user.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+        avatar: user.user_metadata?.avatar_url || "",
+        dreamStreak: 0
+      });
+    }
+  }, [user]);
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Show loading while auth is checking
+  if (loading) {
+    return (
+      <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
+        <div className="animate-gentle-pulse">Loading...</div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "profile", label: "Profile", icon: User },
