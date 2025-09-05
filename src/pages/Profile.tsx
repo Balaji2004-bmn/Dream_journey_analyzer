@@ -54,19 +54,35 @@ interface PrivacySettings {
 }
 
 export default function Profile() {
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // Redirect to auth if not logged in
+  if (!loading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // Show loading while auth is checking
+  if (loading) {
+    return (
+      <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
+        <div className="animate-gentle-pulse">Loading...</div>
+      </div>
+    );
+  }
 
   const [profile, setProfile] = useState<UserProfile>({
-    name: "Dream Explorer",
-    email: "explorer@dreamjourney.com",
-    phone: "+1 (555) 123-4567",
-    bio: "Passionate about exploring the mysteries of dreams and the subconscious mind. I love creating visual stories from my dream experiences.",
-    location: "San Francisco, CA",
-    joinDate: "January 2024",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b293?w=150&h=150&fit=crop&crop=face",
-    dreamStreak: 47
+    name: user?.user_metadata?.display_name || user?.email?.split('@')[0] || "Dream Explorer",
+    email: user?.email || "",
+    phone: user?.user_metadata?.phone || "",
+    bio: "Passionate about exploring the mysteries of dreams and the subconscious mind.",
+    location: user?.user_metadata?.location || "",
+    joinDate: new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    avatar: user?.user_metadata?.avatar_url || "",
+    dreamStreak: 0
   });
 
   const [notifications, setNotifications] = useState<NotificationSettings>({
@@ -98,24 +114,67 @@ export default function Profile() {
     { name: "Dream Master", description: "Analyzed 100 dreams", earned: false }
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsEditing(false);
-    toast.success("Profile updated successfully!");
-    console.log("Profile saved:", profile);
+    
+    // Update user metadata in Supabase
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        display_name: profile.name,
+        phone: profile.phone,
+        location: profile.location,
+        bio: profile.bio
+      }
+    });
+
+    if (error) {
+      toast.error("Failed to update profile: " + error.message);
+    } else {
+      toast.success("Profile updated successfully!");
+    }
   };
 
-  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setProfile(prev => ({ ...prev, avatar: e.target?.result as string }));
-          toast.success("Profile photo updated!");
-        };
-        reader.readAsDataURL(file);
-      } else {
+    if (file && user) {
+      if (!file.type.startsWith('image/')) {
         toast.error("Please select a valid image file");
+        return;
+      }
+
+      setUploading(true);
+      
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/avatar.${fileExt}`;
+
+        // Upload file to Supabase storage
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(fileName, file, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(fileName);
+
+        // Update user metadata
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: { avatar_url: publicUrl }
+        });
+
+        if (updateError) throw updateError;
+
+        // Update local state
+        setProfile(prev => ({ ...prev, avatar: publicUrl }));
+        toast.success("Profile photo updated!");
+        
+      } catch (error: any) {
+        toast.error("Failed to upload photo: " + error.message);
+      } finally {
+        setUploading(false);
       }
     }
   };
@@ -145,9 +204,14 @@ export default function Profile() {
                 {isEditing && (
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute -bottom-2 -right-2 bg-primary hover:bg-primary/90 rounded-full p-2 transition-colors"
+                    disabled={uploading}
+                    className="absolute -bottom-2 -right-2 bg-primary hover:bg-primary/90 rounded-full p-2 transition-colors disabled:opacity-50"
                   >
-                    <Camera className="w-4 h-4 text-primary-foreground" />
+                    {uploading ? (
+                      <div className="w-4 h-4 animate-gentle-pulse">⏳</div>
+                    ) : (
+                      <Camera className="w-4 h-4 text-primary-foreground" />
+                    )}
                   </button>
                 )}
                 <input
