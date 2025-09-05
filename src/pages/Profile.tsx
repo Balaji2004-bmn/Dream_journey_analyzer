@@ -54,13 +54,13 @@ interface PrivacySettings {
 }
 
 export default function Profile() {
+  // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL LOGIC
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize profile state with default values first
   const [profile, setProfile] = useState<UserProfile>({
     name: "Dream Explorer",
     email: "",
@@ -101,16 +101,15 @@ export default function Profile() {
     }
   }, [user]);
 
-  // Redirect to auth if not logged in
+  // NOW WE CAN DO CONDITIONAL LOGIC AFTER ALL HOOKS
   if (!loading && !user) {
     return <Navigate to="/auth" replace />;
   }
 
-  // Show loading while auth is checking
   if (loading) {
     return (
       <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
-        <div className="animate-gentle-pulse">Loading...</div>
+        <div className="animate-gentle-pulse text-primary-glow">Loading...</div>
       </div>
     );
   }
@@ -134,7 +133,8 @@ export default function Profile() {
   const handleSave = async () => {
     setIsEditing(false);
     
-    // Update user metadata in Supabase
+    if (!user) return;
+    
     const { error } = await supabase.auth.updateUser({
       data: {
         display_name: profile.name,
@@ -153,46 +153,42 @@ export default function Profile() {
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && user) {
-      if (!file.type.startsWith('image/')) {
-        toast.error("Please select a valid image file");
-        return;
-      }
+    if (!file || !user) return;
+    
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please select a valid image file");
+      return;
+    }
 
-      setUploading(true);
+    setUploading(true);
+    
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: publicUrl }
+      });
+
+      if (updateError) throw updateError;
+
+      setProfile(prev => ({ ...prev, avatar: publicUrl }));
+      toast.success("Profile photo updated!");
       
-      try {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${user.id}/avatar.${fileExt}`;
-
-        // Upload file to Supabase storage
-        const { error: uploadError } = await supabase.storage
-          .from('avatars')
-          .upload(fileName, file, { upsert: true });
-
-        if (uploadError) throw uploadError;
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('avatars')
-          .getPublicUrl(fileName);
-
-        // Update user metadata
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: { avatar_url: publicUrl }
-        });
-
-        if (updateError) throw updateError;
-
-        // Update local state
-        setProfile(prev => ({ ...prev, avatar: publicUrl }));
-        toast.success("Profile photo updated!");
-        
-      } catch (error: any) {
-        toast.error("Failed to upload photo: " + error.message);
-      } finally {
-        setUploading(false);
-      }
+    } catch (error: any) {
+      toast.error("Failed to upload photo: " + error.message);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -308,8 +304,7 @@ export default function Profile() {
                           id="email"
                           type="email"
                           value={profile.email}
-                          onChange={(e) => setProfile({...profile, email: e.target.value})}
-                          disabled={!isEditing}
+                          disabled={true}
                           className="pl-10 bg-input/50"
                         />
                       </div>
