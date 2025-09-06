@@ -26,7 +26,12 @@ import {
   Calendar,
   MapPin,
   Edit,
-  Upload
+  Upload,
+  Brain,
+  Sparkles,
+  Star,
+  Zap,
+  Crown
 } from "lucide-react";
 
 interface UserProfile {
@@ -109,16 +114,20 @@ export default function Profile() {
   if (loading) {
     return (
       <div className="pt-20 pb-12 min-h-screen bg-gradient-cosmic flex items-center justify-center">
-        <div className="opacity-80 text-primary-glow">Loading...</div>
+        <div className="flex items-center gap-3 opacity-80 text-primary-glow">
+          <Brain className="w-6 h-6 animate-pulse" />
+          Loading your profile...
+          <Sparkles className="w-6 h-6 animate-pulse" />
+        </div>
       </div>
     );
   }
 
   const tabs = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "settings", label: "Settings", icon: Settings },
-    { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "privacy", label: "Privacy", icon: Shield }
+    { id: "profile", label: "Profile", icon: User, color: "text-purple-400" },
+    { id: "settings", label: "Settings", icon: Settings, color: "text-cyan-400" },
+    { id: "notifications", label: "Notifications", icon: Bell, color: "text-yellow-400" },
+    { id: "privacy", label: "Privacy", icon: Shield, color: "text-emerald-400" }
   ];
 
   const achievements = [
@@ -207,26 +216,27 @@ export default function Profile() {
           </div>
 
           {/* Profile Header */}
-          <DreamCard className="p-8">
+          <DreamCard className="p-8 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5 border-gradient-cosmic">
             <div className="flex flex-col md:flex-row items-center gap-6">
               <div className="relative">
-                <Avatar className="w-24 h-24 border-4 border-primary/20">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-lg opacity-20 animate-pulse"></div>
+                <Avatar className="w-24 h-24 border-4 border-gradient-cosmic bg-gradient-to-br from-purple-100 to-pink-100 relative z-10">
                   <AvatarImage src={profile.avatar} alt="Profile" />
-                  <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-2xl font-bold">
+                    {profile.name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
-                {isEditing && (
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="absolute -bottom-2 -right-2 bg-primary hover:bg-primary/90 rounded-full p-2 transition-colors disabled:opacity-50"
-                  >
-                    {uploading ? (
-                      <div className="w-4 h-4 opacity-70">⏳</div>
-                    ) : (
-                      <Camera className="w-4 h-4 text-primary-foreground" />
-                    )}
-                  </button>
-                )}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="absolute -bottom-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 rounded-full p-2 transition-all disabled:opacity-50 shadow-lg"
+                >
+                  {uploading ? (
+                    <div className="w-4 h-4 opacity-70">⏳</div>
+                  ) : (
+                    <Camera className="w-4 h-4 text-white" />
+                  )}
+                </button>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -236,13 +246,21 @@ export default function Profile() {
                 />
               </div>
               <div className="text-center md:text-left space-y-2">
-                <h2 className="text-2xl font-bold text-foreground">{profile.name}</h2>
-                <p className="text-muted-foreground">{profile.email}</p>
+                <div className="flex items-center gap-2 justify-center md:justify-start">
+                  <h2 className="text-2xl font-bold text-foreground">{profile.name}</h2>
+                  <Star className="w-5 h-5 text-yellow-400" />
+                </div>
+                <p className="text-muted-foreground flex items-center gap-2 justify-center md:justify-start">
+                  <Mail className="w-4 h-4 text-cyan-400" />
+                  {profile.email}
+                </p>
                 <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                  <Badge variant="cosmic">
+                  <Badge variant="cosmic" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-300/30">
+                    <Zap className="w-3 h-3 mr-1" />
                     {profile.dreamStreak} Dream Streak
                   </Badge>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="border-cyan-300/30 text-cyan-400">
+                    <Calendar className="w-3 h-3 mr-1" />
                     Joined {profile.joinDate}
                   </Badge>
                 </div>
@@ -251,14 +269,18 @@ export default function Profile() {
           </DreamCard>
 
           {/* Navigation Tabs */}
-          <DreamCard className="p-2">
+          <DreamCard className="p-2 bg-gradient-to-r from-purple-500/5 to-cyan-500/5">
             <div className="flex flex-wrap gap-1">
               {tabs.map((tab) => (
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? "cosmic" : "ghost"}
                   onClick={() => setActiveTab(tab.id)}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 ${
+                    activeTab === tab.id 
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                      : `hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-pink-500/10 ${tab.color}`
+                  }`}
                 >
                   <tab.icon className="w-4 h-4" />
                   {tab.label}
