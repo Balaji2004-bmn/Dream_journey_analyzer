@@ -10,7 +10,8 @@ import {
   X, 
   Sparkles,
   LogIn,
-  LogOut
+  LogOut,
+  Info
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,6 +26,7 @@ export default function Navigation() {
     { path: "/", label: "Dream Analyzer", icon: Brain },
     { path: "/gallery", label: "Gallery", icon: Images },
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/about", label: "About", icon: Info },
     { path: "/profile", label: "Profile", icon: User },
   ];
 

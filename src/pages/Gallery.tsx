@@ -21,10 +21,12 @@ import {
   Sparkles,
   Moon,
   Zap,
-  Brain
+  Brain,
+  Trash2
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DreamVideo {
   id: string;
@@ -38,9 +40,12 @@ interface DreamVideo {
   likes?: number;
   isLiked?: boolean;
   isPlaying?: boolean;
+  user_id?: string;
+  isOwner?: boolean;
 }
 
 export default function Gallery() {
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [dreamVideos, setDreamVideos] = useState<DreamVideo[]>([]);
@@ -59,7 +64,74 @@ export default function Gallery() {
         supabase.from('dreams').select('*').eq('is_public', true).order('created_at', { ascending: false })
       ]);
 
-      if (demoDreamsResult.error) throw demoDreamsResult.error;
+      if (demoDreamsResult.error) {
+        console.warn('Demo dreams table not found, using fallback data');
+        // Fallback demo data if table doesn't exist
+        const fallbackDemoVideos: DreamVideo[] = [
+          {
+            id: 'demo-1',
+            title: 'Dancing in Space',
+            thumbnail_url: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=300&fit=crop',
+            video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            content: 'I was floating weightlessly in a starry cosmos, dancing with planets and comets. Each movement created colorful ripples through space-time, and I could feel the music of the spheres flowing through my body.',
+            created_at: new Date().toLocaleDateString(),
+            analysis: {
+              keywords: ['space', 'dancing', 'cosmos', 'planets', 'music', 'weightless'],
+              emotions: [
+                { emotion: 'euphoria', intensity: 96 },
+                { emotion: 'freedom', intensity: 91 },
+                { emotion: 'cosmic connection', intensity: 87 }
+              ]
+            },
+            views: 342,
+            likes: 28,
+            isLiked: false,
+            isPlaying: false
+          },
+          {
+            id: 'demo-2',
+            title: 'Magical Library Adventure',
+            thumbnail_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+            video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            content: 'I discovered a vast library where books flew around like birds. When I opened one, I was instantly transported into its story - becoming a pirate, then a wizard, then an explorer.',
+            created_at: new Date().toLocaleDateString(),
+            analysis: {
+              keywords: ['library', 'books', 'flying', 'stories', 'portals', 'adventure'],
+              emotions: [
+                { emotion: 'wonder', intensity: 93 },
+                { emotion: 'curiosity', intensity: 89 },
+                { emotion: 'excitement', intensity: 85 }
+              ]
+            },
+            views: 287,
+            likes: 35,
+            isLiked: false,
+            isPlaying: false
+          },
+          {
+            id: 'demo-3',
+            title: 'Crystal Cave Symphony',
+            thumbnail_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+            video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            content: 'I found myself in a cave filled with singing crystals. Each crystal produced a different musical note when touched, and together they created the most beautiful symphony I had ever heard.',
+            created_at: new Date().toLocaleDateString(),
+            analysis: {
+              keywords: ['crystals', 'music', 'cave', 'rainbow', 'harmony', 'singing'],
+              emotions: [
+                { emotion: 'serenity', intensity: 94 },
+                { emotion: 'awe', intensity: 88 },
+                { emotion: 'harmony', intensity: 86 }
+              ]
+            },
+            views: 198,
+            likes: 22,
+            isLiked: false,
+            isPlaying: false
+          }
+        ];
+        setDreamVideos(fallbackDemoVideos);
+        return;
+      }
 
       const demoVideos: DreamVideo[] = demoDreamsResult.data?.map(dream => ({
         id: dream.id,
@@ -86,7 +158,9 @@ export default function Gallery() {
         views: Math.floor(Math.random() * 100) + 10,
         likes: Math.floor(Math.random() * 20) + 2,
         isLiked: false,
-        isPlaying: false
+        isPlaying: false,
+        user_id: dream.user_id,
+        isOwner: user?.id === dream.user_id
       })) || [];
 
       // Combine and sort all videos
@@ -128,19 +202,36 @@ export default function Gallery() {
     return matchesSearch && matchesFilter;
   });
 
-  const handleVideoPlay = (videoId: string) => {
-    setDreamVideos(prev => prev.map(video => 
+  const handlePlayVideo = (videoId: string) => {
+    setDreamVideos(dreamVideos.map(video => 
       video.id === videoId 
         ? { ...video, isPlaying: !video.isPlaying }
         : { ...video, isPlaying: false }
     ));
     
     const video = dreamVideos.find(v => v.id === videoId);
-    if (video && video.video_url) {
-      window.open(video.video_url, '_blank');
+    if (video && video.video_url && video.video_url !== '#') {
+      // Create a video modal or embed player instead of opening new tab
+      const videoElement = document.createElement('video');
+      videoElement.src = video.video_url;
+      videoElement.controls = true;
+      videoElement.autoplay = true;
+      videoElement.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; max-width: 90vw; max-height: 90vh; background: black;';
+      
+      const overlay = document.createElement('div');
+      overlay.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9998; display: flex; align-items: center; justify-content: center;';
+      
+      overlay.onclick = () => {
+        document.body.removeChild(overlay);
+      };
+      
+      overlay.appendChild(videoElement);
+      document.body.appendChild(overlay);
+      
+      toast.success("Playing dream video!");
+    } else {
+      toast.info("Demo video - actual video generation requires API keys");
     }
-    
-    toast.success("Playing dream video!");
   };
 
   const handleDownload = (video: DreamVideo) => {
@@ -185,6 +276,51 @@ export default function Gallery() {
       } catch (error) {
         toast.error("Failed to copy to clipboard");
       }
+    }
+  };
+
+  const handleDelete = async (video: DreamVideo) => {
+    if (!user) {
+      toast.error("Please sign in to delete dreams");
+      return;
+    }
+
+    if (!video.isOwner) {
+      toast.error("You can only delete your own dreams");
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete "${video.title}"?`)) {
+      return;
+    }
+
+    try {
+      // Try deleting from dreams table first
+      let { error } = await supabase
+        .from('dreams')
+        .delete()
+        .eq('id', video.id)
+        .eq('user_id', user.id);
+
+      // If dreams table doesn't exist or no rows affected, try demo_dreams
+      if (error || !error) {
+        const { error: demoError } = await supabase
+          .from('demo_dreams')
+          .delete()
+          .eq('id', video.id);
+        
+        if (demoError && !error) {
+          throw demoError;
+        }
+      }
+
+      // Remove from local state
+      setDreamVideos(dreamVideos.filter(v => v.id !== video.id));
+      toast.success("Dream deleted successfully!");
+      
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error("Failed to delete dream");
     }
   };
 
@@ -267,7 +403,7 @@ export default function Gallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
-                      onClick={() => handleVideoPlay(video.id)}
+                      onClick={() => handlePlayVideo(video.id)}
                       size="lg"
                       className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30"
                     >
@@ -324,7 +460,7 @@ export default function Gallery() {
                   <div className="flex gap-2">
                     <Button 
                       size="sm" 
-                      onClick={() => handleVideoPlay(video.id)}
+                      onClick={() => handlePlayVideo(video.id)}
                       className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                     >
                       {video.isPlaying ? (
@@ -355,6 +491,16 @@ export default function Gallery() {
                     >
                       <Download className="w-4 h-4" />
                     </Button>
+                    {video.isOwner && (
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => handleDelete(video)}
+                        className="px-3 border-red-400/30 text-red-400 hover:bg-red-400/10"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
                   </div>
                 </DreamCardContent>
               </DreamCard>

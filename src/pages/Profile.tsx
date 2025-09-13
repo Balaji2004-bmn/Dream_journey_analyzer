@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
@@ -61,6 +62,7 @@ interface PrivacySettings {
 export default function Profile() {
   // ALL HOOKS MUST BE CALLED FIRST - BEFORE ANY CONDITIONAL LOGIC
   const { user, loading } = useAuth();
+  const { isDarkMode, toggleDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState("profile");
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -105,6 +107,7 @@ export default function Profile() {
       });
     }
   }, [user]);
+
 
   // NOW WE CAN DO CONDITIONAL LOGIC AFTER ALL HOOKS
   if (!loading && !user) {
@@ -410,6 +413,109 @@ export default function Profile() {
             </div>
           )}
 
+          {activeTab === "settings" && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <DreamCard>
+                <DreamCardHeader>
+                  <DreamCardTitle className="flex items-center gap-2">
+                    <Settings className="w-5 h-5 text-cyan-400" />
+                    General Settings
+                  </DreamCardTitle>
+                </DreamCardHeader>
+                <DreamCardContent>
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Dark Mode</p>
+                        <p className="text-sm text-muted-foreground">
+                          Toggle between light and dark themes
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Sun className="w-4 h-4 text-yellow-400" />
+                        <Switch 
+                          checked={isDarkMode}
+                          onCheckedChange={toggleDarkMode}
+                        />
+                        <Moon className="w-4 h-4 text-blue-400" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Auto-Save Dreams</p>
+                        <p className="text-sm text-muted-foreground">
+                          Automatically save dreams after analysis
+                        </p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">Dream Reminders</p>
+                        <p className="text-sm text-muted-foreground">
+                          Daily reminders to record your dreams
+                        </p>
+                      </div>
+                      <Switch defaultChecked />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">High Quality Videos</p>
+                        <p className="text-sm text-muted-foreground">
+                          Generate videos in higher resolution
+                        </p>
+                      </div>
+                      <Switch />
+                    </div>
+                  </div>
+                </DreamCardContent>
+              </DreamCard>
+
+              <DreamCard>
+                <DreamCardHeader>
+                  <DreamCardTitle className="flex items-center gap-2">
+                    <Palette className="w-5 h-5 text-pink-400" />
+                    Appearance
+                  </DreamCardTitle>
+                </DreamCardHeader>
+                <DreamCardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">Theme Color</Label>
+                      <div className="grid grid-cols-4 gap-2 mt-2">
+                        <button className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 ring-2 ring-purple-300 ring-offset-2"></button>
+                        <button className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:ring-2 hover:ring-blue-300 hover:ring-offset-2"></button>
+                        <button className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 hover:ring-2 hover:ring-green-300 hover:ring-offset-2"></button>
+                        <button className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 hover:ring-2 hover:ring-orange-300 hover:ring-offset-2"></button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium">Animation Level</Label>
+                      <div className="mt-2 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="animation" id="none" className="text-primary" />
+                          <Label htmlFor="none" className="text-sm">None</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="animation" id="reduced" className="text-primary" />
+                          <Label htmlFor="reduced" className="text-sm">Reduced</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="radio" name="animation" id="full" className="text-primary" defaultChecked />
+                          <Label htmlFor="full" className="text-sm">Full</Label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DreamCardContent>
+              </DreamCard>
+            </div>
+          )}
+
           {activeTab === "notifications" && (
             <DreamCard>
               <DreamCardHeader>
@@ -484,4 +590,4 @@ export default function Profile() {
       </div>
     </div>
   );
-}
+};

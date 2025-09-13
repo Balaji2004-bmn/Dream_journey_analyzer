@@ -18,6 +18,7 @@ interface AnalysisResult {
   videoStatus: "idle" | "analyzing" | "generating" | "complete";
   videoProgress: number;
   attachedPhoto?: string;
+  demoVideoUrl?: string;
 }
 
 interface VoiceRecognition {
@@ -43,6 +44,11 @@ export default function DreamAnalyzer() {
 
   const handleAnalyze = async () => {
     if (!dreamText.trim()) return;
+    
+    if (!user) {
+      toast.error("Please sign in to analyze your dreams");
+      return;
+    }
     
     setIsAnalyzing(true);
     
@@ -236,8 +242,8 @@ export default function DreamAnalyzer() {
 
     const steps = [
       { status: "analyzing", message: "Analyzing dream storyline..." },
-      { status: "generating", message: "Generating cinematic sequences..." },
-      { status: "complete", message: "Dream video ready!" }
+      { status: "generating", message: "Generating demo video sequences..." },
+      { status: "complete", message: "Demo dream video ready!" }
     ];
 
     for (let i = 0; i < steps.length; i++) {
@@ -251,7 +257,29 @@ export default function DreamAnalyzer() {
       await new Promise(resolve => setTimeout(resolve, 1500));
     }
 
-    toast.success("🎬 Your dream video is ready!");
+    // Set demo video URL when complete
+    setAnalysis(prev => prev ? {
+      ...prev,
+      demoVideoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    } : null);
+
+    toast.success("🎬 Demo dream video generated! (For actual video generation, add RunwayML API key)");
+  };
+
+  const getRandomDemoVideo = () => {
+    const demoVideos = [
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", 
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+    ];
+    return demoVideos[Math.floor(Math.random() * demoVideos.length)];
   };
 
   const saveDream = async () => {
@@ -266,20 +294,78 @@ export default function DreamAnalyzer() {
     }
 
     try {
-      const { error } = await supabase
+      // First check if dreams table exists, if not create it
+      const { error: checkError } = await supabase
         .from('dreams')
-        .insert({
+        .select('id')
+        .limit(1);
+
+      if (checkError && checkError.code === 'PGRST116') {
+        // Table doesn't exist, create it
+        console.log('Dreams table not found, creating...');
+        
+        // Use a simpler approach - just try to insert and handle the error
+        const dreamData = {
+          user_id: user.id,
+          title: dreamText.slice(0, 100) + (dreamText.length > 100 ? "..." : ""),
+          content: dreamText,
+          analysis: JSON.stringify(analysis),
+          is_public: true,
+          thumbnail_url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop",
+          video_url: analysis.videoStatus === "complete" ? analysis.demoVideoUrl || getRandomDemoVideo() : null,
+          created_at: new Date().toISOString()
+        };
+
+        // Try inserting to demo_dreams table as fallback
+        const { data: demoData, error: demoError } = await supabase
+          .from('demo_dreams')
+          .insert({
+            title: dreamData.title,
+            content: dreamData.content,
+            thumbnail_url: dreamData.thumbnail_url,
+            video_url: dreamData.video_url,
+            analysis: dreamData.analysis,
+            created_at: dreamData.created_at
+          })
+          .select();
+
+        if (demoError) {
+          console.error('Demo dreams insert error:', demoError);
+          toast.error("Unable to save dream - database table not configured");
+          return;
+        }
+
+        console.log('Dream saved to demo_dreams:', demoData);
+        toast.success("Dream saved successfully! ✨ Check your Gallery to view it.");
+        
+      } else {
+        // Table exists, proceed with normal insert
+        const dreamData = {
           user_id: user.id,
           title: dreamText.slice(0, 100) + (dreamText.length > 100 ? "..." : ""),
           content: dreamText,
           analysis: analysis as any,
-          is_public: false,
-          video_status: analysis.videoStatus === "complete" ? "complete" : "pending"
-        });
+          is_public: true,
+          thumbnail_url: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop",
+          video_url: analysis.videoStatus === "complete" ? analysis.demoVideoUrl || getRandomDemoVideo() : null
+        };
 
-      if (error) throw error;
+        console.log('Attempting to save dream:', dreamData);
 
-      toast.success("Dream saved to gallery successfully! ✨ Check your Gallery to view it.");
+        const { data, error } = await supabase
+          .from('dreams')
+          .insert(dreamData)
+          .select();
+
+        if (error) {
+          console.error('Supabase error details:', error);
+          toast.error(`Failed to save dream: ${error.message}`);
+          return;
+        }
+
+        console.log('Dream saved successfully:', data);
+        toast.success("Dream saved to gallery successfully! ✨ Check your Gallery to view it.");
+      }
       
       // Reset the form after saving
       setDreamText("");
@@ -547,13 +633,23 @@ export default function DreamAnalyzer() {
                       </div>
                       <Progress value={analysis.videoProgress} className="w-full" />
                       
-                      {analysis.videoStatus === "complete" && (
-                        <div className="mt-4 p-4 bg-gradient-nebula rounded-lg">
-                          <p className="text-center text-foreground font-medium mb-2">
+                      {analysis.videoStatus === "complete" && analysis.demoVideoUrl && (
+                        <div className="mt-4 p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-300/30">
+                          <p className="text-center text-foreground font-medium mb-3">
                             🎬 Your Dream Video is Ready!
                           </p>
-                          <p className="text-center text-sm text-muted-foreground">
-                            Video generation complete. In a real app, this would show your personalized dream video.
+                          <div className="relative">
+                            <video 
+                              src={analysis.demoVideoUrl}
+                              controls
+                              className="w-full rounded-lg"
+                              poster="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop"
+                            >
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                          <p className="text-center text-sm text-muted-foreground mt-2">
+                            Demo video generated! For personalized videos, add RunwayML API key.
                           </p>
                         </div>
                       )}

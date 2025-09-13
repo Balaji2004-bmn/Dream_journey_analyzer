@@ -1,22 +1,22 @@
-# Welcome to your Lovable project
+# Dream Journey Analyzer
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/247cc584-9d2d-49a9-9d94-7b7253211752
+**Dream Journey Analyzer** is an AI-powered web application that transforms your dreams into stunning visual stories. Using advanced NLP technology, it analyzes dream emotions, extracts keywords, and generates personalized storylines.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- 🧠 **AI Dream Analysis** - Advanced emotion and keyword extraction
+- 🎬 **Video Generation** - Transform dreams into visual stories
+- 📊 **Analytics Dashboard** - Track your dream patterns
+- 🔐 **Secure Authentication** - User accounts and data protection
+- 📱 **Responsive Design** - Works on all devices
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/247cc584-9d2d-49a9-9d94-7b7253211752) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
+## How to Edit This Code
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Clone this repository and push changes. The application will automatically reflect your updates.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -60,14 +60,18 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## How to Deploy This Project
 
-Simply open [Lovable](https://lovable.dev/projects/247cc584-9d2d-49a9-9d94-7b7253211752) and click on Share -> Publish.
+You can deploy this project using various hosting platforms:
 
-## Can I connect a custom domain to my Lovable project?
+- **Netlify**: Connect your Git repository for automatic deployments
+- **Vercel**: Deploy with zero configuration
+- **GitHub Pages**: Host directly from your GitHub repository
 
-Yes, you can!
+## Technology Stack
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS + Custom Components
+- **Backend**: Supabase (Database + Authentication)
+- **AI/NLP**: Custom NLP backend with Python
+- **Deployment**: Static hosting compatible

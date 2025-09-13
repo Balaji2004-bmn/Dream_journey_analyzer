@@ -41,15 +41,52 @@ export default function Dashboard() {
   const [timeRange, setTimeRange] = useState("week");
   const navigate = useNavigate();
 
-  const stats: DreamStats = {
-    totalDreams: 47,
-    videosGenerated: 23,
-    totalViews: 1247,
-    averageRating: 4.2,
-    streakDays: 12,
-    weeklyGoal: 5,
-    weeklyProgress: 3
+  const getStatsForTimeRange = (range: string): DreamStats => {
+    switch (range) {
+      case "week":
+        return {
+          totalDreams: 7,
+          videosGenerated: 4,
+          totalViews: 156,
+          averageRating: 4.3,
+          streakDays: 12,
+          weeklyGoal: 5,
+          weeklyProgress: 3
+        };
+      case "month":
+        return {
+          totalDreams: 23,
+          videosGenerated: 15,
+          totalViews: 687,
+          averageRating: 4.1,
+          streakDays: 12,
+          weeklyGoal: 5,
+          weeklyProgress: 3
+        };
+      case "year":
+        return {
+          totalDreams: 147,
+          videosGenerated: 89,
+          totalViews: 4523,
+          averageRating: 4.2,
+          streakDays: 12,
+          weeklyGoal: 5,
+          weeklyProgress: 3
+        };
+      default:
+        return {
+          totalDreams: 47,
+          videosGenerated: 23,
+          totalViews: 1247,
+          averageRating: 4.2,
+          streakDays: 12,
+          weeklyGoal: 5,
+          weeklyProgress: 3
+        };
+    }
   };
+
+  const stats = getStatsForTimeRange(timeRange);
 
   const recentActivity: RecentActivity[] = [
     {
@@ -82,12 +119,40 @@ export default function Dashboard() {
     }
   ];
 
-  const emotionalTrends = [
-    { emotion: "Joy", percentage: 35, color: "bg-yellow-500" },
-    { emotion: "Wonder", percentage: 28, color: "bg-purple-500" },
-    { emotion: "Peace", percentage: 20, color: "bg-blue-500" },
-    { emotion: "Adventure", percentage: 17, color: "bg-green-500" }
-  ];
+  const getEmotionalTrendsForTimeRange = (range: string) => {
+    switch (range) {
+      case "week":
+        return [
+          { emotion: "Joy", percentage: 42, color: "bg-yellow-500" },
+          { emotion: "Wonder", percentage: 31, color: "bg-purple-500" },
+          { emotion: "Peace", percentage: 18, color: "bg-blue-500" },
+          { emotion: "Adventure", percentage: 9, color: "bg-green-500" }
+        ];
+      case "month":
+        return [
+          { emotion: "Wonder", percentage: 38, color: "bg-purple-500" },
+          { emotion: "Joy", percentage: 29, color: "bg-yellow-500" },
+          { emotion: "Adventure", percentage: 21, color: "bg-green-500" },
+          { emotion: "Peace", percentage: 12, color: "bg-blue-500" }
+        ];
+      case "year":
+        return [
+          { emotion: "Joy", percentage: 35, color: "bg-yellow-500" },
+          { emotion: "Wonder", percentage: 28, color: "bg-purple-500" },
+          { emotion: "Peace", percentage: 20, color: "bg-blue-500" },
+          { emotion: "Adventure", percentage: 17, color: "bg-green-500" }
+        ];
+      default:
+        return [
+          { emotion: "Joy", percentage: 35, color: "bg-yellow-500" },
+          { emotion: "Wonder", percentage: 28, color: "bg-purple-500" },
+          { emotion: "Peace", percentage: 20, color: "bg-blue-500" },
+          { emotion: "Adventure", percentage: 17, color: "bg-green-500" }
+        ];
+    }
+  };
+
+  const emotionalTrends = getEmotionalTrendsForTimeRange(timeRange);
 
   const getActivityIcon = (type: string) => {
     switch (type) {

@@ -6,7 +6,72 @@
 
 @layer base {
   :root {
-    /* Core cosmic colors */
+    /* Light Mode - Cosmic Light Theme */
+    --background: 240 20% 98%;
+    --foreground: 240 15% 15%;
+
+    --card: 240 20% 96%;
+    --card-foreground: 240 15% 15%;
+
+    --popover: 240 20% 96%;
+    --popover-foreground: 240 15% 15%;
+
+    /* Cosmic primary - Deep purple */
+    --primary: 270 60% 45%;
+    --primary-foreground: 240 20% 95%;
+    --primary-glow: 270 80% 65%;
+
+    /* Dream secondary - Soft teal */
+    --secondary: 190 70% 35%;
+    --secondary-foreground: 240 20% 95%;
+
+    /* Muted cosmic tones - Light */
+    --muted: 240 10% 88%;
+    --muted-foreground: 240 15% 45%;
+
+    /* Cosmic accent - Pink nebula */
+    --accent: 320 60% 50%;
+    --accent-foreground: 240 20% 95%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 240 20% 95%;
+
+    --border: 240 10% 85%;
+    --input: 240 10% 92%;
+    --ring: 270 60% 45%;
+
+    --radius: 1rem;
+
+    /* Light mode gradients */
+    --gradient-cosmic: linear-gradient(135deg, hsl(240 30% 95%), hsl(270 40% 90%), hsl(320 30% 92%));
+    --gradient-dream: linear-gradient(45deg, hsl(270 60% 45%), hsl(190 70% 35%));
+    --gradient-nebula: linear-gradient(180deg, hsl(320 60% 50%), hsl(270 80% 60%));
+    --gradient-card: linear-gradient(135deg, hsl(240 20% 96% / 0.8), hsl(270 15% 94% / 0.6));
+
+    /* Light mode shadows and glows */
+    --shadow-cosmic: 0 8px 32px hsl(270 60% 45% / 0.1);
+    --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.15);
+    --glow-primary: 0 0 20px hsl(270 60% 45% / 0.3);
+    --glow-accent: 0 0 15px hsl(320 60% 50% / 0.25);
+
+    /* Professional animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-cosmic: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-gentle: all 0.2s ease-out;
+
+    /* Sidebar colors - Light mode */
+    --sidebar-background: 240 20% 96%;
+    --sidebar-foreground: 240 15% 15%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 88%;
+    --sidebar-accent-foreground: 240 15% 15%;
+    --sidebar-border: 240 10% 85%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Mode - Original Cosmic Dark Theme */
     --background: 240 10% 8%;
     --foreground: 240 20% 95%;
 
@@ -25,7 +90,7 @@
     --secondary: 190 70% 35%;
     --secondary-foreground: 240 20% 95%;
 
-    /* Muted cosmic tones */
+    /* Muted cosmic tones - Dark */
     --muted: 240 15% 18%;
     --muted-foreground: 240 10% 65%;
 
@@ -40,26 +105,19 @@
     --input: 240 15% 15%;
     --ring: 270 60% 45%;
 
-    --radius: 1rem;
-
-    /* Cosmic gradients */
+    /* Dark mode gradients */
     --gradient-cosmic: linear-gradient(135deg, hsl(240 60% 15%), hsl(270 60% 25%), hsl(320 50% 30%));
     --gradient-dream: linear-gradient(45deg, hsl(270 60% 45%), hsl(190 70% 35%));
     --gradient-nebula: linear-gradient(180deg, hsl(320 60% 50%), hsl(270 80% 60%));
     --gradient-card: linear-gradient(135deg, hsl(240 15% 12% / 0.8), hsl(270 20% 15% / 0.6));
 
-    /* Cosmic shadows and glows */
+    /* Dark mode shadows and glows */
     --shadow-cosmic: 0 8px 32px hsl(270 60% 15% / 0.3);
     --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.2);
     --glow-primary: 0 0 20px hsl(270 60% 45% / 0.5);
     --glow-accent: 0 0 15px hsl(320 60% 50% / 0.4);
 
-    /* Professional animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-cosmic: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --transition-gentle: all 0.2s ease-out;
-
-    /* Sidebar colors - keeping original design */
+    /* Sidebar colors - Dark mode */
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
