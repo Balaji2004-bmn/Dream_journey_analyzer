@@ -5,7 +5,10 @@ CREATE TABLE IF NOT EXISTS demo_dreams (
   content TEXT NOT NULL,
   thumbnail_url TEXT,
   video_url TEXT,
+  video_prompt TEXT,
+  video_duration INTEGER DEFAULT 4,
   analysis JSONB,
+  is_public BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

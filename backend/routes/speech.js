@@ -29,6 +29,15 @@ const upload = multer({
   }
 });
 
+// ✅ Health check endpoint
+router.get('/health', (req, res) => {
+  res.json({
+    status: 'UP',
+    service: 'Audio Service',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Speech-to-text conversion
 router.post('/transcribe', authenticateUser, upload.single('audio'), async (req, res) => {
   try {
@@ -47,7 +56,7 @@ router.post('/transcribe', authenticateUser, upload.single('audio'), async (req,
     const transcription = await openai.audio.transcriptions.create({
       file: audioStream,
       model: 'whisper-1',
-      language: 'en', // Can be made dynamic based on user preference
+      language: 'en', // Can be dynamic
       response_format: 'json',
       temperature: 0.2
     });
@@ -68,8 +77,7 @@ router.post('/transcribe', authenticateUser, upload.single('audio'), async (req,
 
   } catch (error) {
     logger.error('Speech transcription error:', error);
-    
-    // Clean up file on error
+
     if (req.file && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
@@ -88,7 +96,7 @@ router.post('/transcribe', authenticateUser, upload.single('audio'), async (req,
   }
 });
 
-// Text-to-speech conversion (for reading dream analysis)
+// Text-to-speech conversion
 router.post('/synthesize', authenticateUser, async (req, res) => {
   try {
     const { text, voice = 'alloy' } = req.body;
@@ -115,10 +123,8 @@ router.post('/synthesize', authenticateUser, async (req, res) => {
       response_format: 'mp3'
     });
 
-    // Convert to buffer
     const buffer = Buffer.from(await mp3.arrayBuffer());
 
-    // Set response headers for audio download
     res.set({
       'Content-Type': 'audio/mpeg',
       'Content-Length': buffer.length,

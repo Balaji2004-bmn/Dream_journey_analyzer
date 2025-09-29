@@ -1,0 +1,33 @@
+# Frontend (project root .env)
+VITE_BACKEND_URL=http://localhost:3001
+
+# Backend (copy these into backend/.env)
+PORT=3001
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# Supabase
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_KEY=your_supabase_service_role_key
+
+# Admin access (comma-separated emails)
+ADMIN_EMAILS=admin@example.com
+
+# AI / NLP
+OPENAI_API_KEY=your_openai_key
+NLP_URL=http://localhost:5000
+
+# Video providers (optional)
+RUNWAY_API_KEY=your_runway_key
+PIKA_API_KEY=
+KAIBER_API_KEY=
+
+# Email (optional for real email sending)
+EMAIL_USER=
+EMAIL_PASSWORD=
+
+# SMS (optional Twilio for real SMS codes)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_FROM=

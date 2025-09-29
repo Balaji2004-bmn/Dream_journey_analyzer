@@ -3,14 +3,19 @@ from flask_cors import CORS
 import os
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
 import spacy
 import nltk
+
+# Load environment variables from .env file
+load_dotenv()
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 import torch
 from supabase import create_client, Client
 import json
 import re
 from typing import Dict, List, Any
+from sentence_transformers import SentenceTransformer, util
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -50,6 +55,9 @@ try:
         model="facebook/bart-large-cnn",
         device=0 if torch.cuda.is_available() else -1
     )
+
+    # Load sentence transformer model for semantic analysis
+    sentence_transformer = SentenceTransformer('all-MiniLM-L6-v2')
     
     logger.info("All NLP models loaded successfully")
     
@@ -65,7 +73,7 @@ class DreamAnalyzer:
     def __init__(self):
         self.emotion_colors = {
             'joy': '#F59E0B',
-            'sadness': '#3B82F6', 
+            'sadness': '#3B82F6',
             'anger': '#EF4444',
             'fear': '#8B5CF6',
             'surprise': '#10B981',
@@ -76,6 +84,26 @@ class DreamAnalyzer:
             'trust': '#06B6D4',
             'anticipation': '#A855F7'
         }
+        self.themes = {
+            'Flying/Freedom': 'Dreams about flying, soaring, or being weightless, symbolizing freedom and liberation.',
+            'Water/Emotions': 'Dreams involving water, oceans, or rivers, reflecting deep emotions and the subconscious.',
+            'Chase/Anxiety': 'Dreams of being chased or pursued, often indicating anxiety or avoidance of a situation.',
+            'Death/Transformation': 'Dreams about death, which usually symbolize an end of something and a new beginning or transformation.',
+            'Animals': 'Dreams with animals often represent our primal instincts, hidden desires, or aspects of our own personality.',
+            'Travel/Journey': 'Dreams about a journey or travel, symbolizing the path of life and personal growth.',
+            'Falling': 'Dreams of falling can indicate feelings of insecurity, loss of control, or lack of support.',
+            'Teeth Falling Out': 'A common dream related to stress, communication issues, or concerns about appearance.'
+        }
+        self.symbols = {
+            'House': 'Represents the self or the psyche. Different rooms can symbolize different aspects of your life.',
+            'Car': 'Symbolizes the direction and control you have in your own life.',
+            'Baby': 'Represents new beginnings, vulnerability, or a new idea or project.',
+            'Mirror': 'Relates to self-perception, identity, and how you see yourself.',
+            'Snake': 'A complex symbol that can represent healing and transformation, or a hidden threat and fear.'
+        }
+        if sentence_transformer:
+            self.theme_embeddings = sentence_transformer.encode(list(self.themes.values()), convert_to_tensor=True)
+            self.symbol_embeddings = sentence_transformer.encode(list(self.symbols.values()), convert_to_tensor=True)
     
     def extract_keywords(self, text: str) -> List[str]:
         """Extract meaningful keywords using spaCy NLP"""
@@ -147,31 +175,49 @@ class DreamAnalyzer:
             logger.error(f"Sentiment analysis error: {e}")
             return {"sentiment": "neutral", "confidence": 0.5}
     
-    def extract_themes(self, text: str, keywords: List[str]) -> List[str]:
-        """Extract thematic elements from the dream"""
-        themes = []
+    def analyze_themes_and_symbols_semantic(self, text: str, threshold=0.4) -> Dict[str, List[Dict[str, Any]]]:
+        """Analyze themes and symbols using semantic similarity."""
+        if not sentence_transformer:
+            return {"themes": [], "symbols": []}
+
+        sentences = nltk.sent_tokenize(text)
+        sentence_embeddings = sentence_transformer.encode(sentences, convert_to_tensor=True)
+
+        # Analyze Themes
+        theme_hits = util.semantic_search(sentence_embeddings, self.theme_embeddings, top_k=1)
+        detected_themes = {}
+        for i, hits in enumerate(theme_hits):
+            if hits and hits[0]['score'] > threshold:
+                theme_index = hits[0]['corpus_id']
+                theme_name = list(self.themes.keys())[theme_index]
+                if theme_name not in detected_themes or hits[0]['score'] > detected_themes[theme_name]['score']:
+                    detected_themes[theme_name] = {
+                        'theme': theme_name,
+                        'meaning': list(self.themes.values())[theme_index],
+                        'score': hits[0]['score'],
+                        'sentence': sentences[i]
+                    }
         
-        # Define theme patterns
-        theme_patterns = {
-            'Flying/Freedom': ['fly', 'flying', 'soar', 'wings', 'air', 'sky', 'freedom'],
-            'Water/Emotions': ['water', 'ocean', 'river', 'swimming', 'drowning', 'waves'],
-            'Chase/Anxiety': ['chase', 'running', 'escape', 'hide', 'fear', 'pursuit'],
-            'Death/Transformation': ['death', 'dying', 'funeral', 'grave', 'transformation'],
-            'Animals': ['dog', 'cat', 'bird', 'snake', 'lion', 'animal', 'pet'],
-            'Family/Relationships': ['mother', 'father', 'family', 'friend', 'love', 'relationship'],
-            'School/Work': ['school', 'teacher', 'work', 'office', 'boss', 'exam', 'test'],
-            'House/Security': ['house', 'home', 'room', 'door', 'window', 'building'],
-            'Travel/Adventure': ['travel', 'journey', 'adventure', 'explore', 'discover'],
-            'Supernatural': ['ghost', 'magic', 'supernatural', 'mystical', 'spiritual']
+        # Analyze Symbols
+        symbol_hits = util.semantic_search(sentence_embeddings, self.symbol_embeddings, top_k=1)
+        detected_symbols = {}
+        for i, hits in enumerate(symbol_hits):
+            if hits and hits[0]['score'] > threshold:
+                symbol_index = hits[0]['corpus_id']
+                symbol_name = list(self.symbols.keys())[symbol_index]
+                if symbol_name not in detected_symbols or hits[0]['score'] > detected_symbols[symbol_name]['score']:
+                    detected_symbols[symbol_name] = {
+                        'symbol': symbol_name,
+                        'meaning': list(self.symbols.values())[symbol_index],
+                        'score': hits[0]['score'],
+                        'sentence': sentences[i]
+                    }
+
+        return {
+            "themes": sorted(list(detected_themes.values()), key=lambda x: x['score'], reverse=True)[:5],
+            "symbols": sorted(list(detected_symbols.values()), key=lambda x: x['score'], reverse=True)[:5]
         }
-        
-        text_lower = text.lower()
-        for theme, pattern_words in theme_patterns.items():
-            if any(word in text_lower or word in keywords for word in pattern_words):
-                themes.append(theme)
-        
-        return themes[:5]  # Limit to top 5 themes
-    
+
     def generate_summary(self, text: str) -> str:
         """Generate a psychological summary of the dream"""
         if not summarizer or len(text) < 100:
@@ -190,34 +236,6 @@ class DreamAnalyzer:
         except Exception as e:
             logger.error(f"Summary generation error: {e}")
             return "This dream contains rich symbolic content that reflects your subconscious mind's processing of daily experiences and deeper psychological themes."
-    
-    def analyze_symbols(self, text: str) -> List[Dict]:
-        """Analyze symbolic elements in the dream"""
-        symbols = []
-        
-        # Common dream symbols and their meanings
-        symbol_meanings = {
-            'water': 'Emotions, subconscious, cleansing, or life changes',
-            'fire': 'Passion, transformation, destruction, or purification',
-            'flying': 'Freedom, ambition, escape from limitations',
-            'falling': 'Loss of control, insecurity, or fear of failure',
-            'animals': 'Instincts, natural desires, or aspects of personality',
-            'house': 'Self, psyche, security, or personal space',
-            'car': 'Life direction, control, or personal drive',
-            'death': 'Transformation, endings, or new beginnings',
-            'baby': 'New beginnings, innocence, or potential',
-            'mirror': 'Self-reflection, truth, or self-perception'
-        }
-        
-        text_lower = text.lower()
-        for symbol, meaning in symbol_meanings.items():
-            if symbol in text_lower:
-                symbols.append({
-                    "symbol": symbol.title(),
-                    "meaning": meaning
-                })
-        
-        return symbols[:5]  # Limit to top 5 symbols
 
 # Initialize analyzer
 dream_analyzer = DreamAnalyzer()
@@ -253,19 +271,20 @@ def analyze_dream():
         keywords = dream_analyzer.extract_keywords(content)
         emotions = dream_analyzer.analyze_emotions(content)
         sentiment = dream_analyzer.analyze_sentiment(content)
-        themes = dream_analyzer.extract_themes(content, keywords)
+        semantic_analysis = dream_analyzer.analyze_themes_and_symbols_semantic(content)
+        themes = semantic_analysis['themes']
+        symbols = semantic_analysis['symbols']
         summary = dream_analyzer.generate_summary(content)
-        symbols = dream_analyzer.analyze_symbols(content)
         
         # Compile analysis results
         analysis = {
             'keywords': keywords,
             'emotions': emotions,
             'sentiment': sentiment,
-            'themes': themes,
-            'summary': summary,
+            'themes': [t['theme'] for t in themes], # Keep original structure if needed
             'symbols': symbols,
-            'psychological_insights': f"This dream reveals important aspects of your subconscious mind. The dominant emotions of {', '.join([e['emotion'] for e in emotions[:2]])} suggest you're processing {themes[0] if themes else 'personal experiences'}.",
+            'summary': summary,
+            'psychological_insights': f"This dream reveals important aspects of your subconscious mind. The dominant emotions of {', '.join([e['emotion'] for e in emotions[:2]])} suggest you're processing {themes[0]['theme'] if themes else 'personal experiences'}.",
             'actionable_advice': "Consider journaling about the emotions and symbols in this dream. They may provide insights into your current life situation and inner desires."
         }
         

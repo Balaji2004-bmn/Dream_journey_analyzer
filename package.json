@@ -10,8 +10,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "backend": "cd backend && npm run dev",
-    "dev:full": "concurrently \"npm run backend\" \"npm run dev\"",
-    "install:all": "npm install && cd backend && npm install"
+    "dev:full": "concurrently \"npm run backend\" \"npm run admin\" \"npm run dev\"",
+    "admin": "cd backend && npm run admin",
+    "install:all": "npm install && cd backend && npm install",
+    "setup": "node setup-env.js",
+    "test-setup": "node test-setup.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -70,9 +73,6 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^22.16.5",
-    "@types/react": "^18.3.23",
-    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
@@ -83,8 +83,6 @@
     "lovable-tagger": "^1.1.9",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19"
   }
 }

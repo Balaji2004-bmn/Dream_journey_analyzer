@@ -1,13 +1,13 @@
 const { createClient } = require('@supabase/supabase-js');
 const logger = require('../utils/logger');
 
-// Initialize Supabase client
+// Initialize Supabase client for user authentication (Anon key)
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
+  process.env.SUPABASE_ANON_KEY
 );
 
-// Authentication middleware
+// Strict Authentication middleware (no demo, no fallback)
 const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -19,9 +19,9 @@ const authenticateUser = async (req, res, next) => {
       });
     }
 
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    const token = authHeader.substring(7);
 
-    // Verify the JWT token with Supabase
+    // Verify JWT token with Supabase
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
@@ -32,10 +32,9 @@ const authenticateUser = async (req, res, next) => {
       });
     }
 
-    // Add user to request object
+    // Attach user to request
     req.user = user;
     next();
-
   } catch (error) {
     logger.error('Authentication middleware error:', error);
     res.status(500).json({
@@ -45,7 +44,7 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-// Optional authentication middleware (doesn't fail if no token)
+// Optional authentication (no demo)
 const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
@@ -53,17 +52,15 @@ const optionalAuth = async (req, res, next) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
       const { data: { user }, error } = await supabase.auth.getUser(token);
-
       if (!error && user) {
         req.user = user;
       }
     }
 
     next();
-
   } catch (error) {
     logger.error('Optional auth middleware error:', error);
-    next(); // Continue without authentication
+    next();
   }
 };
 

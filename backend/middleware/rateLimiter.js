@@ -11,7 +11,7 @@ const rateLimiter = new RateLimiterMemory({
 // AI-specific rate limiter (more restrictive)
 const aiRateLimiter = new RateLimiterMemory({
   keyPrefix: 'ai',
-  points: 20, // 20 AI requests
+  points: 100, // 100 AI requests
   duration: 900, // Per 15 minutes
 });
 

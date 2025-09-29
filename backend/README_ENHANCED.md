@@ -125,6 +125,12 @@ SUPABASE_URL=your_supabase_url
 SUPABASE_SERVICE_KEY=your_service_key
 ```
 
+Add to Backend (.env):
+```env
+# Python NLP Service URL for Node backend to call
+NLP_URL=http://localhost:5000
+```
+
 ### 3. **Database Setup**
 Run these SQL files in Supabase SQL Editor:
 1. `supabase/create-demo-dreams-table.sql`
