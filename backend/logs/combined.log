@@ -3119,3 +3119,20 @@
 {"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-09-30 12:06:40"}
 {"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-09-30 12:06:40"}
 {"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-09-30 12:06:40"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:48"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"info","message":"GET /api/admin/users - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:50"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"info","message":"GET /api/admin/users - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"info","message":"GET /api/admin/users - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:52"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:53"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:53"}
+{"level":"info","message":"GET /api/admin/users - ::1 (ADMIN)","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:53"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-09-30 12:07:53"}
