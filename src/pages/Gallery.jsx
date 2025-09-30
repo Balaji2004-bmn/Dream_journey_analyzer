@@ -200,10 +200,10 @@ export default function Gallery() {
           isPlaying: false // Default value
         }));
         setDreamVideos(processedDreams);
-      }
-      
-      // Fallback to local demo data if API fails or returns no data
-      console.warn('Backend API returned no data, using local fallback data');
+        console.log('Loaded dreams from API:', processedDreams.length);
+      } else {
+        // Fallback to local demo data if API fails or returns no data
+        console.warn('Backend API returned no data, using local fallback data');
       const fallbackDemoVideos = [
           {
             id: 'demo-1',
@@ -394,6 +394,7 @@ export default function Gallery() {
         ];
         console.log('Setting fallback demo videos:', fallbackDemoVideos);
         setDreamVideos(fallbackDemoVideos);
+      }
     } catch (error) {
       console.error('Error fetching dreams:', error);
       toast.error("Failed to load dream videos from server, using demo data");
@@ -513,7 +514,8 @@ export default function Gallery() {
     const video = dreamVideos.find(v => v.id === videoId);
     
     // Check if this is a private video that requires verification
-    if (video && video.requiresVerification && !video.is_public) {
+    if (video && video.is_public === false && !video.isOwner && !hasPrivateAccess) {
+      toast.error("This is a private dream. Email verification required to access.");
       setShowVerificationModal(true);
       return;
     }
@@ -941,10 +943,30 @@ export default function Gallery() {
                     <Sparkles className="w-3 h-3" />
                     Dream Video
                   </div>
-                  {video.is_public === false && video.isOwner && (
-                    <div className="absolute top-2 left-2 bg-orange-500/80 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                      <EyeOff className="w-3 h-3" />
-                      Private
+                  {video.is_public === false && (
+                    <div className={`absolute top-2 left-2 text-white text-xs px-2 py-1 rounded flex items-center gap-1 ${
+                      video.isOwner 
+                        ? 'bg-orange-500/80' 
+                        : hasPrivateAccess 
+                          ? 'bg-green-500/80' 
+                          : 'bg-red-500/80'
+                    }`}>
+                      {video.isOwner ? (
+                        <>
+                          <EyeOff className="w-3 h-3" />
+                          Private
+                        </>
+                      ) : hasPrivateAccess ? (
+                        <>
+                          <Key className="w-3 h-3" />
+                          Unlocked
+                        </>
+                      ) : (
+                        <>
+                          <Lock className="w-3 h-3" />
+                          Locked
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

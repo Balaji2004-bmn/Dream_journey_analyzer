@@ -8,6 +8,8 @@ const dreamSchema = Joi.object({
   analysis: Joi.object().optional(),
   thumbnail_url: Joi.string().uri().optional(),
   video_url: Joi.string().uri().optional(),
+  video_prompt: Joi.string().max(1000).optional(),
+  video_duration: Joi.number().min(1).max(60).optional(),
   is_public: Joi.boolean().optional()
 });
 

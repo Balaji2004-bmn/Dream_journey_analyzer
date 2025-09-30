@@ -674,12 +674,6 @@ export default function DreamAnalyzer() {
                     </>
                   )}
                 </CosmicButton>
-                {analysis && (
-                  <Button onClick={saveDream} className="flex-1">
-                    <Save className="w-5 h-5 mr-2" />
-                    Save Dream
-                  </Button>
-                )}
               </div>
             </div>
           </DreamCardContent>

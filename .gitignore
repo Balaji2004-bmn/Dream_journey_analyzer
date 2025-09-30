@@ -1,0 +1,84 @@
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Coverage
+coverage/
+*.lcov
+
+# Builds and output
+build/
+dist/
+.out/
+.next/
+.nuxt/
+.astro/
+.svelte-kit/
+.hugo_cache/
+public/build/
+.vite/
+**/.cache/
+.cache/
+.temp/
+temp/
+tmp/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Lint caches
+.eslintcache
+.stylelintcache
+
+# Turbo / pnpm stores
+.turbo/
+.pnpm-store/
+
+# Env files (keep examples)
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Local config
+*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+BACKEND_ENV_CONTENT.txt
+
+# Uploads and generated media
+uploads/
+public/uploads/
+backend/uploads/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+.Trashes
+
+# Swap/backup
+*.swp
+*.swo
+*.orig

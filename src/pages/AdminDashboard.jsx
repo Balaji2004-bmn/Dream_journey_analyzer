@@ -93,7 +93,7 @@ export default function AdminDashboard() {
     setIsRefreshing(true);
     setDashboardError(null);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
       const token = session?.access_token || 'demo-admin-token';
 
       // Only fetch endpoints that actually exist
@@ -139,7 +139,7 @@ export default function AdminDashboard() {
 
   const handleUserAction = async (userId, action, data = {}) => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
       const token = session?.access_token || 'demo-admin-token';
 
       let endpoint = '';
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
 
   const handleContentReview = async (flagId, action, reason) => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
       const token = session?.access_token || 'demo-admin-token';
 
       const response = await fetch(`${backendUrl}/api/admin/content/dreams/flagged/${flagId}/review`, {

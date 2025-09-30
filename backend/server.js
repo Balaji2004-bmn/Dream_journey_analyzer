@@ -17,8 +17,6 @@ const mediaRoutes = require('./routes/media');
 const speechRoutes = require('./routes/speech');
 const emailRoutes = require('./routes/email');
 const smsRoutes = require('./routes/sms');
-const adminRoutes = require('./routes/admin');
-const adminContentRoutes = require('./routes/adminContent');
 const helpCenterRoutes = require('./routes/helpCenter');
 
 // Import middleware
@@ -100,8 +98,6 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/speech', speechRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/sms', smsRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/admin/content', adminContentRoutes);
 app.use('/api/help', helpCenterRoutes);
 
 // Static file serving for uploads

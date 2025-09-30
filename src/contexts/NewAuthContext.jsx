@@ -18,15 +18,21 @@ export const NewAuthProvider = ({ children }) => {
         setSession(currentSession);
 
         // Re-check admin status on bootstrap
-        const res = await fetch(`${backendUrl}/auth/verify`, { 
-          headers: { 'Authorization': `Bearer ${currentSession.access_token}` }
-        });
-        if(res.ok) {
+        try {
+          const res = await fetch(`${backendUrl}/api/auth/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: currentSession.access_token })
+          });
+          if (res.ok) {
             const data = await res.json();
             if (data.isAdmin) {
-                currentSession.isAdmin = true;
-                setSession({...currentSession});
+              currentSession.isAdmin = true;
+              setSession({ ...currentSession });
             }
+          }
+        } catch (_) {
+          // ignore bootstrap errors
         }
       }
       setLoading(false);
@@ -74,8 +80,9 @@ export const NewAuthProvider = ({ children }) => {
 
     // Post-signin: verify admin status with our backend
     if (data.session) {
-      const { ok, data: verifyData } = await apiFetch('/auth/verify', {
-        headers: { 'Authorization': `Bearer ${data.session.access_token}` }
+      const { ok, data: verifyData } = await apiFetch('/api/auth/verify', {
+        method: 'POST',
+        body: JSON.stringify({ token: data.session.access_token })
       });
 
       if (ok && verifyData.isAdmin) {
@@ -95,7 +102,7 @@ export const NewAuthProvider = ({ children }) => {
   };
 
   const sendVerificationEmail = async (email) => {
-    const { ok, data } = await apiFetch('/email/send-confirmation', { method: 'POST', body: JSON.stringify({ email }) });
+    const { ok, data } = await apiFetch('/api/email/send-confirmation', { method: 'POST', body: JSON.stringify({ email }) });
     return { success: ok, message: data.message || (ok ? 'Email sent!' : 'Failed to send email.') };
   };
 
@@ -112,8 +119,9 @@ export const NewAuthProvider = ({ children }) => {
     }
 
     try {
-      const { ok, data } = await apiFetch('/auth/verify', {
-        headers: { 'Authorization': `Bearer ${session.access_token}` }
+      const { ok, data } = await apiFetch('/api/auth/verify', {
+        method: 'POST',
+        body: JSON.stringify({ token: session.access_token })
       });
 
       if (ok && data.isAdmin) {
