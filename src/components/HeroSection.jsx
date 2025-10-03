@@ -19,7 +19,7 @@ export default function HeroSection() {
       />
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900/80 dark:via-purple-900/80 dark:to-indigo-900/80 opacity-80" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900/80 dark:via-blue-900/80 dark:to-emerald-900/80 opacity-80" />
       
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
@@ -54,23 +54,25 @@ export default function HeroSection() {
           </div>
           
           <div className="pt-8">
-            <Button 
+            <Button
               onClick={scrollToAnalyzer}
-              variant="cosmic" 
+              variant="cosmic"
               size="lg"
-              className="text-lg px-8 py-6 h-auto"
+              className="text-lg px-8 py-6 h-auto animate-dream-shimmer bg-gradient-to-r from-primary via-accent to-secondary hover:from-primary/80 hover:via-accent/80 hover:to-secondary/80 transition-all duration-300"
             >
-              <Sparkles className="w-6 h-6 mr-3" />
+              <Sparkles className="w-6 h-6 mr-3 animate-gentle-float" />
               Start Your Dream Journey
             </Button>
           </div>
         </div>
         
-        {/* Static Elements */}
-        <div className="absolute top-20 left-10 w-4 h-4 bg-primary-glow/60 rounded-full" />
-        <div className="absolute top-40 right-20 w-3 h-3 bg-accent/70 rounded-full" />
-        <div className="absolute bottom-40 left-20 w-5 h-5 bg-secondary/50 rounded-full" />
-        <div className="absolute bottom-20 right-10 w-2 h-2 bg-primary-glow/80 rounded-full" />
+        {/* Animated Mystical Elements */}
+        <div className="absolute top-20 left-10 w-4 h-4 bg-primary-glow/60 rounded-full animate-mystical-float" />
+        <div className="absolute top-40 right-20 w-3 h-3 bg-accent/70 rounded-full animate-ethereal-glow" />
+        <div className="absolute bottom-40 left-20 w-5 h-5 bg-secondary/50 rounded-full animate-gentle-float" />
+        <div className="absolute bottom-20 right-10 w-2 h-2 bg-primary-glow/80 rounded-full animate-mystical-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-accent/50 rounded-full animate-ethereal-glow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/3 right-1/3 w-3 h-3 bg-secondary/40 rounded-full animate-gentle-float" style={{ animationDelay: '0.5s' }} />
       </div>
     </div>
   );

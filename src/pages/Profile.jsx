@@ -125,23 +125,46 @@ export default function Profile() {
   ];
 
   const handleSave = async () => {
-    setIsEditing(false);
-    
-    if (!user) return;
-    
-    const { error } = await supabase.auth.updateUser({
-      data: {
-        display_name: profile.name,
-        phone: profile.phone,
-        location: profile.location,
-        bio: profile.bio
-      }
-    });
+    if (!user) {
+      toast.error("Please sign in to update your profile.");
+      return;
+    }
 
-    if (error) {
-      toast.error("Failed to update profile: " + error.message);
-    } else {
+    try {
+      // Ensure we have an active Supabase session before updating metadata
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("No active session. Please sign in again.");
+        return;
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          display_name: profile.name,
+          phone: profile.phone,
+          location: profile.location,
+          bio: profile.bio,
+        },
+      });
+      if (error) throw error;
+
+      // Refresh user data from Supabase so UI reflects latest metadata
+      const { data: userRes, error: getErr } = await supabase.auth.getUser();
+      if (getErr) throw getErr;
+
+      const um = userRes?.user?.user_metadata || {};
+      setProfile((prev) => ({
+        ...prev,
+        name: um.display_name || prev.name,
+        phone: um.phone ?? prev.phone,
+        location: um.location ?? prev.location,
+        bio: um.bio ?? prev.bio,
+      }));
+
+      setIsEditing(false);
       toast.success("Profile updated successfully!");
+    } catch (e) {
+      toast.error("Failed to update profile: " + (e?.message || "Unknown error"));
     }
   };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
   Brain, 
   Images, 
@@ -17,6 +18,7 @@ import {
   Shield,
   HelpCircle
 } from "lucide-react";
+import { Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -40,10 +42,14 @@ export default function Navigation() {
     { path: "/", label: "Dream Analyzer", icon: Brain },
     { path: "/gallery", label: "Gallery", icon: Images },
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/subscription", label: "Subscription", icon: Crown },
     { path: "/about", label: "About", icon: Info },
     { path: "/help", label: "Help Center", icon: HelpCircle },
     { path: "/profile", label: "Profile", icon: User },
-    ...(isAdmin ? [{ path: "/admin", label: "Admin", icon: Shield }] : []),
+    ...(isAdmin ? [
+      { path: "/admin", label: "Admin", icon: Shield },
+      { path: "/mock-payment", label: "Mock Payment", icon: Crown }
+    ] : []),
   ];
 
   const isActive = (path) => {

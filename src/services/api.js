@@ -2,14 +2,12 @@ import axios from 'axios';
 import { supabase } from '@/integrations/supabase/client';
 
 // Create axios instance for backend API
+const root = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001').replace(/\/+$/, '');
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001',
+  baseURL: `${root}/api`,
   timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
-
 // Request interceptor to add auth token
 api.interceptors.request.use(
   async (config) => {

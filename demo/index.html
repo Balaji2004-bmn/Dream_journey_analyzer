@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adaptive Dream Journey Analyzer - Demo</title>
+  <meta name="description" content="Demo: Upgrade to PRO via UPI QR + screenshot verification, then generate placeholder dreams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root { --bg: #0b1020; --panel: #121933; --text: #e7ecff; --muted: #9aa6d1; --accent: #6aa8ff; --success: #38d39f; --warn: #ffc857; --danger: #ff6b6b; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: linear-gradient(180deg, #0b1020 0%, #0e1330 100%); color: var(--text); }
+    .wrap { max-width: 980px; margin: 32px auto; padding: 0 16px; }
+    header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .brand { font-weight: 700; letter-spacing: 0.4px; }
+    .card { background: var(--panel); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; box-shadow: 0 10px 24px rgba(0,0,0,0.25); }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .muted { color: var(--muted); font-size: 14px; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .btn { background: #1b2554; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: transform 0.05s ease, background 0.2s ease; }
+    .btn:hover { background: #24307a; }
+    .btn:active { transform: translateY(1px); }
+    .btn-accent { background: var(--accent); color: #001231; border: none; }
+    .btn-success { background: var(--success); color: #012016; border: none; }
+    .btn-warn { background: var(--warn); color: #221a00; border: none; }
+    .btn-danger { background: var(--danger); color: #2b0000; border: none; }
+    input[type="text"], input[type="number"], textarea { width: 100%; padding: 10px 12px; background: #0d1430; color: var(--text); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; outline: none; }
+    .qr-box { display: flex; gap: 18px; align-items: center; }
+    .qr { width: 220px; height: 220px; background: #0d1430; border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; display: grid; place-items: center; }
+    .tag { display: inline-flex; align-items: center; gap: 6px; background: #0e1736; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+    .kpi { font-size: 26px; font-weight: 700; margin: 6px 0; }
+    .small { font-size: 12px; color: var(--muted); }
+    .spacer { height: 8px; }
+    .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+    .output { white-space: pre-wrap; background: #0d1430; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 12px; min-height: 68px; }
+    .divider { height: 1px; background: rgba(255,255,255,0.08); margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="brand">Adaptive Dream Journey Analyzer — Demo</div>
+        <div class="muted small">Local demo using UPI QR + screenshot verification (no admin approval)</div>
+      </div>
+      <div class="row">
+        <span class="tag">User: <span id="userIdTag"></span></span>
+        <button id="changeUserBtn" class="btn">Switch User</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <div class="row" style="justify-content: space-between; align-items: start;">
+          <div>
+            <div class="muted">Current Plan</div>
+            <div id="planKpi" class="kpi">FREE</div>
+            <div class="hint">Upgrade to PRO to generate dreams.</div>
+          </div>
+          <div class="row">
+            <button id="upgradeBtn" class="btn btn-accent">Upgrade to PRO</button>
+            <button id="generateBtn" class="btn btn-success" disabled>Generate Dream</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div id="dreamArea" style="display:none;">
+          <label class="muted" for="dreamInput">Describe your dream (optional)</label>
+          <textarea id="dreamInput" rows="3" placeholder="e.g., I was flying over a neon city at night..."></textarea>
+          <div class="spacer"></div>
+          <div id="dreamOutput" class="output"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="muted">Upgrade via UPI</div>
+        <div class="kpi">PRO Price: <span id="priceKpi"></span></div>
+        <div class="qr-box">
+          <div id="qr" class="qr">QR</div>
+          <div>
+            <div class="muted">UPI ID</div>
+            <div id="upiIdText" style="font-weight:600;">—</div>
+            <div class="spacer"></div>
+            <div class="muted small">Txn Note</div>
+            <div id="txnNoteText" class="small">—</div>
+            <div class="spacer"></div>
+            <div class="hint">1) Click "Upgrade to PRO" to generate UPI QR. 2) Pay via UPI app. 3) Upload payment screenshot below to auto-activate.</div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <input type="file" id="screenshotFile" accept="image/*" />
+          <button id="uploadBtn" class="btn btn-warn">Upload Screenshot</button>
+        </div>
+        <div id="uploadStatus" class="hint"></div>
+      </section>
+    </div>
+
+  </div>
+
+  <script>
+    // ====== Demo Configuration ======
+    const API_BASE = 'http://localhost:4000'; // demo backend
+    const UPI_ID = '6361698728@slc'; // Provided by user
+    const PRO_PRICE = 199; // INR - demo price
+    const UPI_NAME = 'Adaptive Dream Journey';
+
+    // ====== State / Storage ======
+    function getUserId() {
+      let id = localStorage.getItem('demo_userId');
+      if (!id) {
+        id = 'user-' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem('demo_userId', id);
+      }
+      return id;
+    }
+    function setUserId(id) {
+      localStorage.setItem('demo_userId', id);
+    }
+    function getPlan() {
+      return localStorage.getItem('demo_plan') || 'FREE';
+    }
+    function setPlan(p) {
+      localStorage.setItem('demo_plan', p);
+    }
+    function setLastTxnNote(tn) {
+      localStorage.setItem('demo_txnNote', tn);
+    }
+    function getLastTxnNote() {
+      return localStorage.getItem('demo_txnNote') || '';
+    }
+
+    // ====== UI Elements ======
+    const userIdTag = document.getElementById('userIdTag');
+    const changeUserBtn = document.getElementById('changeUserBtn');
+    const planKpi = document.getElementById('planKpi');
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    const generateBtn = document.getElementById('generateBtn');
+    const dreamArea = document.getElementById('dreamArea');
+    const dreamInput = document.getElementById('dreamInput');
+    const dreamOutput = document.getElementById('dreamOutput');
+    const priceKpi = document.getElementById('priceKpi');
+    const upiIdText = document.getElementById('upiIdText');
+    const txnNoteText = document.getElementById('txnNoteText');
+    const qrBox = document.getElementById('qr');
+    const screenshotFile = document.getElementById('screenshotFile');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    let qrInstance = null;
+
+    function setStatusFromStorage() {
+      userIdTag.textContent = getUserId();
+      planKpi.textContent = getPlan();
+      const isPro = getPlan() === 'PRO';
+      generateBtn.disabled = !isPro;
+      dreamArea.style.display = isPro ? 'block' : 'none';
+    }
+
+    function resetQR() {
+      qrBox.innerHTML = '';
+      qrInstance = new QRCode(qrBox, { width: 210, height: 210 });
+    }
+
+    function buildUpiUrl({ pa, pn, am, tn }) {
+      const params = new URLSearchParams();
+      params.set('pa', pa);
+      params.set('pn', pn);
+      params.set('am', String(am));
+      params.set('cu', 'INR');
+      if (tn) params.set('tn', tn);
+      return 'upi://pay?' + params.toString();
+    }
+
+    function generateTxnNote(userId) {
+      return `ADJ_${userId}_${Date.now()}`;
+    }
+
+    function renderQR() {
+      const userId = getUserId();
+      const txnNote = generateTxnNote(userId);
+      setLastTxnNote(txnNote);
+
+      const upiUrl = buildUpiUrl({ pa: UPI_ID, pn: UPI_NAME, am: PRO_PRICE, tn: txnNote });
+      resetQR();
+      // qrcodejs auto-renders into the container after calling makeCode
+      qrInstance.makeCode(upiUrl);
+
+      priceKpi.textContent = `₹${PRO_PRICE}`;
+      upiIdText.textContent = UPI_ID;
+      txnNoteText.textContent = txnNote;
+    }
+
+    async function uploadScreenshot() {
+      const file = screenshotFile.files[0];
+      if (!file) {
+        alert('Please select a payment screenshot first.');
+        return;
+      }
+      const userId = getUserId();
+      const form = new FormData();
+      form.append('userId', userId);
+      form.append('plan', 'PRO');
+      form.append('amount', String(PRO_PRICE));
+      form.append('txnNote', getLastTxnNote() || generateTxnNote(userId));
+      form.append('screenshot', file);
+
+      uploadStatus.textContent = 'Uploading screenshot...';
+      try {
+        const res = await fetch(`${API_BASE}/upload-screenshot`, { method: 'POST', body: form });
+        if (!res.ok) throw new Error('Upload failed');
+        const json = await res.json();
+        setPlan('PRO');
+        setStatusFromStorage();
+        uploadStatus.textContent = `Uploaded ✓ — ${json.upload?.url || ''}`;
+        alert('✅ Payment verified, plan upgraded to PRO. You can now generate your dreams!');
+      } catch (e) {
+        console.error(e);
+        uploadStatus.textContent = 'Upload failed. Please try again.';
+        alert('Upload failed. Make sure the demo server is running on port 4000.');
+      }
+    }
+
+    function generateDream() {
+      const prompts = [
+        'You drift through a neon skyline as gentle synths echo below, finding courage in the unknown.',
+        'A calm ocean reflects twin moons while you collect glowing shells that whisper kind words.',
+        'A library of floating books opens to a page where your future self smiles and nods in approval.',
+        'You plant a star in the soil and watch constellations grow into a path lined with hope.',
+        'A friendly robot hands you a key that unlocks a door labeled “Possibility.”'
+      ];
+      const user = getUserId();
+      const base = dreamInput.value && dreamInput.value.trim().length > 0 ? dreamInput.value.trim() : prompts[Math.floor(Math.random()*prompts.length)];
+      const out = `Dream for ${user}:\n\n${base}\n\nMeaning: Your subconscious is exploring transformation and self-confidence. Focus on small steps that light the path forward.`;
+      dreamOutput.textContent = out;
+    }
+
+    // ====== Event Wiring ======
+    changeUserBtn.addEventListener('click', () => {
+      const newId = prompt('Enter a user ID to switch (alphanumeric only):', 'user-' + Math.random().toString(36).slice(2,6));
+      if (!newId) return;
+      const cleaned = newId.replace(/[^a-zA-Z0-9_-]/g, '_');
+      setUserId(cleaned);
+      setPlan('FREE');
+      setStatusFromStorage();
+      qrBox.innerHTML = 'QR';
+      txnNoteText.textContent = '—';
+    });
+
+    upgradeBtn.addEventListener('click', () => {
+      renderQR();
+    });
+
+    uploadBtn.addEventListener('click', uploadScreenshot);
+    generateBtn.addEventListener('click', generateDream);
+
+    // ====== Init ======
+    setStatusFromStorage();
+    priceKpi.textContent = `₹${PRO_PRICE}`;
+    upiIdText.textContent = UPI_ID;
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 // Import routes
 const dreamRoutes = require('./routes/dreams');
@@ -18,6 +18,13 @@ const speechRoutes = require('./routes/speech');
 const emailRoutes = require('./routes/email');
 const smsRoutes = require('./routes/sms');
 const helpCenterRoutes = require('./routes/helpCenter');
+const paymentsRoutes = require('./routes/payments');
+const mockPaymentRoutes = require('./routes/mockPayment');
+const googleVideoRoutes = require('./routes/googleVideo');
+const assistantRoutes = require('./routes/assistant');
+// Admin routes (mounted here so admin dashboard can work without a separate admin server)
+const adminRoutes = require('./routes/admin');
+const adminContentRoutes = require('./routes/adminContent');
 
 // Import middleware
 const rateLimiter = require('./middleware/rateLimiter');
@@ -45,7 +52,7 @@ app.use(cors({
     return callback(new Error('CORS not allowed'), false);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -99,6 +106,13 @@ app.use('/api/speech', speechRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/sms', smsRoutes);
 app.use('/api/help', helpCenterRoutes);
+app.use('/api', paymentsRoutes);
+app.use('/api', mockPaymentRoutes);
+app.use('/api', googleVideoRoutes);
+app.use('/api/assistant', assistantRoutes);
+// Mount admin APIs on the main backend as well
+app.use('/api/admin', adminRoutes);
+app.use('/api/admin/content', adminContentRoutes);
 
 // Static file serving for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

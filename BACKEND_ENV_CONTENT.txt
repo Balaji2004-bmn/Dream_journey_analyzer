@@ -1,0 +1,43 @@
+# Backend Environment Variables
+# Copy this content to backend/.env file
+
+# Server Configuration
+PORT=3001
+ADMIN_PORT=3002
+NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
+
+# Supabase Configuration
+SUPABASE_URL=https://lfrdehertkpypwuydcgn.supabase.co
+SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmcmRlaGVydGtweXB3dXlkY2duIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3NDgyMzYsImV4cCI6MjA3MzMyNDIzNn0.XZutxpzxMPXH1Npqs6t76wL_7GLvlA_44yNKmOvbOlc
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmcmRlaGVydGtweXB3dXlkY2duIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Nzc0ODIzNiwiZXhwIjoyMDczMzI0MjM2fQ.C6n4980E_FXAQRlQ6uRBP2fv4HEPKam9qzHP2wskokY
+
+# Admin Configuration (comma-separated emails)
+ADMIN_EMAILS=bmn636169@gmail.com
+
+# OpenAI Configuration
+OPENAI_API_KEY=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
+
+# Email Configuration (Gmail App Password required)
+EMAIL_USER=b80003365@gmail.com
+EMAIL_PASSWORD=njqr mhxp usgh zokw
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_here_change_this_in_production
+
+# Rate Limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+# Logging
+LOG_LEVEL=info
+
+# Video providers (optional)
+RUNWAY_API_KEY=your_runway_key
+PIKA_API_KEY=
+KAIBER_API_KEY=
+
+# SMS (optional Twilio for real SMS codes)
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_FROM=

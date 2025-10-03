@@ -2,167 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dream Journey Analyzer Design System - Cosmic Theme */
+/* Professional Theme: Slate Gray + Blue Accent - High Contrast */
 
 @layer base {
   :root {
-    /* Light Mode - Cosmic Light Theme */
-    --background: 240 20% 98%;
-    --foreground: 240 15% 15%;
+    /* Light Mode - Clean white with slate text */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
-    --card: 240 20% 96%;
-    --card-foreground: 240 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 240 20% 96%;
-    --popover-foreground: 240 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Cosmic primary - Deep purple */
-    --primary: 270 60% 45%;
-    --primary-foreground: 240 20% 95%;
-    --primary-glow: 270 80% 65%;
+    /* Professional slate blue primary with good contrast */
+    --primary: 217 91% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 20% 65%;
+    --secondary-foreground: 222 47% 11%;
+    --accent: 217 91% 40%;
+    --accent-foreground: 0 0% 100%;
 
-    /* Dream secondary - Soft teal */
-    --secondary: 190 70% 35%;
-    --secondary-foreground: 240 20% 95%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Muted cosmic tones - Light */
-    --muted: 240 10% 88%;
-    --muted-foreground: 240 15% 45%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Cosmic accent - Pink nebula */
-    --accent: 320 60% 50%;
-    --accent-foreground: 240 20% 95%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 40%;
 
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 240 20% 95%;
+    --radius: 0.5rem;
 
-    --border: 240 10% 85%;
-    --input: 240 10% 92%;
-    --ring: 270 60% 45%;
+    /* Subtle gradients for depth */
+    --gradient-cosmic: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 98%));
+    --gradient-dream: linear-gradient(135deg, hsl(217 91% 40%), hsl(217 91% 50%));
+    --gradient-nebula: linear-gradient(180deg, hsl(217 91% 95%), hsl(0 0% 100%));
+    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(210 40% 99%));
 
-    --radius: 1rem;
+    /* Clean shadows */
+    --shadow-cosmic: 0 4px 12px hsl(217 91% 40% / 0.08);
+    --shadow-dream: 0 2px 8px hsl(217 91% 40% / 0.06);
+    --glow-primary: 0 0 0 1px hsl(217 91% 40% / 0.1);
+    --glow-accent: 0 0 0 1px hsl(217 91% 40% / 0.15);
 
-    /* Light mode gradients */
-    --gradient-cosmic: linear-gradient(135deg, hsl(240 30% 95%), hsl(270 40% 90%), hsl(320 30% 92%));
-    --gradient-dream: linear-gradient(45deg, hsl(270 60% 45%), hsl(190 70% 35%));
-    --gradient-nebula: linear-gradient(180deg, hsl(320 60% 50%), hsl(270 80% 60%));
-    --gradient-card: linear-gradient(135deg, hsl(240 20% 96% / 0.8), hsl(270 15% 94% / 0.6));
+    /* Smooth transitions for hover effects */
+    --transition-smooth: all 0.2s ease;
+    --transition-cosmic: all 0.3s ease;
+    --transition-gentle: all 0.15s ease;
 
-    /* Light mode shadows and glows */
-    --shadow-cosmic: 0 8px 32px hsl(270 60% 45% / 0.1);
-    --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.15);
-    --glow-primary: 0 0 20px hsl(270 60% 45% / 0.3);
-    --glow-accent: 0 0 15px hsl(320 60% 50% / 0.25);
-
-    /* Professional animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-cosmic: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --transition-gentle: all 0.2s ease-out;
-
-    /* Sidebar colors - Light mode */
-    --sidebar-background: 240 20% 96%;
-    --sidebar-foreground: 240 15% 15%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 88%;
-    --sidebar-accent-foreground: 240 15% 15%;
-    --sidebar-border: 240 10% 85%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 217 91% 40%;
   }
 
   .dark {
-    /* Dark Mode - Original Cosmic Dark Theme */
-    --background: 240 10% 8%;
-    --foreground: 240 20% 95%;
+    /* Dark Mode - Deep slate with high contrast white text */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 240 15% 12%;
-    --card-foreground: 240 20% 95%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 240 15% 12%;
-    --popover-foreground: 240 20% 95%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Cosmic primary - Deep purple */
-    --primary: 270 60% 45%;
-    --primary-foreground: 240 20% 95%;
-    --primary-glow: 270 80% 65%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 30%;
+    --secondary-foreground: 210 40% 98%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 222 47% 11%;
 
-    /* Dream secondary - Soft teal */
-    --secondary: 190 70% 35%;
-    --secondary-foreground: 240 20% 95%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    /* Muted cosmic tones - Dark */
-    --muted: 240 15% 18%;
-    --muted-foreground: 240 10% 65%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
 
-    /* Cosmic accent - Pink nebula */
-    --accent: 320 60% 50%;
-    --accent-foreground: 240 20% 95%;
+    --border: 217 33% 24%;
+    --input: 217 33% 20%;
+    --ring: 217 91% 60%;
 
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 240 20% 95%;
+    --gradient-cosmic: linear-gradient(135deg, hsl(222 47% 11%), hsl(217 33% 17%));
+    --gradient-dream: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
+    --gradient-nebula: linear-gradient(180deg, hsl(217 33% 20%), hsl(222 47% 11%));
+    --gradient-card: linear-gradient(to bottom, hsl(217 33% 17%), hsl(217 33% 15%));
 
-    --border: 240 15% 20%;
-    --input: 240 15% 15%;
-    --ring: 270 60% 45%;
+    --shadow-cosmic: 0 4px 12px hsl(0 0% 0% / 0.3);
+    --shadow-dream: 0 2px 8px hsl(0 0% 0% / 0.2);
+    --glow-primary: 0 0 0 1px hsl(217 91% 60% / 0.3);
+    --glow-accent: 0 0 0 1px hsl(217 91% 60% / 0.4);
 
-    /* Dark mode gradients */
-    --gradient-cosmic: linear-gradient(135deg, hsl(240 60% 15%), hsl(270 60% 25%), hsl(320 50% 30%));
-    --gradient-dream: linear-gradient(45deg, hsl(270 60% 45%), hsl(190 70% 35%));
-    --gradient-nebula: linear-gradient(180deg, hsl(320 60% 50%), hsl(270 80% 60%));
-    --gradient-card: linear-gradient(135deg, hsl(240 15% 12% / 0.8), hsl(270 20% 15% / 0.6));
-
-    /* Dark mode shadows and glows */
-    --shadow-cosmic: 0 8px 32px hsl(270 60% 15% / 0.3);
-    --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.2);
-    --glow-primary: 0 0 20px hsl(270 60% 45% / 0.5);
-    --glow-accent: 0 0 15px hsl(320 60% 50% / 0.4);
-
-    /* Sidebar colors - Dark mode */
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 222 47% 11%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 24%;
+    --sidebar-ring: 217 91% 60%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
 
   body {
     @apply bg-background text-foreground;
+    transition: var(--transition-smooth);
   }
 
-  /* Professional animations - removing shaking effects */
-  .animate-gentle-pulse {
-    animation: gentle-pulse 2s ease-in-out infinite;
+  /* Keep hover effects and interactive animations only */
+  button, a, [role="button"] {
+    transition: var(--transition-smooth);
   }
 
-  .animate-soft-glow {
-    animation: soft-glow 3s ease-in-out infinite alternate;
+  button:hover, a:hover, [role="button"]:hover {
+    transform: translateY(-1px);
   }
 
-  @keyframes gentle-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+  /* Disable excessive animations but keep spin for loaders */
+  .animate-gentle-pulse,
+  .animate-soft-glow,
+  .animate-gentle-float,
+  .animate-mystical-float,
+  .animate-ethereal-glow,
+  .animate-dream-shimmer,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
   }
 
-  @keyframes soft-glow {
-    0% { box-shadow: 0 0 5px hsl(var(--primary) / 0.3); }
-    100% { box-shadow: 0 0 15px hsl(var(--primary) / 0.5); }
+  /* Keep spin for loading indicators */
+  .animate-spin {
+    animation: spin 1s linear infinite;
   }
 
-  @keyframes gentle-float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(1deg); }
-  }
-
-  .animate-gentle-float {
-    animation: gentle-float 4s ease-in-out infinite;
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }

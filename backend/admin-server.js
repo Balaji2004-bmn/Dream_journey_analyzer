@@ -5,19 +5,17 @@ const dotenv = require('dotenv');
 const path = require('path');
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 // Import admin routes
 const adminRoutes = require('./routes/admin');
 const adminContentRoutes = require('./routes/adminContent');
-
-// Import middleware
 const rateLimiter = require('./middleware/rateLimiter');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
 
 const app = express();
-const ADMIN_PORT = process.env.ADMIN_PORT || 3002;
+const ADMIN_PORT = process.env.ADMIN_PORT || 5174;
 
 // Security middleware
 app.use(helmet());
@@ -37,7 +35,7 @@ app.use(cors({
     return callback(new Error('CORS not allowed'), false);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

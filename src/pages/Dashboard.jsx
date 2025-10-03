@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from "@/components/ui/dream-card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import {
   Target
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+ 
 
 // TypeScript interfaces removed - using JavaScript objects
 
@@ -26,6 +27,8 @@ export default function Dashboard() {
   const { user, loading } = useAuth();
   const [timeRange, setTimeRange] = useState("week");
   const navigate = useNavigate();
+
+  
 
   const getStatsForTimeRange = (range) => {
     switch (range) {
@@ -181,14 +184,14 @@ export default function Dashboard() {
                 Track your dream journey and insights
               </p>
             </div>
-            <div className="flex gap-2">
-              {["week", "month", "year"].map((range) => (
+
+          <div className="flex gap-2">
+            {["week", "month", "year"].map((range) => (
                 <Button
                   key={range}
                   variant={timeRange === range ? "cosmic" : "ghost"}
                   size="sm"
                   onClick={() => setTimeRange(range)}
-                  className="capitalize"
                 >
                   {range}
                 </Button>

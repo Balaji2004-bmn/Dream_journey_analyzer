@@ -18,6 +18,9 @@ export default function SimpleAuth() {
   const [activeTab, setActiveTab] = useState('signin');
   const [showVerification, setShowVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
+  const hcaptchaSiteKey = import.meta.env.VITE_HCAPTCHA_SITEKEY || '';
+  const [captchaTokenSignIn, setCaptchaTokenSignIn] = useState('');
+  const [captchaTokenSignUp, setCaptchaTokenSignUp] = useState('');
   
   // Form states
   const [signInForm, setSignInForm] = useState({ email: '', password: '' });
@@ -35,13 +38,30 @@ export default function SimpleAuth() {
     return <Navigate to={isAdminUser ? '/admin' : '/'} replace />;
   }
 
+  // hCaptcha callbacks
+  useEffect(() => {
+    if (hcaptchaSiteKey) {
+      window.onHCaptchaSimpleSignIn = (token) => setCaptchaTokenSignIn(token);
+      window.onHCaptchaSimpleSignUp = (token) => setCaptchaTokenSignUp(token);
+    }
+    return () => {
+      if (hcaptchaSiteKey) {
+        try { delete window.onHCaptchaSimpleSignIn; delete window.onHCaptchaSimpleSignUp; } catch (_) {}
+      }
+    };
+  }, [hcaptchaSiteKey]);
+
   const handleSignIn = async (e) => {
     e.preventDefault();
     setLoading(true);
     setSignInError('');
 
     try {
-      const { data, error } = await signIn(signInForm.email, signInForm.password);
+      if (hcaptchaSiteKey && !captchaTokenSignIn) {
+        setSignInError('Please complete the hCaptcha challenge.');
+        return;
+      }
+      const { data, error } = await signIn(signInForm.email, signInForm.password, captchaTokenSignIn);
       
       if (error) {
         if (error.needsVerification) {
@@ -75,7 +95,12 @@ export default function SimpleAuth() {
     }
 
     try {
-      const { data, error, needsVerification } = await signUp(signUpForm.email, signUpForm.password);
+      if (hcaptchaSiteKey && !captchaTokenSignUp) {
+        setSignUpError('Please complete the hCaptcha challenge.');
+        setLoading(false);
+        return;
+      }
+      const { data, error, needsVerification } = await signUp(signUpForm.email, signUpForm.password, captchaTokenSignUp);
       
       if (error) {
         setSignUpError(error.message);
@@ -210,7 +235,7 @@ export default function SimpleAuth() {
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="signin" className="space-y-4">
+            <TabsContent value={"signin"} className="space-y-4">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
                   <Label htmlFor="signin-email">Email</Label>
@@ -242,6 +267,11 @@ export default function SimpleAuth() {
                   </Alert>
                 )}
 
+                {hcaptchaSiteKey && (
+                  <div className="mt-2">
+                    <div className="h-captcha" data-sitekey={hcaptchaSiteKey} data-callback="onHCaptchaSimpleSignIn"></div>
+                  </div>
+                )}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lock className="w-4 h-4 mr-2" />}
                   Sign In
@@ -253,7 +283,7 @@ export default function SimpleAuth() {
               </div>
             </TabsContent>
 
-            <TabsContent value="signup" className="space-y-4">
+            <TabsContent value={"signup"} className="space-y-4">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
                   <Label htmlFor="signup-email">Email</Label>
@@ -296,6 +326,11 @@ export default function SimpleAuth() {
                   </Alert>
                 )}
 
+                {hcaptchaSiteKey && (
+                  <div className="mt-2">
+                    <div className="h-captcha" data-sitekey={hcaptchaSiteKey} data-callback="onHCaptchaSimpleSignUp"></div>
+                  </div>
+                )}
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <User className="w-4 h-4 mr-2" />}
                   Create Account

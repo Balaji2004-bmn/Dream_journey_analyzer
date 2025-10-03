@@ -4,6 +4,7 @@ const { validateDreamAnalysis } = require('../middleware/validation');
 const apiClient = require('../utils/apiClient');
 const { authenticateUser } = require('../middleware/auth');
 const logger = require('../utils/logger');
+const { createClient } = require('@supabase/supabase-js');
 
 const router = express.Router();
 
@@ -13,6 +14,35 @@ const openai = new OpenAI({
 });
 
 const NLP_URL = process.env.NLP_URL || process.env.PYTHON_NLP_URL || 'http://localhost:5000';
+
+// Supabase service client for checking subscriptions
+const supabaseService = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
+async function hasActiveSubscription(userId) {
+  try {
+    const { data, error } = await supabaseService
+      .from('subscriptions')
+      .select('id, status, end_date')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .order('end_date', { ascending: false })
+      .limit(1);
+    if (error) return false;
+    if (!data || data.length === 0) return false;
+    const sub = data[0];
+    if (!sub) return false;
+    if (sub.end_date) {
+      const ends = new Date(sub.end_date).getTime();
+      if (!Number.isNaN(ends) && ends < Date.now()) return false;
+    }
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
 
 async function callNlpService(endpoint, payload) {
   if (!NLP_URL) return null;
@@ -269,7 +299,7 @@ router.post('/analyze-emotions', authenticateUser, async (req, res) => {
 // Generate dream video endpoint
 router.post('/generate-video', authenticateUser, async (req, res) => {
   try {
-    const { dreamText, emotions, keywords, dreamId } = req.body;
+    const { dreamText, emotions, keywords, dreamId, duration } = req.body;
 
     if (!dreamText) {
       return res.status(400).json({
@@ -303,6 +333,18 @@ router.post('/generate-video', authenticateUser, async (req, res) => {
 
     const videoPrompt = promptCompletion.choices[0].message.content;
 
+    // Enforce free-plan duration limit (>5s requires subscription)
+    const requestedDuration = parseInt(duration || 4, 10);
+    if (requestedDuration > 5) {
+      const allowed = await hasActiveSubscription(req.user.id);
+      if (!allowed) {
+        return res.status(402).json({
+          error: 'Upgrade Required',
+          message: 'Free plan supports up to 5 seconds videos. Upgrade for 10–15 seconds videos.'
+        });
+      }
+    }
+
     // For now, return a demo video URL and prompt
     // In production, this would integrate with RunwayML or similar service
     const videoData = {
@@ -311,7 +353,7 @@ router.post('/generate-video', authenticateUser, async (req, res) => {
       status: 'completed',
       url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
       thumbnail_url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop',
-      duration: 4,
+      duration: requestedDuration,
       created_at: new Date().toISOString(),
       dream_id: dreamId
     };
@@ -353,13 +395,25 @@ router.post('/store-video', authenticateUser, async (req, res) => {
       });
     }
 
+    // Enforce free-plan duration limit (>5s requires subscription)
+    const requestedDuration = parseInt(duration || 4, 10);
+    if (requestedDuration > 5) {
+      const allowed = await hasActiveSubscription(req.user.id);
+      if (!allowed) {
+        return res.status(402).json({
+          error: 'Upgrade Required',
+          message: 'Free plan supports up to 5 seconds videos. Upgrade for 10–15 seconds videos.'
+        });
+      }
+    }
+
     // This endpoint allows storing video data generated from the frontend
     const videoData = {
       dream_id: dreamId,
       video_url: videoUrl,
       thumbnail_url: thumbnailUrl,
       prompt: prompt,
-      duration: duration,
+      duration: requestedDuration,
       status: 'completed',
       created_at: new Date().toISOString()
     };

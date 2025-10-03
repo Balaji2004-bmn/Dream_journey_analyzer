@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { getRandomDemoVideo } from "@/utils/demoVideos";
 import { useVideoGeneration } from "@/hooks/useVideoGeneration";
+import EmailVerificationModal from "@/components/EmailVerificationModal";
 
 // TypeScript interfaces removed - using plain JavaScript objects
 
@@ -23,6 +24,7 @@ export default function DreamAnalyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [attachedPhoto, setAttachedPhoto] = useState(null);
   const [isPublic, setIsPublic] = useState(true); // Privacy setting
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [userPrivacySettings, setUserPrivacySettings] = useState({
     allowPrivateDreams: true,
     dreamsPublic: false
@@ -65,8 +67,13 @@ export default function DreamAnalyzer() {
       return;
     }
     
-    if (!user) {
+    if (!user || !session?.access_token) {
       toast.error("Please sign in to analyze your dreams");
+      return;
+    }
+    if (!user.email_confirmed_at) {
+      setShowVerifyModal(true);
+      toast.error("Please verify your email to continue");
       return;
     }
     
@@ -80,7 +87,7 @@ export default function DreamAnalyzer() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({ content: dreamText, title: dreamText.slice(0, 80) })
       });
@@ -136,6 +143,79 @@ export default function DreamAnalyzer() {
       console.error(error);
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  // Generate video using Google GenAI Veo 3 via backend
+  const handleGenerateVeoVideo = async () => {
+    try {
+      if (!user || !session?.access_token) {
+        toast.error("Please sign in to generate videos");
+        return;
+      }
+
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
+      // Prefer a cinematic storyline if available, else fall back to user text
+      const basePrompt = (analysis?.storyline || dreamText || '').trim();
+      if (!basePrompt) {
+        toast.error('Please enter your dream description first');
+        return;
+      }
+
+      // Include photo description in prompt if photo is attached
+      let enhancedPrompt = basePrompt;
+      if (attachedPhoto) {
+        const photoDescription = "Include the user's uploaded photo as a key visual element in the video, integrating it naturally into the dream sequence.";
+        enhancedPrompt = `${basePrompt}. ${photoDescription}`;
+      }
+
+      // Veo prompt must be <= 300 chars
+      const prompt = enhancedPrompt.length > 300 ? enhancedPrompt.slice(0, 300) : enhancedPrompt;
+
+      setAnalysis(prev => prev ? {
+        ...prev,
+        videoStatus: 'generating',
+        videoProgress: 0,
+        generatedVeoFileId: undefined
+      } : {
+        videoStatus: 'generating',
+        videoProgress: 0,
+        generatedVeoFileId: undefined
+      });
+
+      const res = await fetch(`${backendUrl}/api/generate-video`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({
+          prompt,
+          attachedPhoto: attachedPhoto // Send photo data to backend
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.fileId) {
+        throw new Error(data?.message || 'Failed to generate Veo video');
+      }
+
+      setAnalysis(prev => prev ? {
+        ...prev,
+        videoStatus: 'complete',
+        videoProgress: 100,
+        generatedVeoFileId: data.fileId
+      } : {
+        videoStatus: 'complete',
+        videoProgress: 100,
+        generatedVeoFileId: data.fileId
+      });
+      toast.success(attachedPhoto ? 'Veo video created with your photo!' : 'Veo video created! File ID saved.');
+    } catch (err) {
+      console.error('Veo generation error:', err);
+      toast.error(err?.message || 'Failed to generate video');
+      setAnalysis(prev => prev ? { ...prev, videoStatus: 'idle', videoProgress: 0 } : null);
     }
   };
 
@@ -525,6 +605,14 @@ export default function DreamAnalyzer() {
 
   return (
     <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
+      <EmailVerificationModal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        onVerified={() => {
+          toast.success('Email verified!');
+          setShowVerifyModal(false);
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 space-y-8">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
@@ -762,6 +850,10 @@ export default function DreamAnalyzer() {
                         <Video className="w-5 h-5 mr-2" />
                         {attachedPhoto ? "Generate Video with Your Photo" : "Generate Dream Video"}
                       </CosmicButton>
+                      <CosmicButton onClick={handleGenerateVeoVideo} variant="cosmic" className="w-full">
+                        <Video className="w-5 h-5 mr-2" />
+                        Generate with Gemini (Veo 3)
+                      </CosmicButton>
                       
                       <Button 
                         onClick={handleGenerateVariations} 
@@ -804,6 +896,19 @@ export default function DreamAnalyzer() {
                               ? "AI-generated video based on your dream content!" 
                               : "Demo video generated! For personalized videos, add RunwayML API key."
                             }
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Veo file ID block */}
+                      {analysis.videoStatus === "complete" && analysis.generatedVeoFileId && (
+                        <div className="mt-4 p-4 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-lg border border-indigo-300/30">
+                          <p className="text-center text-foreground font-medium mb-2">🎥 Veo Video Created</p>
+                          <p className="text-sm text-muted-foreground break-all text-center">
+                            File ID: <span className="font-mono">{analysis.generatedVeoFileId}</span>
+                          </p>
+                          <p className="text-xs text-muted-foreground text-center mt-2">
+                            You can save now; the file ID will be stored in analysis for later retrieval.
                           </p>
                         </div>
                       )}

@@ -22,17 +22,31 @@ const videoRateLimiter = new RateLimiterMemory({
   duration: 3600, // Per hour
 });
 
+// Admin-specific rate limiter (higher limits)
+const adminRateLimiter = new RateLimiterMemory({
+  keyPrefix: 'admin',
+  points: 500, // 500 admin requests
+  duration: 900, // Per 15 minutes
+});
+
 // General rate limiting middleware
 const rateLimitMiddleware = async (req, res, next) => {
   try {
     const key = req.ip;
-    await rateLimiter.consume(key);
+
+    // Allow higher rate limits for admin routes
+    if (req.path.startsWith('/api/admin/')) {
+      await adminRateLimiter.consume(key);
+    } else {
+      await rateLimiter.consume(key);
+    }
+
     next();
   } catch (rejRes) {
     const secs = Math.round(rejRes.msBeforeNext / 1000) || 1;
-    
-    logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
-    
+
+    logger.warn(`Rate limit exceeded for IP: ${req.ip} on path: ${req.path}`);
+
     res.set('Retry-After', String(secs));
     res.status(429).json({
       error: 'Too Many Requests',

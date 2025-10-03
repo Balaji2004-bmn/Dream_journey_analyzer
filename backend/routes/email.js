@@ -360,7 +360,7 @@ router.post('/send-analysis', authenticateUser, async (req, res) => {
 });
 
 // Send email confirmation - PUBLIC ENDPOINT
-router.post('/send-confirmation', async (req, res) => {
+ router.post('/send-confirmation', async (req, res) => {
   const { email } = req.body;
   if (!email) {
     return res.status(400).json({ error: 'Missing email', message: 'Email address is required.' });
@@ -388,28 +388,35 @@ router.post('/send-confirmation', async (req, res) => {
       html: htmlContent
     };
 
-    await transporter.sendMail(mailOptions);
-    
-    logger.info(`Email confirmation sent to ${email}`);
-    res.json({ success: true, message: `Verification email sent to ${email}. Please check your inbox.` });
-
+    const info = await transporter.sendMail(mailOptions);
+    logger.info('Email confirmation sent', {
+      to: email,
+      messageId: info?.messageId,
+      accepted: info?.accepted,
+      rejected: info?.rejected
+    });
+    return res.json({
+      success: true,
+      message: `Verification email sent to ${email}. Please check your inbox.`,
+      messageId: info?.messageId,
+      accepted: info?.accepted,
+      rejected: info?.rejected
+    });
   } catch (error) {
     logger.error('Email confirmation error:', { message: error.message, stack: error.stack });
-    // Provide a clear, actionable error to the user.
-    if (error.message.includes('Email credentials not configured') || error.message.includes('demo email credentials')) {
-        return res.status(500).json({
-            error: 'Email Service Not Configured',
-            message: 'The email service is not configured. Please set up EMAIL_USER and EMAIL_PASSWORD in the backend .env file.'
-        });
+    if (error.message && (error.message.includes('Email credentials not configured') || error.message.includes('demo email credentials'))) {
+      return res.status(500).json({
+        error: 'Email Service Not Configured',
+        message: 'The email service is not configured. Please set up EMAIL_USER and EMAIL_PASSWORD in the backend .env file.'
+      });
     }
-    if (error.code === 'EAUTH' || error.message.includes('Invalid login')) {
-        return res.status(500).json({
-            error: 'Invalid Email Credentials',
-            message: 'The email service credentials are not valid. Please check EMAIL_USER and EMAIL_PASSWORD in the backend .env file.'
-        });
+    if (error.code === 'EAUTH' || (typeof error.message === 'string' && error.message.includes('Invalid login'))) {
+      return res.status(500).json({
+        error: 'Invalid Email Credentials',
+        message: 'The email service credentials are not valid. Please check EMAIL_USER and EMAIL_PASSWORD in the backend .env file.'
+      });
     }
-
-    res.status(500).json({ error: 'Email Failed', message: 'Failed to send email confirmation. Please try again.' });
+    return res.status(500).json({ error: 'Email Failed', message: 'Failed to send email confirmation. Please try again.' });
   }
 });
 
@@ -557,8 +564,21 @@ router.post('/send-private-dream-code', authenticateUser, async (req, res) => {
       createdAt: Date.now()
     });
 
-    // The demo mode has been removed to ensure emails are always sent.
-    // The createTransporter function will throw an error if email is not configured.
+    // Fallback for development: if email service is not configured, return the code in response
+    const emailConfigured = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD &&
+      !['your_gmail_address@gmail.com', 'demo@gmail.com'].includes(process.env.EMAIL_USER) &&
+      !['your_app_specific_password', 'demo-password'].includes(process.env.EMAIL_PASSWORD);
+
+    if (!emailConfigured) {
+      logger.warn('Email service not configured. Returning security code in response for demo/dev use.');
+      return res.json({
+        success: true,
+        message: `Demo mode: security code generated for ${userEmail}. Use this code to unlock private dreams.`,
+        code: securityCode,
+        demo: true,
+        expiresIn: 15 * 60
+      });
+    }
 
     const transporter = createTransporter();
 

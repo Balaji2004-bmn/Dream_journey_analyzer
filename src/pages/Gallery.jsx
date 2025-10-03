@@ -195,7 +195,9 @@ export default function Gallery() {
         const processedDreams = allDreams.map(dream => ({
           ...dream,
           created_at: new Date(dream.created_at).toLocaleDateString(),
-          isOwner: user && (dream.user_id === user.id || dream.user_id === 'demo-user'),
+          original_created_at: dream.created_at, // Keep original date for filtering
+          // A user owns a dream only if the dream's user_id matches their id
+          isOwner: !!user && dream.user_id === user.id,
           isLiked: false, // Default value
           isPlaying: false // Default value
         }));
@@ -205,29 +207,30 @@ export default function Gallery() {
         // Fallback to local demo data if API fails or returns no data
         console.warn('Backend API returned no data, using local fallback data');
       const fallbackDemoVideos = [
-          {
-            id: 'demo-1',
-            title: 'Dancing in Space',
-            thumbnail_url: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=300&fit=crop',
-            video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-            content: 'I was floating weightlessly in a starry cosmos, dancing with planets and comets. Each movement created colorful ripples through space-time, and I could feel the music of the spheres flowing through my body.',
-            created_at: new Date().toLocaleDateString(),
-            analysis: {
-              keywords: ['space', 'dancing', 'cosmos', 'planets', 'music', 'weightless'],
-              emotions: [
-                { emotion: 'euphoria', intensity: 96 },
-                { emotion: 'freedom', intensity: 91 },
-                { emotion: 'cosmic connection', intensity: 87 }
-              ]
-            },
-            views: 342,
-            likes: 28,
-            isLiked: false,
-            isPlaying: false,
-            is_public: true,
-            isOwner: user && user.id === 'demo-user',
-            user_id: 'demo-user'
+        {
+          id: 'demo-1',
+          title: 'Dancing in Space',
+          thumbnail_url: 'https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=400&h=300&fit=crop',
+          video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+          content: 'I was floating weightlessly in a starry cosmos, dancing with planets and comets. Each movement created colorful ripples through space-time, and I could feel the music of the spheres flowing through my body.',
+          created_at: new Date().toLocaleDateString(),
+          original_created_at: new Date().toISOString(),
+          analysis: {
+            keywords: ['space', 'dancing', 'cosmos', 'planets', 'music', 'weightless'],
+            emotions: [
+              { emotion: 'euphoria', intensity: 96 },
+              { emotion: 'freedom', intensity: 91 },
+              { emotion: 'cosmic connection', intensity: 87 }
+            ]
           },
+          views: 342,
+          likes: 28,
+          isLiked: Math.random() > 0.5, // Random liked status for demo
+          isPlaying: false,
+          is_public: true,
+          isOwner: user && user.id === 'demo-user',
+          user_id: 'demo-user'
+        },
           {
             id: 'demo-2',
             title: 'Magical Library Adventure',
@@ -235,6 +238,7 @@ export default function Gallery() {
             video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
             content: 'I discovered a vast library where books flew around like birds. When I opened one, I was instantly transported into its story - becoming a pirate, then a wizard, then an explorer.',
             created_at: new Date().toLocaleDateString(),
+            original_created_at: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
             analysis: {
               keywords: ['library', 'books', 'flying', 'stories', 'portals', 'adventure'],
               emotions: [
@@ -245,7 +249,7 @@ export default function Gallery() {
             },
             views: 287,
             likes: 35,
-            isLiked: false,
+            isLiked: Math.random() > 0.5,
             isPlaying: false,
             is_public: true,
             isOwner: user && user.id === 'demo-user',
@@ -257,7 +261,8 @@ export default function Gallery() {
             thumbnail_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
             video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
             content: 'I found myself in a cave filled with singing crystals. Each crystal produced a different musical note when touched, and together they created the most beautiful symphony I had ever heard.',
-            created_at: new Date().toLocaleDateString(),
+            created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toLocaleDateString(), // 10 days ago - not recent
+            original_created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
             analysis: {
               keywords: ['crystals', 'music', 'cave', 'rainbow', 'harmony', 'singing'],
               emotions: [
@@ -268,7 +273,7 @@ export default function Gallery() {
             },
             views: 198,
             likes: 22,
-            isLiked: false,
+            isLiked: Math.random() > 0.5,
             isPlaying: false,
             is_public: true,
             isOwner: user && user.id === 'demo-user',
@@ -280,7 +285,8 @@ export default function Gallery() {
             thumbnail_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop',
             video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
             content: 'I discovered a magnificent crystal palace beneath the ocean, with glowing fish swimming around ancient pillars. The water was so clear I could see every detail of the underwater architecture.',
-            created_at: new Date(Date.now() - 86400000).toLocaleDateString(),
+            created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toLocaleDateString(), // 2 days ago - recent
+            original_created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
             analysis: {
               keywords: ['underwater', 'crystal', 'palace', 'ancient', 'ocean', 'fish'],
               emotions: [
@@ -291,7 +297,7 @@ export default function Gallery() {
             },
             views: 156,
             likes: 19,
-            isLiked: false,
+            isLiked: Math.random() > 0.5,
             isPlaying: false,
             is_public: true,
             isOwner: user && user.id === 'demo-user',
@@ -408,6 +414,7 @@ export default function Gallery() {
           video_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
           content: 'I was floating weightlessly in a starry cosmos, dancing with planets and comets. Each movement created colorful ripples through space-time, and I could feel the music of the spheres flowing through my body.',
           created_at: new Date().toLocaleDateString(),
+          original_created_at: new Date().toISOString(),
           analysis: {
             keywords: ['space', 'dancing', 'cosmos', 'planets', 'music', 'weightless'],
             emotions: [
@@ -418,7 +425,7 @@ export default function Gallery() {
           },
           views: 342,
           likes: 28,
-          isLiked: false,
+          isLiked: Math.random() > 0.5,
           isPlaying: false,
           is_public: true
         },
@@ -490,12 +497,33 @@ export default function Gallery() {
                           video.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesFilter = selectedFilter === "all" ||
-                          (selectedFilter === "private" && video.is_public === false && video.isOwner) ||
-                          (selectedFilter === "public" && video.is_public !== false) ||
-                          (selectedFilter === "liked" && video.isLiked) ||
-                          (selectedFilter === "popular" && video.views && video.views > 200) ||
-                          (selectedFilter === "recent" && new Date(video.created_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000);
+    let matchesFilter = false;
+
+    switch (selectedFilter) {
+      case "all":
+        matchesFilter = true;
+        break;
+      case "private":
+        matchesFilter = video.is_public === false && video.isOwner;
+        break;
+      case "public":
+        matchesFilter = video.is_public !== false;
+        break;
+      case "liked":
+        // For demo purposes, show some videos as liked
+        matchesFilter = video.isLiked || (video.id.includes('demo-') && Math.random() > 0.7);
+        break;
+      case "popular":
+        matchesFilter = video.views && video.views > 150; // Lower threshold for demo
+        break;
+      case "recent":
+        // Use original date for proper filtering
+        const createdDate = new Date(video.original_created_at || video.created_at);
+        matchesFilter = createdDate.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
+        break;
+      default:
+        matchesFilter = true;
+    }
 
     // Enhanced privacy filter: only show public dreams, user's own dreams, or private dreams if access granted
     const isVisible = video.is_public !== false || video.isOwner || (video.is_public === false && hasPrivateAccess);
@@ -512,14 +540,14 @@ export default function Gallery() {
 
   const handlePlayVideo = (videoId) => {
     const video = dreamVideos.find(v => v.id === videoId);
-    
-    // Check if this is a private video that requires verification
-    if (video && video.is_public === false && !video.isOwner && !hasPrivateAccess) {
-      toast.error("This is a private dream. Email verification required to access.");
-      setShowVerificationModal(true);
+
+    // Enforce verification for ALL private dreams until security code access is granted
+    if (video && video.is_public === false && !hasPrivateAccess) {
+      toast.error("This is a private dream. Please verify with a security code first.");
+      setShowSecurityCodeModal(true);
       return;
     }
-    
+
     if (video && video.video_url && video.video_url !== '#') {
       // Create a video modal or embed player instead of opening new tab
       const videoElement = document.createElement('video');
@@ -598,7 +626,7 @@ export default function Gallery() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({
           isLiked: newLikedState
@@ -681,7 +709,7 @@ export default function Gallery() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({
           email: user.email,
@@ -736,7 +764,7 @@ export default function Gallery() {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session?.access_token}`
         }
       });
 
@@ -929,10 +957,13 @@ export default function Gallery() {
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
                       onClick={() => handlePlayVideo(video.id)}
+                      disabled={video.is_public === false && !hasPrivateAccess}
                       size="lg"
                       className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30"
                     >
-                      {video.isPlaying ? (
+                      {video.is_public === false && !hasPrivateAccess ? (
+                        <Lock className="w-6 h-6 text-white" />
+                      ) : video.isPlaying ? (
                         <Pause className="w-6 h-6 text-white" />
                       ) : (
                         <Play className="w-6 h-6 text-white" />
@@ -1015,9 +1046,15 @@ export default function Gallery() {
                     <Button 
                       size="sm" 
                       onClick={() => handlePlayVideo(video.id)}
-                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                      disabled={video.is_public === false && !hasPrivateAccess}
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {video.isPlaying ? (
+                      {video.is_public === false && !hasPrivateAccess ? (
+                        <>
+                          <Lock className="w-4 h-4 mr-2" />
+                          Unlock
+                        </>
+                      ) : video.isPlaying ? (
                         <>
                           <Pause className="w-4 h-4 mr-2" />
                           Pause

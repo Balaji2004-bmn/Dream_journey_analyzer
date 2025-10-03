@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dream Journey Analyzer Design System - Mystical Theme */
+
+@layer base {
+  :root {
+    /* Light Mode - Cosmic Light Theme */
+    --background: 240 20% 98%;
+    --foreground: 240 15% 15%;
+
+    --card: 240 20% 96%;
+    --card-foreground: 240 15% 15%;
+
+    --popover: 240 20% 96%;
+    --popover-foreground: 240 15% 15%;
+
+    /* Professional primary - Muted navy blue */
+    --primary: 220 45% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 220 50% 35%;
+
+    /* Professional secondary - Sage green */
+    --secondary: 160 25% 35%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted professional tones - Light */
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    /* Professional accent - Warm amber */
+    --accent: 35 60% 50%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 240 20% 95%;
+
+    --border: 240 10% 85%;
+    --input: 240 10% 92%;
+    --ring: 270 60% 45%;
+
+    --radius: 1rem;
+
+    /* Light mode gradients */
+    --gradient-cosmic: linear-gradient(135deg, hsl(220 20% 97%), hsl(220 30% 94%), hsl(35 30% 92%));
+    --gradient-dream: linear-gradient(45deg, hsl(220 45% 25%), hsl(160 25% 35%));
+    --gradient-nebula: linear-gradient(180deg, hsl(35 60% 50%), hsl(220 50% 35%));
+    --gradient-card: linear-gradient(135deg, hsl(220 25% 98% / 0.8), hsl(220 20% 96% / 0.6));
+
+    /* Light mode shadows and glows */
+    --shadow-cosmic: 0 8px 32px hsl(270 60% 45% / 0.1);
+    --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.15);
+    --glow-primary: 0 0 20px hsl(270 60% 45% / 0.3);
+    --glow-accent: 0 0 15px hsl(320 60% 50% / 0.25);
+
+    /* Professional animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-cosmic: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-gentle: all 0.2s ease-out;
+
+    /* Sidebar colors - Light mode */
+    --sidebar-background: 240 20% 96%;
+    --sidebar-foreground: 240 15% 15%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 10% 88%;
+    --sidebar-accent-foreground: 240 15% 15%;
+    --sidebar-border: 240 10% 85%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark Mode - Original Cosmic Dark Theme */
+    --background: 240 10% 8%;
+    --foreground: 240 20% 95%;
+
+    --card: 240 15% 12%;
+    --card-foreground: 240 20% 95%;
+
+    --popover: 240 15% 12%;
+    --popover-foreground: 240 20% 95%;
+
+    /* Professional primary - Muted navy blue */
+    --primary: 220 45% 25%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 220 50% 35%;
+
+    /* Professional secondary - Sage green */
+    --secondary: 160 25% 35%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted professional tones - Dark */
+    --muted: 220 20% 15%;
+    --muted-foreground: 220 15% 70%;
+
+    /* Professional accent - Warm amber */
+    --accent: 35 60% 50%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 240 20% 95%;
+
+    --border: 240 15% 20%;
+    --input: 240 15% 15%;
+    --ring: 270 60% 45%;
+
+    /* Dark mode gradients */
+    --gradient-cosmic: linear-gradient(135deg, hsl(220 30% 8%), hsl(220 40% 12%), hsl(35 40% 18%));
+    --gradient-dream: linear-gradient(45deg, hsl(220 45% 25%), hsl(160 25% 35%));
+    --gradient-nebula: linear-gradient(180deg, hsl(35 60% 50%), hsl(220 50% 35%));
+    --gradient-card: linear-gradient(135deg, hsl(220 25% 10% / 0.8), hsl(220 30% 12% / 0.6));
+
+    /* Dark mode shadows and glows */
+    --shadow-cosmic: 0 8px 32px hsl(270 60% 15% / 0.3);
+    --shadow-dream: 0 4px 20px hsl(270 60% 45% / 0.2);
+    --glow-primary: 0 0 20px hsl(270 60% 45% / 0.5);
+    --glow-accent: 0 0 15px hsl(320 60% 50% / 0.4);
+
+    /* Sidebar colors - Dark mode */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  /* Professional animations - removing shaking effects */
+  .animate-gentle-pulse {
+    animation: gentle-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-soft-glow {
+    animation: soft-glow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes gentle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  @keyframes soft-glow {
+    0% { box-shadow: 0 0 5px hsl(var(--primary) / 0.3); }
+    100% { box-shadow: 0 0 15px hsl(var(--primary) / 0.5); }
+  }
+
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-5px) rotate(1deg); }
+  }
+
+  .animate-gentle-float {
+    animation: gentle-float 4s ease-in-out infinite;
+  }
+
+  @keyframes mystical-float {
+    0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+    25% { transform: translateY(-8px) translateX(2px) rotate(0.5deg); }
+    50% { transform: translateY(-4px) translateX(-2px) rotate(-0.5deg); }
+    75% { transform: translateY(-10px) translateX(1px) rotate(0.3deg); }
+  }
+
+  .animate-mystical-float {
+    animation: mystical-float 6s ease-in-out infinite;
+  }
+
+  @keyframes ethereal-glow {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  .animate-ethereal-glow {
+    animation: ethereal-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes dream-shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animate-dream-shimmer {
+    background: linear-gradient(45deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--secondary)));
+    background-size: 200% 200%;
+    animation: dream-shimmer 4s ease infinite;
+  }
+}

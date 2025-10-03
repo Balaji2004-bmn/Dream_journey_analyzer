@@ -3,6 +3,9 @@ const { createClient } = require('@supabase/supabase-js');
 const { authenticateUser } = require('../middleware/auth');
 const { validateDream } = require('../middleware/validation');
 const logger = require('../utils/logger');
+const { pickDemoCover } = require('../utils/demoCovers');
+const { generateDreamAnalysis } = require('../services/gemini');
+const { generateVideoFromPrompt } = require('../services/pika');
 
 const router = express.Router();
 
@@ -18,41 +21,122 @@ const supabaseAnon = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+// Check if user has an active paid subscription
+async function hasActiveSubscription(userId) {
+  try {
+    const { data, error } = await supabaseService
+      .from('subscriptions')
+      .select('id, status, end_date')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .order('end_date', { ascending: false })
+      .limit(1);
+
+    if (error) return false;
+    if (!data || data.length === 0) return false;
+
+    const sub = data[0];
+    if (!sub) return false;
+    // If end_date exists and is in past, treat as inactive
+    if (sub.end_date) {
+      const ends = new Date(sub.end_date).getTime();
+      if (!Number.isNaN(ends) && ends < Date.now()) return false;
+    }
+    return true;
+  } catch (_) {
+    // ignore and try metadata fallback below
+  }
+
+  // Fallback: read auth user_metadata (set by payments flow)
+  try {
+    const { data: userData } = await supabaseService.auth.admin.getUserById(userId);
+    const meta = userData?.user?.user_metadata || {};
+    if (meta.plan && (meta.subscription_status || 'active') === 'active') {
+      return true;
+    }
+  } catch (_) {}
+  return false;
+}
+
+// Safe JSON parse helper used when reading demo_dreams.analysis (stored as text)
+function safeJsonParse(str) {
+  try {
+    return JSON.parse(str);
+  } catch (_) {
+    return null;
+  }
+}
+
 // Get all dreams for a user
 router.get('/', authenticateUser, async (req, res) => {
   try {
     const { page = 1, limit = 10, search = '' } = req.query;
     const offset = (page - 1) * limit;
 
-    let query = supabaseService
-      .from('dreams')
-      .select('*', { count: 'exact' })
-      .eq('user_id', req.user.id)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+    // Always try to fetch from primary dreams table for real sessions
+    let allDreams = [];
+    let totalCount = 0;
 
-    if (search) {
-      query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+    try {
+      let query = supabaseService
+        .from('dreams')
+        .select('*', { count: 'exact' })
+        .eq('user_id', req.user.id)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (search) {
+        query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+      }
+
+      const { data, error, count } = await query;
+      if (!error && Array.isArray(data)) {
+        allDreams = data;
+        totalCount = count || data.length;
+      }
+    } catch (dbErr) {
+      logger.warn('Primary dreams fetch failed:', dbErr.message);
     }
 
-    const { data, error, count } = await query;
+    // If demo session, augment with demo_dreams and in-memory items
+    if (req.isDemoSession) {
+      try {
+        const { data: demoList, error: demoErr } = await supabaseService
+          .from('demo_dreams')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-    if (error) {
-      logger.error('Error fetching dreams:', error);
-      return res.status(500).json({
-        error: 'Database Error',
-        message: 'Failed to fetch dreams'
-      });
+        if (!demoErr && Array.isArray(demoList)) {
+          const mapped = demoList.map(d => ({
+            ...d,
+            // Ensure analysis is an object
+            analysis: typeof d.analysis === 'string' ? (safeJsonParse(d.analysis) || null) : d.analysis,
+            user_id: req.user.id,
+            source: 'demo'
+          }));
+          allDreams = [...mapped, ...allDreams];
+        }
+      } catch (demoFetchErr) {
+        logger.warn('demo_dreams fetch failed:', demoFetchErr.message);
+      }
+
+      // In-memory items belonging to this demo user
+      try {
+        const memoryOwned = inMemoryDreams.filter(d => d.user_id === req.user.id);
+        allDreams = [...memoryOwned, ...allDreams];
+      } catch (memErr) {
+        logger.warn('Memory dreams merge failed:', memErr.message);
+      }
     }
 
     res.json({
       success: true,
-      dreams: data,
+      dreams: allDreams,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
-        total: count,
-        pages: Math.ceil(count / limit)
+        total: totalCount || allDreams.length,
+        pages: Math.ceil((totalCount || allDreams.length) / limit)
       }
     });
 
@@ -146,12 +230,85 @@ router.post('/', authenticateUser, validateDream, async (req, res) => {
   try {
     const { title, content, analysis, thumbnail_url, video_url, video_prompt, video_duration, is_public } = req.body;
 
+    // Enforce free-plan video duration limit (<= 5s)
+    const requestedDuration = parseInt(video_duration, 10);
+    if (requestedDuration && requestedDuration > 5) {
+      const allowed = await hasActiveSubscription(req.user.id);
+      if (!allowed) {
+        return res.status(402).json({
+          error: 'Upgrade Required',
+          message: 'Free plan supports up to 5 seconds videos. Upgrade for 10–15 seconds videos.'
+        });
+      }
+    }
+
+    // For demo sessions, always use a deterministic demo cover based on seeds (user, title, content)
+    const resolvedThumbnail = req.isDemoSession
+      ? pickDemoCover(title || '', content || '', req.user?.id || 'anon')
+      : (thumbnail_url || pickDemoCover(title || '', content || '', req.user?.id || 'anon'));
+
+    // If demo session, save to demo_dreams (or memory) to avoid FK violations
+    if (req.isDemoSession) {
+      try {
+        const demoDreamData = {
+          title,
+          content,
+          analysis: typeof analysis === 'object' ? JSON.stringify(analysis) : null,
+          is_public: Boolean(is_public),
+          created_at: new Date().toISOString(),
+          thumbnail_url: resolvedThumbnail,
+          video_url: video_url || null,
+          video_prompt: video_prompt || null,
+          video_duration: video_duration || null,
+        };
+
+        const { data: demoData, error: demoError } = await supabaseService
+          .from('demo_dreams')
+          .insert(demoDreamData)
+          .select()
+          .single();
+
+        if (demoError) throw new Error(demoError.message);
+
+        logger.info(`Dream saved to demo_dreams (demo session): ${demoData.id}`);
+        return res.status(201).json({
+          success: true,
+          dream: { ...demoData, source: 'demo' },
+          message: 'Dream saved successfully (demo)'
+        });
+      } catch (demoSaveErr) {
+        logger.warn('Demo save failed, using in-memory storage:', demoSaveErr.message);
+        const memoryDream = {
+          id: `memory-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          user_id: req.user.id,
+          title,
+          content,
+          analysis,
+          thumbnail_url: resolvedThumbnail,
+          video_url: video_url || null,
+          video_prompt: video_prompt || null,
+          video_duration: video_duration || null,
+          is_public: Boolean(is_public),
+          created_at: new Date().toISOString(),
+          source: 'memory'
+        };
+        inMemoryDreams.push(memoryDream);
+        logger.info(`Dream saved to memory (demo session): ${memoryDream.id}`);
+        return res.status(201).json({
+          success: true,
+          dream: memoryDream,
+          message: 'Dream saved successfully (memory)'
+        });
+      }
+    }
+
+    // Real sessions: save to primary dreams table
     const dreamData = {
       user_id: req.user.id,
       title,
       content,
       analysis,
-      thumbnail_url,
+      thumbnail_url: resolvedThumbnail,
       video_url,
       video_prompt,
       video_duration,
@@ -174,7 +331,7 @@ router.post('/', authenticateUser, validateDream, async (req, res) => {
     }
 
     logger.info(`Dream saved successfully for user ${req.user.id}: ${data.id}`);
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       dream: data,
       message: 'Dream saved successfully'
@@ -187,6 +344,106 @@ router.post('/', authenticateUser, validateDream, async (req, res) => {
       message: 'An unexpected error occurred while creating the dream.',
       details: error.message
     });
+  }
+});
+
+// End-to-end generation: Gemini (text) + Pika (video) + store in Supabase
+router.post('/generate', authenticateUser, async (req, res) => {
+  try {
+    const { dream_text } = req.body || {};
+    const userId = req.user.id;
+
+    if (!dream_text || !String(dream_text).trim()) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: 'dream_text is required'
+      });
+    }
+
+    // 1) Gemini Pro: structured output
+    let analysis;
+    try {
+      analysis = await generateDreamAnalysis(String(dream_text));
+    } catch (e) {
+      logger.error('Gemini analysis failed:', e);
+      return res.status(502).json({
+        error: 'Analysis Failed',
+        message: e.message || 'Failed to generate analysis from Gemini'
+      });
+    }
+
+    // 2) Pika Labs: generate short video (best-effort)
+    let video_url = null;
+    let thumbnail_url = null;
+    try {
+      const vid = await generateVideoFromPrompt(analysis.video_prompt);
+      video_url = vid.video_url || null;
+      thumbnail_url = vid.thumbnail_url || null;
+    } catch (e) {
+      logger.warn('Pika generation failed; continuing without video:', e.message || e);
+    }
+
+    // 3) Store in Supabase
+    const nowIso = new Date().toISOString();
+    let saved;
+    if (req.isDemoSession) {
+      // demo table stores analysis as text
+      const payload = {
+        title: analysis.title,
+        content: String(dream_text),
+        analysis: JSON.stringify(analysis),
+        is_public: false,
+        created_at: nowIso,
+        thumbnail_url: thumbnail_url || pickDemoCover(analysis.title || '', String(dream_text), userId || 'demo-user'),
+        video_url: video_url,
+        video_prompt: analysis.video_prompt,
+        video_duration: null
+      };
+      const { data, error } = await supabaseService
+        .from('demo_dreams')
+        .insert(payload)
+        .select()
+        .single();
+      if (error) {
+        logger.error('Demo save failed:', error);
+        return res.status(500).json({ error: 'Database Error', message: 'Failed to save dream (demo).' });
+      }
+      saved = data;
+    } else {
+      const payload = {
+        user_id: userId,
+        title: analysis.title,
+        content: String(dream_text),
+        analysis: analysis,
+        is_public: false,
+        created_at: nowIso,
+        updated_at: nowIso,
+        thumbnail_url: thumbnail_url || pickDemoCover(analysis.title || '', String(dream_text), userId),
+        video_url: video_url,
+        video_prompt: analysis.video_prompt
+      };
+      const { data, error } = await supabaseService
+        .from('dreams')
+        .insert(payload)
+        .select()
+        .single();
+      if (error) {
+        logger.error('Save failed:', error);
+        return res.status(500).json({ error: 'Database Error', message: 'Failed to save dream.' });
+      }
+      saved = data;
+    }
+
+    // 4) Respond with required shape
+    return res.status(201).json({
+      title: analysis.title,
+      story: analysis.story,
+      video_url: video_url,
+      thumbnail_url: thumbnail_url || saved?.thumbnail_url || null
+    });
+  } catch (error) {
+    logger.error('End-to-end generation error:', error);
+    res.status(500).json({ error: 'Server Error', message: 'Failed to generate dream' });
   }
 });
 
@@ -327,7 +584,8 @@ router.post('/with-video', async (req, res) => {
       const videoData = {
         id: `video-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         url: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4',
-        thumbnail_url: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop',
+        // Deterministic demo cover seeded by content and user identity, not db id
+        thumbnail_url: pickDemoCover(title || '', content || '', (user_id || 'demo-user')),
         prompt: `Cinematic dream visualization: ${title}`,
         duration: 4,
         status: 'completed',
@@ -467,35 +725,67 @@ router.get('/public/gallery', async (req, res) => {
     const { page = 1, limit = 12, search = '', category = '' } = req.query;
     const offset = (page - 1) * limit;
 
-    let query = supabaseService
-      .from('dreams')
-      .select('*', { count: 'exact' })
-      .eq('is_public', true)
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
+    let allPublic = [];
+    let total = 0;
 
-    if (search) {
-      query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+    try {
+      let query = supabaseService
+        .from('dreams')
+        .select('*', { count: 'exact' })
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (search) {
+        query = query.or(`title.ilike.%${search}%,content.ilike.%${search}%`);
+      }
+
+      const { data, error, count } = await query;
+      if (!error && Array.isArray(data)) {
+        allPublic = data;
+        total = count || data.length;
+      }
+    } catch (err) {
+      logger.warn('Public dreams primary fetch failed:', err.message);
     }
 
-    const { data, error, count } = await query;
+    // Include demo public dreams as well
+    try {
+      const { data: demoPublic, error: demoErr } = await supabaseService
+        .from('demo_dreams')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false });
 
-    if (error) {
-      logger.error('Error fetching public dreams:', error);
-      return res.status(500).json({
-        error: 'Database Error',
-        message: 'Failed to fetch public dreams'
-      });
+      if (!demoErr && Array.isArray(demoPublic)) {
+        const mapped = demoPublic.map(d => ({
+          ...d,
+          analysis: typeof d.analysis === 'string' ? (safeJsonParse(d.analysis) || null) : d.analysis,
+          user_id: d.user_id || 'demo-user',
+          source: 'demo'
+        }));
+        allPublic = [...mapped, ...allPublic];
+      }
+    } catch (demoErr) {
+      logger.warn('Public demo_dreams fetch failed:', demoErr.message);
+    }
+
+    // Add in-memory public items
+    try {
+      const memPublic = inMemoryDreams.filter(d => d.is_public === true);
+      allPublic = [...memPublic, ...allPublic];
+    } catch (memErr) {
+      logger.warn('Public memory merge failed:', memErr.message);
     }
 
     res.json({
       success: true,
-      dreams: data,
+      dreams: allPublic,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
-        total: count,
-        pages: Math.ceil(count / limit)
+        total: total || allPublic.length,
+        pages: Math.ceil((total || allPublic.length) / limit)
       }
     });
 

@@ -77,7 +77,7 @@ const authenticateAdmin = async (req, res, next) => {
     if (process.env.NODE_ENV !== 'production' && token === 'demo-admin-token') {
       // Demo admin user
       req.user = {
-        id: 'demo-admin-id',
+        id: '550e8400-e29b-41d4-a716-446655440000', // Valid UUID format for demo
         email: 'admin@demo.com',
         role: ADMIN_ROLES.SUPER_ADMIN,
         permissions: ADMIN_PERMISSIONS[ADMIN_ROLES.SUPER_ADMIN]

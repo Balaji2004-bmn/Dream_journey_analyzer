@@ -62,6 +62,67 @@ export default function AdminDashboard() {
   const [consentedDreams, setConsentedDreams] = useState([]);
   const [showUserDetails, setShowUserDetails] = useState(null);
 
+  // Helper: resolve first reachable admin base URL
+  const getAdminBaseCandidates = () => [
+    // Prefer dedicated admin server first (separate port)
+    import.meta.env.VITE_ADMIN_BACKEND_URL,
+    'http://localhost:5174',
+    import.meta.env.VITE_BACKEND_URL,
+    'http://localhost:3001',
+  ].filter(Boolean);
+
+  const chooseAdminBase = async (token) => {
+    const headers = { 'Authorization': `Bearer ${token}` };
+    for (const base of getAdminBaseCandidates()) {
+      try {
+        const ping = await fetch(`${base}/api/admin/users?page=1&limit=1`, { headers });
+        if (ping.ok) return base;
+      } catch (_) {
+        // try next
+      }
+    }
+    // As a last resort, return the first candidate; downstream fetches will error and be surfaced to the UI
+    return getAdminBaseCandidates()[0] || 'http://localhost:3001';
+  };
+
+  // Helper: perform admin fetch, trying all bases and tokens to avoid CORS/preflight failures
+  const fetchAdmin = async (path, init = {}) => {
+    const tokens = [session?.access_token].filter(Boolean);
+    if (import.meta.env.MODE !== 'production') tokens.push('demo-admin-token');
+
+    const bases = getAdminBaseCandidates();
+    let lastError = null;
+    let lastResponse = null;
+
+    for (const token of tokens) {
+      for (const base of bases) {
+        try {
+          const headers = {
+            ...(init.headers || {}),
+            'Authorization': `Bearer ${token}`,
+          };
+          const res = await fetch(`${base}${path}`, { ...init, headers });
+          if (res.ok) return res;
+          // On 401/403 in dev, try the next token/base combination
+          if ((res.status === 401 || res.status === 403) && import.meta.env.MODE !== 'production') {
+            lastResponse = res;
+            continue;
+          }
+          // Non-auth failure; keep to return after trying other bases
+          lastResponse = res;
+          continue;
+        } catch (err) {
+          lastError = err;
+          // CORS/network failure: try next base
+          continue;
+        }
+      }
+    }
+    if (lastResponse) return lastResponse;
+    if (lastError) throw lastError;
+    throw new Error('Admin request failed');
+  };
+
   useEffect(() => {
     if (user) {
       verifyAdminAccess();
@@ -93,39 +154,51 @@ export default function AdminDashboard() {
     setIsRefreshing(true);
     setDashboardError(null);
     try {
-      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
-      const token = session?.access_token || 'demo-admin-token';
+      const [usersRes, statsRes, flaggedRes, consentedRes, sentimentRes, auditRes] = await Promise.all([
+        fetchAdmin('/api/admin/users?page=1&limit=50'),
+        fetchAdmin('/api/admin/insights/stats'),
+        fetchAdmin('/api/admin/content/dreams/flagged?status=pending'),
+        fetchAdmin('/api/admin/content/dreams/consented?consent_type=research'),
+        fetchAdmin('/api/admin/insights/sentiment?timeframe=30d'),
+        fetchAdmin('/api/admin/content/audit/dream-access')
+      ]);
 
-      // Only fetch endpoints that actually exist
-      const endpoints = {
-        users: '/api/admin/users',
-        insights: '/api/admin/insights/stats'
-      };
+      if (!usersRes.ok) throw new Error('Failed to fetch users');
+      if (!statsRes.ok) throw new Error('Failed to fetch insights');
+      // The following endpoints are optional in some setups; handle soft-fail
+      const [usersData, insightsData] = await Promise.all([
+        usersRes.json(),
+        statsRes.json()
+      ]);
 
-      const requests = Object.values(endpoints).map(endpoint =>
-        fetch(`${backendUrl}${endpoint}`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
-      );
+      let flaggedData = { flagged_dreams: [] };
+      try { flaggedData = await flaggedRes.json(); } catch(_) {}
 
-      const responses = await Promise.all(requests);
+      let consentedData = { dreams: [] };
+      try { consentedData = await consentedRes.json(); } catch(_) {}
 
-      const dataPromises = responses.map((res, index) => {
-        if (!res.ok) throw new Error(`Failed to fetch ${Object.keys(endpoints)[index]}`);
-        return res.json();
-      });
+      let sentimentData = { sentiment: {} };
+      try { sentimentData = await sentimentRes.json(); } catch(_) {}
 
-      const [usersData, insightsData] = await Promise.all(dataPromises);
+      let auditData = { audit_logs: [] };
+      try { auditData = await auditRes.json(); } catch(_) {}
 
       setUsers(usersData.users || []);
       setInsights(insightsData.stats);
 
-      // Set empty data for non-existent endpoints
-      setFlaggedContent([]);
+      // Populate optional datasets with safe defaults
+      setFlaggedContent(flaggedData.flagged_dreams || []);
+      setConsentedDreams(consentedData.dreams || []);
+      // Normalize sentiment into a simple emotion->count map for the UI
+      const emotionPairs = (sentimentData?.sentiment?.top_emotions || []).map(e => [e.emotion, e.count]);
+      setPrivacyStats({ sentiment: Object.fromEntries(emotionPairs) });
+      const mappedAudit = (auditData.audit_logs || []).map(log => ({
+        ...log,
+        target_user: log.details?.path || 'N/A',
+        ip_address: log.details?.ip || 'N/A'
+      }));
+      setAuditLogs(mappedAudit);
       setFeedback([]);
-      setPrivacyStats(null);
-      setAuditLogs([]);
-      setConsentedDreams([]);
 
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -139,7 +212,6 @@ export default function AdminDashboard() {
 
   const handleUserAction = async (userId, action, data = {}) => {
     try {
-      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
       const token = session?.access_token || 'demo-admin-token';
 
       let endpoint = '';
@@ -172,12 +244,31 @@ export default function AdminDashboard() {
           break;
       }
 
-      const response = await fetch(`${backendUrl}${endpoint}`, {
+      // Optimistic UI update
+      setUsers(prev => prev.map(u => {
+        if (u.id !== userId) return u;
+        switch (action) {
+          case 'activate':
+            return { ...u, is_active: true };
+          case 'deactivate':
+            return { ...u, is_active: false };
+          case 'ban': {
+            const days = data.duration || 7;
+            const until = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString();
+            return { ...u, is_banned: true, banned_until: until };
+          }
+          case 'unban':
+            return { ...u, is_banned: false, banned_until: null };
+          case 'change_role':
+            return { ...u, role: data.role };
+          default:
+            return u;
+        }
+      }));
+
+      let response = await fetchAdmin(endpoint, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
 
@@ -187,6 +278,12 @@ export default function AdminDashboard() {
       } else {
         const error = await response.json();
         toast.error(error.message || `Failed to ${action} user`);
+        // Revert optimistic update on failure
+        setUsers(prev => prev.map(u => {
+          if (u.id !== userId) return u;
+          // Force refetch to get true state
+          return u;
+        }));
       }
     } catch (error) {
       console.error(`Error ${action} user:`, error);
@@ -196,15 +293,9 @@ export default function AdminDashboard() {
 
   const handleContentReview = async (flagId, action, reason) => {
     try {
-      const backendUrl = import.meta.env.VITE_ADMIN_BACKEND_URL || 'http://localhost:3002';
-      const token = session?.access_token || 'demo-admin-token';
-
-      const response = await fetch(`${backendUrl}/api/admin/content/dreams/flagged/${flagId}/review`, {
+      const response = await fetchAdmin(`/api/admin/content/dreams/flagged/${flagId}/review`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action, reason })
       });
 

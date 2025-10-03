@@ -10,9 +10,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "backend": "cd backend && npm run dev",
-    "dev:full": "concurrently \"npm run backend\" \"npm run admin\" \"npm run dev\"",
     "admin": "cd backend && npm run admin",
-    "install:all": "npm install && cd backend && npm install",
+    "admin-frontend": "cd admin-frontend && npm run dev",
+    "dev:full": "concurrently \"npm run backend\" \"npm run admin\" \"npm run dev\" \"npm run admin-frontend\"",
+    "admin-frontend": "cd admin-frontend && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../admin-frontend && npm install",
     "setup": "node setup-env.js",
     "test-setup": "node test-setup.js"
   },

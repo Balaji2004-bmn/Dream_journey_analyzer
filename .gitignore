@@ -1,84 +1,128 @@
-# Node dependencies
+# Dependencies
 node_modules/
-**/node_modules/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.staging
+.env.example
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Coverage
-coverage/
-*.lcov
-
-# Builds and output
-build/
+# Build outputs
 dist/
-.out/
+build/
 .next/
-.nuxt/
-.astro/
-.svelte-kit/
-.hugo_cache/
-public/build/
-.vite/
-**/.cache/
-.cache/
-.temp/
-temp/
-tmp/
+out/
 
-# TypeScript build info
-*.tsbuildinfo
-
-# Lint caches
-.eslintcache
-.stylelintcache
-
-# Turbo / pnpm stores
-.turbo/
-.pnpm-store/
-
-# Env files (keep examples)
-.env
-.env.*
-!.env.example
-backend/.env
-backend/.env.*
-!backend/.env.example
-
-# Local config
-*.local
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-BACKEND_ENV_CONTENT.txt
-
-# Uploads and generated media
-uploads/
-public/uploads/
-backend/uploads/
-
-# IDE/editor settings
+# IDE and editor files
 .vscode/
 .idea/
-*.iml
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-
-# OS files
-.DS_Store
-Thumbs.db
-.Trashes
-
-# Swap/backup
 *.swp
 *.swo
-*.orig
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Lock files (usually commit these)
+# package-lock.json
+# bun.lockb
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Admin frontend build
+admin-frontend/dist/
+admin-frontend/build/
+
+# Demo
+demo/dist/
+
+# Payments flask
+payments_flask/__pycache__/
+payments_flask/*.pyc

@@ -13,12 +13,16 @@ import Profile from './pages/Profile';
 import ResetPassword from './pages/ResetPassword';
 import ForgotPassword from './pages/ForgotPassword';
 import EmailConfirmation from './pages/EmailConfirmation';
-import AdminAuth from './pages/AdminAuth';
-import AdminDashboard from './pages/AdminDashboard';
 import Help from './pages/Help';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import NotFound from './pages/NotFound';
+import PaymentSuccess from './pages/PaymentSuccess';
+import Subscription from './pages/Subscription';
+import Upgrade from './pages/Upgrade';
+import MockPayment from './pages/MockPayment';
+import Footer from './components/Footer';
+import ProjectAssistant from './components/ProjectAssistant';
 
 const queryClient = new QueryClient();
 
@@ -39,10 +43,7 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/auth" element={<Auth />} />
-                <Route path="/admin-auth" element={<AdminAuth />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/gallery" element={<Gallery />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/help" element={<Help />} />
@@ -51,8 +52,14 @@ const App = () => {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/confirm-email" element={<EmailConfirmation />} />
+                <Route path="/payment-success" element={<PaymentSuccess />} />
+                <Route path="/subscription" element={<Subscription />} />
+                <Route path="/upgrade" element={<Upgrade />} />
+                <Route path="/mock-payment" element={<MockPayment />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
+              <Footer />
+              <ProjectAssistant />
               <Toaster />
             </div>
           </Router>

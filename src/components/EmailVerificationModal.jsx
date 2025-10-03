@@ -9,7 +9,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onVerified }) 
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  const { user } = useAuth();
+  const { user, session } = useAuth();
 
   const handleSendConfirmation = async () => {
     setIsSending(true);
@@ -19,7 +19,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onVerified }) 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({ email: user?.email })
       });
@@ -56,7 +56,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onVerified }) 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user?.access_token || 'demo-token'}`
+          'Authorization': `Bearer ${session?.access_token}`
         },
         body: JSON.stringify({ email: user?.email })
       });
