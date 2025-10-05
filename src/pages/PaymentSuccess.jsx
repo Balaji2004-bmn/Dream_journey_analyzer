@@ -31,7 +31,7 @@ export default function PaymentSuccess() {
   const isActive = sub?.status === 'active';
 
   return (
-    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
+    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
           <DreamCard className="p-6">

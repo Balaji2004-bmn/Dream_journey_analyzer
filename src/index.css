@@ -2,157 +2,220 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Theme: Slate Gray + Blue Accent - High Contrast */
+/* =========================================================
+   Handcrafted Pastel Theme: Cream, Sage, Mint, Dusty Blue
+   Smooth light/dark mode, readable text, and elegant UI
+   ========================================================= */
 
+/* ------------------ Theme Variables ------------------ */
 @layer base {
   :root {
-    /* Light Mode - Clean white with slate text */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* ---------- Light Mode ---------- */
+    --bg-main: 45 50% 98%;       /* Cream */
+    --bg-card: 45 40% 99%;       /* Slightly darker cream */
+    --primary: 199 95% 74%;      /* Light cyan #7dd3fc - for buttons and headings */
+    --secondary: 140 25% 75%;    /* Soft mint */
+    --accent: 205 40% 65%;       /* Dusty blue */
+    --highlight: 199 95% 74%;    /* Light cyan #7dd3fc - for headings */
+    --warning: 199 95% 74%;      /* Light cyan for warnings/info */
+    --text-main: 210 20% 15%;    /* Dark slate */
+    --text-muted: 210 15% 40%;   /* Muted dark */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    /* Professional slate blue primary with good contrast */
-    --primary: 217 91% 40%;
+    /* Tailwind-compatible variables for utility classes */
+    --background: 45 50% 98%;
+    --foreground: 210 20% 15%;
+    --card: 45 40% 99%;
+    --card-foreground: 210 20% 15%;
+    --popover: 45 40% 99%;
+    --popover-foreground: 210 20% 15%;
+    --primary: 199 95% 74%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 20% 65%;
-    --secondary-foreground: 222 47% 11%;
-    --accent: 217 91% 40%;
+    --secondary-foreground: 210 25% 25%;
     --accent-foreground: 0 0% 100%;
-
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-
-    --destructive: 0 84% 60%;
+    --muted: 45 35% 92%;
+    --muted-foreground: 210 15% 40%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
+    --border: 45 25% 85%;
+    --input: 45 25% 90%;
+    --ring: 199 95% 74%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 217 91% 40%;
-
-    --radius: 0.5rem;
-
-    /* Subtle gradients for depth */
-    --gradient-cosmic: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-dream: linear-gradient(135deg, hsl(217 91% 40%), hsl(217 91% 50%));
-    --gradient-nebula: linear-gradient(180deg, hsl(217 91% 95%), hsl(0 0% 100%));
-    --gradient-card: linear-gradient(to bottom, hsl(0 0% 100%), hsl(210 40% 99%));
-
-    /* Clean shadows */
-    --shadow-cosmic: 0 4px 12px hsl(217 91% 40% / 0.08);
-    --shadow-dream: 0 2px 8px hsl(217 91% 40% / 0.06);
-    --glow-primary: 0 0 0 1px hsl(217 91% 40% / 0.1);
-    --glow-accent: 0 0 0 1px hsl(217 91% 40% / 0.15);
-
-    /* Smooth transitions for hover effects */
-    --transition-smooth: all 0.2s ease;
-    --transition-cosmic: all 0.3s ease;
-    --transition-gentle: all 0.15s ease;
-
-    /* Sidebar */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 217 91% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 217 91% 40%;
+    --radius: 0.75rem;
+    --transition-smooth: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
+}
 
-  .dark {
-    /* Dark Mode - Deep slate with high contrast white text */
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+/* ---------- Dark Mode - Neutral Gray Theme ---------- */
+.dark {
+  --bg-main: 220 9% 12%;       /* Neutral dark gray (similar to gray-900) */
+  --bg-card: 220 9% 16%;       /* Slightly lighter gray (similar to gray-800) */
+  --primary: 199 95% 74%;      /* Light cyan in dark mode */
+  --secondary: 140 20% 35%;
+  --accent: 205 35% 60%;
+  --highlight: 199 95% 74%;    /* Light cyan in dark mode */
+  --warning: 199 95% 74%;      /* Light cyan for warnings/info */
+  --text-main: 220 9% 95%;     /* Light gray text */
+  --text-muted: 220 9% 70%;    /* Muted gray text */
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+  /* Tailwind-compatible dark mode variables */
+  --background: 220 9% 12%;           /* gray-900 tone */
+  --foreground: 220 9% 95%;
+  --card: 220 9% 16%;                 /* gray-800 tone */
+  --card-foreground: 220 9% 95%;
+  --popover: 220 9% 16%;
+  --popover-foreground: 220 9% 95%;
+  --primary: 199 95% 74%;
+  --primary-foreground: 0 0% 100%;
+  --secondary-foreground: 220 9% 95%;
+  --accent-foreground: 0 0% 100%;
+  --muted: 220 9% 20%;
+  --muted-foreground: 220 9% 70%;
+  --destructive: 0 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 220 9% 24%;               /* gray-700 border */
+  --input: 220 9% 18%;
+  --ring: 199 95% 74%;
+}
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+/* ------------------ Global Styles ------------------ */
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 217 33% 30%;
-    --secondary-foreground: 210 40% 98%;
-    --accent: 217 91% 60%;
-    --accent-foreground: 222 47% 11%;
+body {
+  @apply antialiased;
+  background-color: hsl(var(--bg-main));
+  color: hsl(var(--text-main));
+  font-feature-settings: "cv11", "ss01";
+  font-variation-settings: "opsz" auto;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+html {
+  scroll-behavior: smooth;
+}
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+/* ------------------ Cards ------------------ */
+.card {
+  background-color: hsl(var(--bg-card));
+  color: hsl(var(--text-main));
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px hsl(var(--accent)/0.1);
+  padding: 1.5rem;
+  transition: background-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+}
 
-    --border: 217 33% 24%;
-    --input: 217 33% 20%;
-    --ring: 217 91% 60%;
+/* ------------------ Buttons ------------------ */
+.btn-primary {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 100%);
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-    --gradient-cosmic: linear-gradient(135deg, hsl(222 47% 11%), hsl(217 33% 17%));
-    --gradient-dream: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-nebula: linear-gradient(180deg, hsl(217 33% 20%), hsl(222 47% 11%));
-    --gradient-card: linear-gradient(to bottom, hsl(217 33% 17%), hsl(217 33% 15%));
+.btn-primary:hover {
+  background-color: hsl(220 9% 75%);  /* Light gray hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px hsl(220 9% 75%/0.3);
+}
 
-    --shadow-cosmic: 0 4px 12px hsl(0 0% 0% / 0.3);
-    --shadow-dream: 0 2px 8px hsl(0 0% 0% / 0.2);
-    --glow-primary: 0 0 0 1px hsl(217 91% 60% / 0.3);
-    --glow-accent: 0 0 0 1px hsl(217 91% 60% / 0.4);
+.btn-accent {
+  background-color: hsl(var(--accent));
+  color: hsl(0 0% 100%);
+}
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 24%;
-    --sidebar-ring: 217 91% 60%;
-  }
+.btn-accent:hover {
+  background-color: hsl(220 9% 75%);  /* Light gray hover */
+}
 
-  * {
-    @apply border-border;
-  }
+/* ------------------ Text Utilities ------------------ */
+.text-main { color: hsl(var(--text-main)); }
+.text-muted { color: hsl(var(--text-muted)); }
+.text-primary { color: hsl(var(--primary)); }
+.text-secondary { color: hsl(var(--secondary)); }
+.text-accent { color: hsl(var(--accent)); }
+.text-highlight { color: hsl(var(--highlight)); }
 
-  body {
-    @apply bg-background text-foreground;
-    transition: var(--transition-smooth);
-  }
+/* ------------------ Background Utilities ------------------ */
+.bg-highlight { background-color: hsl(var(--highlight)); }
+.border-highlight { border-color: hsl(var(--highlight)); }
 
-  /* Keep hover effects and interactive animations only */
-  button, a, [role="button"] {
-    transition: var(--transition-smooth);
-  }
+/* ------------------ Links ------------------ */
+a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
 
-  button:hover, a:hover, [role="button"]:hover {
-    transform: translateY(-1px);
-  }
+a:hover {
+  color: hsl(var(--accent));
+}
 
-  /* Disable excessive animations but keep spin for loaders */
-  .animate-gentle-pulse,
-  .animate-soft-glow,
-  .animate-gentle-float,
-  .animate-mystical-float,
-  .animate-ethereal-glow,
-  .animate-dream-shimmer,
-  .animate-pulse,
-  .animate-bounce {
-    animation: none !important;
-  }
+/* ------------------ Headers ------------------ */
+h1, h2, h3, h4, h5, h6 {
+  color: hsl(var(--text-main));
+  margin-bottom: 0.5rem;
+}
 
-  /* Keep spin for loading indicators */
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+/* ------------------ Interactive States ------------------ */
+button, a, [role="button"] {
+  transition: var(--transition-smooth);
+}
 
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
+/* Global button hover - light gray */
+button:hover:not(:disabled):not(.no-hover-effect) {
+  background-color: hsl(220 9% 75%);
+  transform: translateY(-2px);
+}
+
+button:active:not(:disabled), a:active, [role="button"]:active {
+  transform: translateY(0);
+}
+
+a:hover {
+  transform: translateY(-1px);
+}
+
+/* Remove excessive animations */
+.animate-pulse,
+.animate-bounce {
+  animation: none !important;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px hsl(var(--primary)/0.3);
+}
+
+/* ------------------ Page Background Utilities ------------------ */
+.page-background {
+  /* Light mode: soft cream gradient */
+  background: linear-gradient(to bottom right, hsl(45 50% 98%), hsl(45 40% 96%));
+}
+
+.dark .page-background {
+  /* Dark mode: neutral gray gradient */
+  background: linear-gradient(to bottom right, hsl(220 13% 9%), hsl(220 13% 12%));
+}
+
+/* ------------------ Optional Gradients ------------------ */
+.header {
+  background: linear-gradient(135deg, hsl(var(--primary)/0.8), hsl(var(--secondary)/0.8));
+}
+
+.footer {
+  background: linear-gradient(135deg, hsl(var(--accent)/0.6), hsl(var(--bg-main)/0.6));
 }

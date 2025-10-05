@@ -64,10 +64,15 @@ export default function ProjectAssistant() {
 
     } catch (error) {
       console.error('Assistant error:', error);
-      toast.error('Failed to get response. Please try again.');
+      
+      // Simple, friendly error message (no troubleshooting details)
+      let errorMessage = "I apologize for the inconvenience. I'm having trouble responding right now. Please try again in a moment.";
+      
+      toast.error('Unable to get response');
+      
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
+        content: errorMessage
       }]);
     } finally {
       setLoading(false);

@@ -29,67 +29,67 @@ export default function About() {
       icon: <Brain className="w-6 h-6" />,
       title: "AI Dream Analysis",
       description: "Advanced NLP algorithms analyze your dreams to extract emotions, keywords, and hidden meanings.",
-      color: "text-purple-400"
+      color: "text-primary"
     },
     {
       icon: <Video className="w-6 h-6" />,
       title: "Video Generation",
       description: "Transform your dreams into stunning visual stories with AI-powered video creation.",
-      color: "text-cyan-400"
+      color: "text-highlight"
     },
     {
       icon: <Sparkles className="w-6 h-6" />,
       title: "Emotion Detection",
       description: "Identify and track emotional patterns in your dreams for deeper self-understanding.",
-      color: "text-yellow-400"
+      color: "text-accent"
     },
     {
       icon: <Target className="w-6 h-6" />,
       title: "Pattern Recognition",
       description: "Discover recurring themes and symbols in your dream journey over time.",
-      color: "text-green-400"
+      color: "text-primary"
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: "Dream Gallery",
       description: "Share your dream videos with the community and explore others' dream experiences.",
-      color: "text-pink-400"
+      color: "text-highlight"
     },
     {
       icon: <Shield className="w-6 h-6" />,
       title: "Privacy First",
       description: "Your dreams are personal. We ensure complete privacy and security of your data.",
-      color: "text-blue-400"
+      color: "text-accent"
     }
   ];
 
   const techStack = [
-    { name: "React", icon: <Code className="w-5 h-5" />, description: "Modern UI framework" },
-    { name: "JavaScript", icon: <Zap className="w-5 h-5" />, description: "Type-safe development" },
-    { name: "Supabase", icon: <Database className="w-5 h-5" />, description: "Backend & Authentication" },
-    { name: "Tailwind CSS", icon: <Palette className="w-5 h-5" />, description: "Beautiful styling" },
-    { name: "Python NLP", icon: <Brain className="w-5 h-5" />, description: "AI dream analysis" },
-    { name: "Vite", icon: <Rocket className="w-5 h-5" />, description: "Fast development" }
+    { name: "React", icon: <Code className="w-5 h-5 text-primary" />, description: "Modern UI framework" },
+    { name: "JavaScript", icon: <Zap className="w-5 h-5 text-highlight" />, description: "Type-safe development" },
+    { name: "Supabase", icon: <Database className="w-5 h-5 text-accent" />, description: "Backend & Authentication" },
+    { name: "Tailwind CSS", icon: <Palette className="w-5 h-5 text-primary" />, description: "Beautiful styling" },
+    { name: "Python NLP", icon: <Brain className="w-5 h-5 text-highlight" />, description: "AI dream analysis" },
+    { name: "Vite", icon: <Rocket className="w-5 h-5 text-accent" />, description: "Fast development" }
   ];
 
   const stats = [
-    { number: "10K+", label: "Dreams Analyzed", icon: <Brain className="w-5 h-5" /> },
-    { number: "5K+", label: "Videos Generated", icon: <Video className="w-5 h-5" /> },
-    { number: "2K+", label: "Active Users", icon: <Users className="w-5 h-5" /> },
-    { number: "95%", label: "Accuracy Rate", icon: <Target className="w-5 h-5" /> }
+    { number: "10K+", label: "Dreams Analyzed", icon: <Brain className="w-5 h-5 text-primary" /> },
+    { number: "5K+", label: "Videos Generated", icon: <Video className="w-5 h-5 text-highlight" /> },
+    { number: "2K+", label: "Active Users", icon: <Users className="w-5 h-5 text-accent" /> },
+    { number: "95%", label: "Accuracy Rate", icon: <Target className="w-5 h-5 text-primary" /> }
   ];
 
   return (
-    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
+    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-6xl mx-auto px-4 space-y-12">
         {/* Hero Section */}
         <div className="text-center space-y-6">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Moon className="w-10 h-10 text-blue-400 animate-gentle-float" />
-            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <Moon className="w-10 h-10 text-highlight animate-gentle-float" />
+            <h1 className="text-5xl md:text-6xl font-bold text-highlight">
               About Dream Journey Analyzer
             </h1>
-            <Star className="w-10 h-10 text-yellow-400 animate-gentle-pulse" />
+            <Star className="w-10 h-10 text-highlight animate-gentle-pulse" />
           </div>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
             Unlock the mysteries of your subconscious mind with cutting-edge AI technology. 
@@ -101,11 +101,11 @@ export default function About() {
         <DreamCard className="p-8 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-cyan-500/10">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Sparkles className="w-8 h-8 text-yellow-400" />
-              <h2 className="text-3xl font-bold bg-gradient-nebula bg-clip-text text-transparent">
+              <Sparkles className="w-8 h-8 text-highlight" />
+              <h2 className="text-3xl font-bold text-highlight">
                 Our Mission
               </h2>
-              <Sparkles className="w-8 h-8 text-yellow-400" />
+              <Sparkles className="w-8 h-8 text-highlight" />
             </div>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               We believe dreams are windows to our inner world. Our mission is to make dream analysis accessible, 
@@ -120,7 +120,7 @@ export default function About() {
           {stats.map((stat, index) => (
             <DreamCard key={index} className="p-6 text-center">
               <div className="space-y-2">
-                <div className="flex items-center justify-center text-accent mb-2">
+                <div className="flex items-center justify-center mb-2">
                   {stat.icon}
                 </div>
                 <div className="text-3xl font-bold text-foreground">{stat.number}</div>
@@ -133,7 +133,7 @@ export default function About() {
         {/* Features */}
         <div className="space-y-8">
           <div className="text-center">
-            <h2 className="text-4xl font-bold bg-gradient-dream bg-clip-text text-transparent mb-4">
+            <h2 className="text-4xl font-bold text-highlight mb-4">
               Powerful Features
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -164,7 +164,7 @@ export default function About() {
         <DreamCard className="p-8">
           <DreamCardHeader>
             <div className="text-center mb-6">
-              <DreamCardTitle className="text-3xl font-bold bg-gradient-nebula bg-clip-text text-transparent mb-4">
+              <DreamCardTitle className="text-3xl font-bold text-highlight mb-4">
                 Built with Modern Technology
               </DreamCardTitle>
               <p className="text-muted-foreground">
@@ -176,7 +176,7 @@ export default function About() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {techStack.map((tech, index) => (
                 <div key={index} className="flex items-center gap-3 p-4 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors">
-                  <div className="text-accent">
+                  <div>
                     {tech.icon}
                   </div>
                   <div>
@@ -192,7 +192,7 @@ export default function About() {
         {/* How It Works */}
         <div className="space-y-8">
           <div className="text-center">
-            <h2 className="text-4xl font-bold bg-gradient-dream bg-clip-text text-transparent mb-4">
+            <h2 className="text-4xl font-bold text-highlight mb-4">
               How It Works
             </h2>
             <p className="text-lg text-muted-foreground">
@@ -242,7 +242,7 @@ export default function About() {
         {/* Call to Action */}
         <DreamCard className="p-8 bg-gradient-to-r from-purple-500/20 to-pink-500/20">
           <div className="text-center space-y-6">
-            <h2 className="text-3xl font-bold bg-gradient-dream bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold text-highlight">
               Ready to Explore Your Dreams?
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

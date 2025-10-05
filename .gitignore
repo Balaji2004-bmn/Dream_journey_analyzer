@@ -1,14 +1,42 @@
 # Dependencies
 node_modules/
-__pycache__/
-*.pyc
+.pnp
+.pnp.js
 
-# Environment variables
+# Testing
+coverage/
+*.log
+
+# Production builds
+build/
+dist/
+.next/
+out/
+
+# Environment variables - CRITICAL SECURITY
 .env
 .env.local
-.env.production
-.env.staging
-.env.example
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+**/.env
+backend/.env
+**/*.env
+
+# API Keys and Secrets - NEVER COMMIT THESE
+**/config/secrets.json
+**/config/keys.json
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
 
 # Logs
 logs/
@@ -16,54 +44,42 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Build outputs
-dist/
-build/
-.next/
-out/
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
+# OS files
 Thumbs.db
+.DS_Store
 
 # Temporary files
+tmp/
+temp/
 *.tmp
 *.temp
 
 # Database
-*.db
 *.sqlite
 *.sqlite3
+*.db
 
-# Lock files (usually commit these)
-# package-lock.json
-# bun.lockb
+# Uploads and user data
+uploads/
+upload/
+**/uploads/
+**/upload/
 
-# Coverage reports
-coverage/
-.nyc_output/
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
 
 # Optional npm cache directory
 .npm
+
+# Optional eslint cache
+.eslintcache
 
 # Optional REPL history
 .node_repl_history
@@ -71,58 +87,51 @@ pids
 # Output of 'npm pack'
 *.tgz
 
-# Yarn Integrity file
+# Yarn
 .yarn-integrity
-
-# dotenv environment variables file
-.env.test
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# Yarn v2
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
 
-# Supabase
-supabase/.branches
-supabase/.temp
+# IDE - VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 
-# Admin frontend build
-admin-frontend/dist/
-admin-frontend/build/
+# Sentry
+.sentryclirc
 
-# Demo
-demo/dist/
+# TypeScript
+*.tsbuildinfo
 
-# Payments flask
-payments_flask/__pycache__/
-payments_flask/*.pyc
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Vercel
+.vercel
+
+# Turbo
+.turbo
+
+# Local Netlify folder
+.netlify

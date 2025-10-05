@@ -13,10 +13,11 @@
     "admin": "cd backend && npm run admin",
     "admin-frontend": "cd admin-frontend && npm run dev",
     "dev:full": "concurrently \"npm run backend\" \"npm run admin\" \"npm run dev\" \"npm run admin-frontend\"",
-    "admin-frontend": "cd admin-frontend && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../admin-frontend && npm install",
     "setup": "node setup-env.js",
-    "test-setup": "node test-setup.js"
+    "test-setup": "node test-setup.js",
+    "check-env": "node check-env.cjs",
+    "test-auth": "node test-auth-flow.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

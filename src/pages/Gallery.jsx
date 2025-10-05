@@ -824,7 +824,7 @@ export default function Gallery() {
 
   if (authLoading) {
     return (
-      <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 flex items-center justify-center">
+      <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="flex items-center gap-3 opacity-80 text-purple-600 dark:text-purple-400">
           <Brain className="w-6 h-6 animate-pulse" />
           Loading gallery...
@@ -835,13 +835,13 @@ export default function Gallery() {
   }
 
   return (
-    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
+    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-7xl mx-auto px-4 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <Sparkles className="w-8 h-8 text-yellow-400" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-highlight">
               Dream Gallery
             </h1>
             <Moon className="w-8 h-8 text-blue-400" />
@@ -1175,7 +1175,7 @@ export default function Gallery() {
                 <Button
                   onClick={verifySecurityCode}
                   disabled={isVerifyingCode || securityCode.length !== 6}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600"
+                  className="flex-1 bg-primary hover:bg-primary/90"
                 >
                   {isVerifyingCode ? (
                     <>

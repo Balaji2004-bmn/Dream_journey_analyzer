@@ -40,28 +40,51 @@ router.get('/users',
 
       // Demo mode fallback
       if (!process.env.SUPABASE_URL || process.env.SUPABASE_URL === 'your_supabase_project_url') {
+        const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+        const bannedUntil = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days from now
+        
         const demoUsers = [
           {
             id: 'demo-user-1',
             email: 'demo@example.com',
+            display_name: 'Demo Admin',
             created_at: new Date().toISOString(),
             last_sign_in_at: new Date().toISOString(),
             email_confirmed_at: new Date().toISOString(),
-            role: 'admin',
+            role: adminEmails.includes('demo@example.com') ? 'admin' : 'user',
             is_active: true,
+            is_banned: false,
             banned_until: null,
-            ban_reason: null
+            ban_reason: null,
+            total_dreams: 5
           },
           {
             id: 'demo-user-2',
             email: 'user@example.com',
+            display_name: 'Demo User',
             created_at: new Date(Date.now() - 86400000).toISOString(),
             last_sign_in_at: new Date(Date.now() - 3600000).toISOString(),
             email_confirmed_at: new Date(Date.now() - 86400000).toISOString(),
             role: 'user',
             is_active: true,
+            is_banned: false,
             banned_until: null,
-            ban_reason: null
+            ban_reason: null,
+            total_dreams: 3
+          },
+          {
+            id: 'demo-user-3',
+            email: 'banned@example.com',
+            display_name: 'Banned User',
+            created_at: new Date(Date.now() - 172800000).toISOString(),
+            last_sign_in_at: new Date(Date.now() - 86400000).toISOString(),
+            email_confirmed_at: new Date(Date.now() - 172800000).toISOString(),
+            role: 'user',
+            is_active: true,
+            is_banned: true,
+            banned_until: bannedUntil,
+            ban_reason: 'Policy violation - demo user',
+            total_dreams: 1
           }
         ];
 
@@ -134,20 +157,35 @@ router.get('/users',
         }));
       } catch (_) {}
 
-      const enrichedUsers = data.map(user => ({
-        id: user.id,
-        email: user.email,
-        created_at: user.created_at,
-        last_sign_in_at: user.last_sign_in_at,
-        email_confirmed_at: user.email_confirmed_at,
-        display_name: user.user_metadata?.display_name || user.email?.split('@')[0] || 'User',
-        role: user.role || 'user',
-        is_active: user.is_active !== false,
-        is_banned: !!(authBans[user.id]?.banned_until || user.banned_until),
-        banned_until: authBans[user.id]?.banned_until || user.banned_until || null,
-        ban_reason: user.ban_reason || null,
-        total_dreams: 0 // Placeholder
-      }));
+      // Get admin emails from environment
+      const adminEmails = (process.env.ADMIN_EMAILS || '').split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+
+      const enrichedUsers = data.map(user => {
+        const email = (user.email || '').toLowerCase();
+        const banned_until = authBans[user.id]?.banned_until || user.banned_until || null;
+        const is_banned = banned_until && new Date(banned_until) > new Date();
+        
+        // Check if user is admin based on ADMIN_EMAILS environment variable
+        let role = user.role || 'user';
+        if (adminEmails.includes(email)) {
+          role = 'admin';
+        }
+        
+        return {
+          id: user.id,
+          email: user.email,
+          created_at: user.created_at,
+          last_sign_in_at: user.last_sign_in_at,
+          email_confirmed_at: user.email_confirmed_at,
+          display_name: user.user_metadata?.display_name || user.email?.split('@')[0] || 'User',
+          role: role,
+          is_active: user.is_active !== false,
+          is_banned: is_banned,
+          banned_until: banned_until,
+          ban_reason: user.ban_reason || null,
+          total_dreams: user.total_dreams || 0
+        };
+      });
 
       res.json({
         success: true,

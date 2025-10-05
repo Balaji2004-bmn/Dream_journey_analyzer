@@ -85,22 +85,20 @@ export default function EmailConfirmation() {
   const handleContinue = () => {
     navigate('/auth');
   };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 flex items-center justify-center p-4 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 pt-20">
       <Card className="w-full max-w-md border-primary/20 bg-card/80 backdrop-blur-md shadow-2xl">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-highlight flex items-center justify-center">
               <Mail className="w-4 h-4 text-white" />
             </div>
-            <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl text-highlight">
               Email Confirmation
             </CardTitle>
           </div>
           <CardDescription>
             {status === 'loading' && 'Confirming your email address...'}
-            {status === 'success' && 'Your email has been confirmed!'}
             {status === 'error' && 'Confirmation failed'}
           </CardDescription>
         </CardHeader>
@@ -115,7 +113,7 @@ export default function EmailConfirmation() {
             <div className="space-y-4">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
               <p className="text-muted-foreground">{message}</p>
-              <Button onClick={handleContinue} className="w-full bg-gradient-to-r from-purple-600 to-pink-600">
+              <Button onClick={handleContinue} className="w-full bg-primary hover:bg-primary/90">
                 Continue to Sign In
               </Button>
             </div>

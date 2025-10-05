@@ -22,13 +22,13 @@ import {
 
 export default function Help() {
   return (
-    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
+    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-4xl mx-auto px-4 space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
             <HelpCircle className="w-8 h-8 text-purple-600" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-highlight">
               Help Center
             </h1>
           </div>
@@ -225,7 +225,7 @@ export default function Help() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" onClick={() => window.open('mailto:bmn636169@gmail.com?subject=Dream Journey Analyzer Support', '_blank')}>
+            <Button size="lg" className="bg-primary hover:bg-primary/90" onClick={() => window.open('mailto:bmn636169@gmail.com?subject=Dream Journey Analyzer Support', '_blank')}>
               <Mail className="w-4 h-4 mr-2" />
               Contact Support Team
             </Button>

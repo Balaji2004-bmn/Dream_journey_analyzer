@@ -436,7 +436,9 @@ export default function AdminDashboard() {
                 <Shield className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1</div>
+                <div className="text-2xl font-bold">
+                  {users.filter(u => ['admin', 'super_admin', 'moderator'].includes(u.role)).length}
+                </div>
                 <p className="text-xs text-muted-foreground">
                   Admin users
                 </p>

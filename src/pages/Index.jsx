@@ -4,7 +4,7 @@ import DreamJourneyBackground from "@/components/DreamJourneyBackground";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 relative">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-card dark:from-gray-900 dark:to-gray-800 relative">
       <DreamJourneyBackground />
       <div className="relative z-10">
         <HeroSection />

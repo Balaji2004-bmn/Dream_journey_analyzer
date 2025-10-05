@@ -108,7 +108,7 @@ router.post('/signup', async (req, res) => {
       // Send confirmation email in demo mode
       const transporter = createEmailTransporter();
       if (transporter) {
-        const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/email/confirm-email?email=${encodeURIComponent(normalizedEmail)}`;
+        const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/auth/confirm-email?token=${confirmationToken}`;
         const mailOptions = {
           from: `"Dream Journey Analyzer" <${process.env.EMAIL_USER}>`,
           to: normalizedEmail,
@@ -150,8 +150,75 @@ router.post('/signup', async (req, res) => {
       });
     } else {
       // Production mode: Use Supabase with custom email confirmation
+      logger.info(`Production signup for ${normalizedEmail}`);
       const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
+      // First, check if user already exists
+      logger.info('Checking for existing user...');
+      const { data: existingUsers, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+      if (listError) {
+        logger.error('Error listing users:', listError);
+        // Fallback if can't list users - try to create directly
+      }
+      const existingUser = existingUsers?.users?.find(u => u.email?.toLowerCase() === normalizedEmail);
+      logger.info(`Existing user check: ${existingUser ? 'FOUND' : 'NOT FOUND'}`);
+
+      if (existingUser) {
+        // User exists - check if confirmed
+        if (existingUser.email_confirmed_at) {
+          logger.info(`User exists and is confirmed: ${normalizedEmail}`);
+          return res.status(409).json({ 
+            error: 'User Exists', 
+            message: 'An account with this email already exists. Please sign in instead.' 
+          });
+        } else {
+          // User exists but not confirmed - resend confirmation email
+          logger.info(`User exists but NOT confirmed: ${normalizedEmail}. Will resend confirmation.`);
+          
+          const confirmationToken = crypto.randomBytes(32).toString('hex');
+          emailConfirmations.set(confirmationToken, { email: normalizedEmail, userId: existingUser.id, expiresAt: Date.now() + (24 * 60 * 60 * 1000) });
+
+          // Send email in background (don't wait)
+          const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/auth/confirm-email?token=${confirmationToken}`;
+          
+          const transporter = createEmailTransporter();
+          if (transporter) {
+            logger.info(`Attempting to resend confirmation email to ${normalizedEmail}`);
+            // Send async without blocking response
+            transporter.sendMail({
+              from: `"Dream Journey Analyzer" <${process.env.EMAIL_USER}>`,
+              to: normalizedEmail,
+              subject: 'Please confirm your email - Dream Journey Analyzer',
+              html: `
+                <div style="font-family: sans-serif; text-align: center; padding: 40px;">
+                  <h1 style="color: #333;">Welcome to Dream Journey Analyzer!</h1>
+                  <p>Please confirm your email address by clicking the button below.</p>
+                  <a href="${confirmUrl}" style="background-color: #28a745; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Confirm Email</a>
+                  <p style="margin-top: 20px; font-size: 12px; color: #777;">If you cannot click the button, copy this link:</p>
+                  <p style="font-size: 12px; color: #777;">${confirmUrl}</p>
+                </div>
+              `
+            }).then(() => {
+              logger.info(`Confirmation email resent successfully to ${normalizedEmail}`);
+            }).catch(emailErr => {
+              logger.error('Failed to send resend email:', emailErr);
+            });
+          } else {
+            logger.warn(`Email transporter not available for ${normalizedEmail}`);
+          }
+
+          // Return immediately without waiting for email
+          logger.info(`Returning success response for existing unconfirmed user: ${normalizedEmail}`);
+          return res.status(200).json({ 
+            success: true,
+            message: 'Account already exists but not confirmed. We\'ve resent the confirmation email. Please check your inbox.',
+            requiresConfirmation: true
+          });
+        }
+      }
+
+      // User doesn't exist - create new user
+      logger.info(`Creating new user: ${normalizedEmail}`);
       const { data, error } = await supabaseAdmin.auth.admin.createUser({
         email,
         password,
@@ -163,9 +230,6 @@ router.post('/signup', async (req, res) => {
 
       if (error) {
         logger.error('Sign up error:', error);
-        if (error.message && error.message.includes('User already registered')) {
-          return res.status(409).json({ error: 'User Exists', message: 'An account with this email already exists' });
-        }
         // Dev fallback: create in-memory user so local signup works even if Supabase admin fails
         if ((process.env.NODE_ENV || 'development') !== 'production') {
           const userId = crypto.randomUUID();
@@ -181,12 +245,39 @@ router.post('/signup', async (req, res) => {
           };
           demoUsers.set(normalizedEmail, user);
           emailConfirmations.set(confirmationToken, { email: normalizedEmail, expiresAt: Date.now() + (24 * 60 * 60 * 1000) });
+          
+          // Send confirmation email in fallback mode
+          const transporter = createEmailTransporter();
+          if (transporter) {
+            const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/auth/confirm-email?token=${confirmationToken}`;
+            try {
+              await transporter.sendMail({
+                from: `"Dream Journey Analyzer" <${process.env.EMAIL_USER}>`,
+                to: normalizedEmail,
+                subject: 'Please confirm your email - Dream Journey Analyzer',
+                html: `
+                  <div style="font-family: sans-serif; text-align: center; padding: 40px;">
+                    <h1 style="color: #333;">Welcome to Dream Journey Analyzer!</h1>
+                    <p>Please confirm your email address by clicking the button below.</p>
+                    <a href="${confirmUrl}" style="background-color: #28a745; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px;">Confirm Email</a>
+                    <p style="margin-top: 20px; font-size: 12px; color: #777;">If you cannot click the button, copy this link:</p>
+                    <p style="font-size: 12px; color: #777;">${confirmUrl}</p>
+                  </div>
+                `
+              });
+              logger.info(`Confirmation email sent to ${normalizedEmail} (dev fallback)`);
+            } catch (emailErr) {
+              logger.error('Failed to send confirmation email in fallback:', emailErr);
+            }
+          }
+          
           logger.warn('Dev fallback: created demo user due to Supabase signup failure (email NOT confirmed)');
           return res.status(201).json({
             success: true,
-            message: 'Account created (dev fallback). Please confirm your email before signing in.',
+            message: 'Account created successfully! Please check your email to confirm your account.',
             user: { id: user.id, email: user.email, email_confirmed_at: user.email_confirmed_at, user_metadata: user.user_metadata },
-            demo: true
+            demo: true,
+            requiresConfirmation: true
           });
         }
         return res.status(400).json({ error: 'Sign Up Failed', message: error.message });
@@ -197,8 +288,10 @@ router.post('/signup', async (req, res) => {
       emailConfirmations.set(confirmationToken, { email: normalizedEmail, expiresAt: Date.now() + (24 * 60 * 60 * 1000) }); // 24 hours
 
       const transporter = createEmailTransporter();
+      logger.info(`Email transporter created: ${!!transporter}`);
       if (transporter) {
-        const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/email/confirm-email?email=${encodeURIComponent(normalizedEmail)}`;
+        const confirmUrl = `${process.env.BACKEND_PUBLIC_URL || 'http://localhost:3001'}/api/auth/confirm-email?token=${confirmationToken}`;
+        logger.info(`Sending NEW USER confirmation email to ${normalizedEmail}`);
         const mailOptions = {
           from: `"Dream Journey Analyzer" <${process.env.EMAIL_USER}>`,
           to: normalizedEmail,
@@ -303,8 +396,12 @@ router.post('/signin', async (req, res) => {
         return res.status(401).json({ error: 'Invalid Credentials', message: 'Invalid email or password' });
       }
 
-      if (!user.email_confirmed_at && process.env.NODE_ENV === 'production') {
-        return res.status(401).json({ error: 'Email Not Verified', message: 'Please verify your email before signing in.' });
+      // Always enforce email confirmation (removed production-only check)
+      if (!user.email_confirmed_at) {
+        return res.status(401).json({ 
+          error: 'Email Not Verified', 
+          message: 'Please verify your email before signing in. Check your inbox for the confirmation link.' 
+        });
       }
 
       // Create session
@@ -350,8 +447,12 @@ router.post('/signin', async (req, res) => {
         if ((process.env.NODE_ENV || 'development') !== 'production') {
           const demoUser = demoUsers.get(normalizedEmail);
           if (demoUser && demoUser.password === password) {
-            if (!demoUser.email_confirmed_at && process.env.NODE_ENV === 'production') {
-              return res.status(401).json({ error: 'Email Not Verified', message: 'Please verify your email before signing in.' });
+            // Always enforce email confirmation
+            if (!demoUser.email_confirmed_at) {
+              return res.status(401).json({ 
+                error: 'Email Not Verified', 
+                message: 'Please verify your email before signing in. Check your inbox for the confirmation link.' 
+              });
             }
             const sessionToken = crypto.randomBytes(32).toString('hex');
             const session = {
@@ -388,21 +489,21 @@ router.post('/signin', async (req, res) => {
           logger.info(`Captcha error detected, trying demo fallback for ${normalizedEmail}`);
           let demoUser = demoUsers.get(normalizedEmail);
           if (!demoUser) {
-            // Create demo user for testing
-            const userId = crypto.randomUUID();
-            demoUser = {
-              id: userId,
-              email: normalizedEmail,
-              password: password,
-              email_confirmed_at: new Date().toISOString(),
-              created_at: new Date().toISOString(),
-              user_metadata: { signup_method: 'web_app' }
-            };
-            demoUsers.set(normalizedEmail, demoUser);
-            logger.info(`Created demo user for ${normalizedEmail}`);
+            // Don't auto-create users on sign-in - they must sign up first
+            return res.status(401).json({ 
+              error: 'Invalid Credentials', 
+              message: 'Invalid email or password. Please sign up first if you don\'t have an account.' 
+            });
           }
           logger.info(`Demo user found: ${!!demoUser}, password match: ${demoUser ? demoUser.password === password : false}`);
           if (demoUser && demoUser.password === password) {
+            // Always enforce email confirmation
+            if (!demoUser.email_confirmed_at) {
+              return res.status(401).json({ 
+                error: 'Email Not Verified', 
+                message: 'Please verify your email before signing in. Check your inbox for the confirmation link.' 
+              });
+            }
             const sessionToken = crypto.randomBytes(32).toString('hex');
             const session = {
               access_token: sessionToken,
@@ -935,3 +1036,6 @@ router.get('/verify', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.demoUsers = demoUsers;
+module.exports.demoSessions = demoSessions;
+module.exports.emailConfirmations = emailConfirmations;

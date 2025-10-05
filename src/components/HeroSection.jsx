@@ -25,10 +25,10 @@ export default function HeroSection() {
       <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
         <div className="space-y-8">
           <div className="space-y-4">
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold text-highlight">
               Dream Journey
             </h1>
-            <h2 className="text-3xl md:text-5xl font-semibold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-5xl font-semibold text-highlight">
               Analyzer
             </h2>
           </div>

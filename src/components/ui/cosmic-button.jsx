@@ -9,16 +9,15 @@ const cosmicButtonVariants = cva(
   {
     variants: {
       variant: {
-        cosmic: "bg-gradient-dream text-primary-foreground hover:shadow-glow-primary transition-all duration-300",
-        nebula: "bg-gradient-nebula text-primary-foreground hover:shadow-glow-accent transition-all duration-300",
+        cosmic: "bg-primary text-primary-foreground hover:bg-gray-400 dark:hover:bg-gray-500 transition-all duration-300",
+        nebula: "bg-accent text-primary-foreground hover:bg-gray-400 dark:hover:bg-gray-500 transition-all duration-300",
         ghost: "hover:bg-accent/10 hover:text-accent-foreground border border-accent/20 backdrop-blur-sm",
-        outline: "border border-primary/30 bg-background/50 backdrop-blur-sm hover:bg-primary/10 hover:text-primary",
+        outline: "border border-primary/30 bg-background/50 backdrop-blur-sm hover:bg-gray-400/20 hover:text-primary",
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
       },
     },
     defaultVariants: {

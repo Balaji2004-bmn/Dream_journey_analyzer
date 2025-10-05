@@ -62,10 +62,10 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <NavLink to="/" className="flex items-center gap-2 font-bold text-xl">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="text-highlight font-bold">
               Dream Journey
             </span>
           </NavLink>
@@ -79,7 +79,7 @@ export default function Navigation() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive(item.path)
-                    ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                    ? "bg-primary text-white shadow-lg"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 )}
               >
@@ -140,7 +140,7 @@ export default function Navigation() {
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive(item.path)
-                      ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                      ? "bg-primary text-white shadow-lg"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   )}
                 >

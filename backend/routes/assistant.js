@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const OpenAI = require('openai');
 
-// Initialize OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// System prompts for dual-mode assistant
-const PROJECT_SYSTEM_PROMPT = `You are the official assistant for the "Adaptive Dream Journey Analyzer with Story Video Generation" platform.
+// Project system prompt — always gives detailed project info
+const PROJECT_SYSTEM_PROMPT = `
+You are the official assistant for the "Adaptive Dream Journey Analyzer with Story Video Generation" platform.
 
 **About the Platform:**
 - **Name:** Adaptive Dream Journey Analyzer with Story Video Generation
@@ -16,71 +17,54 @@ const PROJECT_SYSTEM_PROMPT = `You are the official assistant for the "Adaptive 
 - **Tagline:** Transform your dreams into visual stories
 
 **Key Features:**
-1. **Dream Journal**: Users can write down their dreams with date, mood, and tags
-2. **AI Dream Analysis**: Uses advanced AI to interpret symbols, themes, emotions, and meanings in dreams
-3. **Video Generation**: Creates beautiful, cinematic story videos from dream narratives using AI
-4. **Dream Gallery**: Browse and manage past dreams with search and filtering
-5. **Analytics Dashboard**: Track dream patterns, moods, and insights over time
-6. **Subscription Plans**: Free, Pro ($5/month), and Premium ($10/month) tiers
-7. **UPI Payment Integration**: Easy payment for Indian users with QR code scanning
-8. **Email & SMS Notifications**: Get reminders and updates about your dreams
-9. **Dark/Light Mode**: Professional slate blue theme with theme switching
-10. **Multi-language Support**: Support for multiple languages in the interface
+1. Dream Journal
+2. AI Dream Analysis
+3. Video Generation
+4. Dream Gallery
+5. Analytics Dashboard
+6. Subscription Plans: Free, Pro, Premium
+7. UPI Payment Integration
+8. Email & SMS Notifications
+9. Dark/Light Mode
+10. Multi-language Support
 
 **Subscription Plans:**
-- **Free Plan:** Basic dream journaling, limited AI analysis (up to 5 dreams/month)
-- **Pro Plan ($5/month - ₹415):** Priority video generation, up to 10s videos, HD thumbnails, unlimited dreams, email export, advanced analytics
-- **Premium Plan ($10/month - ₹830):** Everything in Pro + up to 15s videos, early access features, priority support, custom video styles, API access
+- Free: Basic journaling, limited AI analysis (5 dreams/month)
+- Pro ($5/month): Priority video gen, HD thumbnails, unlimited dreams
+- Premium ($10/month): Everything in Pro + longer videos, priority support
 
-**Payment Process:**
-Users can upgrade via UPI: scan QR code → pay exact amount → upload screenshot → plan auto-activates within minutes
+**Payment:** Users scan UPI QR → pay exact amount → upload screenshot → plan auto-activates
 
 **Technical Stack:**
-- **Frontend:** React + Vite + Tailwind CSS + shadcn/ui components
-- **Backend:** Node.js + Express + OpenAI API
-- **Database:** Supabase (PostgreSQL)
-- **AI Services:** OpenAI GPT for analysis, various video generation APIs (RunwayML, Pika, Stability AI)
-- **Payments:** UPI integration + Razorpay
-- **Authentication:** Supabase Auth with email verification
-- **Deployment:** Ready for Vercel/Netlify frontend, Railway/Render backend
+- Frontend: React + Vite + Tailwind CSS + shadcn/ui
+- Backend: Node.js + Express + Gemini API
+- Database: Supabase (PostgreSQL)
+- AI: Gemini for analysis + video APIs
+- Payments: UPI + Razorpay
+- Auth: Supabase Auth
+- Deployment: Vercel/Netlify frontend, Railway/Render backend
 
-**How Users Can Use the Platform:**
-1. **Sign Up:** Create account with email verification
-2. **Record Dreams:** Write dream descriptions with mood and tags
-3. **Get Analysis:** AI analyzes symbols, emotions, and meanings
-4. **Generate Videos:** Choose from multiple AI video generators
-5. **View Gallery:** Browse past dreams and videos
-6. **Upgrade Plans:** Use UPI payments for premium features
-7. **Settings:** Customize notifications, themes, and preferences
+**User Workflow:**
+1. Sign Up → verify email
+2. Record Dreams
+3. Get AI Analysis
+4. Generate Videos
+5. View Gallery
+6. Upgrade Plans via UPI
+7. Customize Settings
 
-**Common User Questions & Answers:**
-- **How to start?** Sign up → Add your first dream → Get AI analysis → Generate video
-- **Video quality?** Pro: HD thumbnails, Premium: Full HD videos up to 15s
-- **Payment security?** UPI payments are secure, no card details stored
-- **Data privacy?** Dreams are encrypted, only you can access your data
-- **Video generation time?** 2-5 minutes for Pro, 1-3 minutes for Premium
-- **Supported languages?** English primary, Hindi and other Indian languages planned
+**Troubleshooting:** Provide step-by-step guidance on failed videos, payment issues, login problems.
 
-**Troubleshooting:**
-- **Video generation failed?** Check internet connection, try again, or contact support
-- **Payment not reflecting?** Wait 5-10 minutes, or contact support with transaction ID
-- **Can't access account?** Use forgot password, check spam folder for verification emails
+Only answer project-related questions. Be friendly, concise, actionable, and detailed for feature, pricing, and troubleshooting questions.
+`;
 
-Only answer project-related questions. If user asks about how to use the project, features, pricing, or issues, guide them step by step with detailed, helpful answers. Be friendly, concise, and actionable.`;
+const GENERAL_SYSTEM_PROMPT = "You are a general AI assistant. Answer questions helpfully.";
 
-const GENERAL_SYSTEM_PROMPT = "You are a general AI assistant (like ChatGPT). Answer the user's question normally and helpfully.";
-
-// Keywords that trigger project mode
 const PROJECT_KEYWORDS = ['dream', 'video', 'story', 'analyzer', 'project', 'journey'];
 
-// In-memory conversation storage (temporary - can be moved to DB later)
 const conversations = new Map();
 
-/**
- * POST /api/assistant
- * Send a message to the AI assistant and get a response
- * Body: { userMessage: string, conversationId?: string }
- */
+// POST /api/assistant
 router.post('/', async (req, res) => {
   try {
     const { userMessage, conversationId } = req.body;
@@ -89,88 +73,218 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'userMessage is required and must be a string' });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) {
       return res.status(500).json({
-        error: 'OpenAI API key not configured',
-        message: 'Please add OPENAI_API_KEY to your .env file'
+        error: 'API keys not configured',
+        message: 'Please add GEMINI_API_KEY or OPENAI_API_KEY to your .env file'
       });
     }
 
-    // Determine mode based on keywords
-    const isProjectMode = PROJECT_KEYWORDS.some(keyword =>
-      userMessage.toLowerCase().includes(keyword.toLowerCase())
-    );
-    const systemPrompt = isProjectMode ? PROJECT_SYSTEM_PROMPT : GENERAL_SYSTEM_PROMPT;
+    // Always use project system prompt for better context
+    const systemPrompt = PROJECT_SYSTEM_PROMPT;
 
-    // Get or create conversation history
     const convId = conversationId || `conv_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     let history = conversations.get(convId) || [];
 
-    // Convert history to OpenAI format
-    const messages = [
-      { role: 'system', content: systemPrompt },
-      ...history.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      }))
-    ];
+    // Prepare history for API
+    const historyMessages = history.map(msg => ({
+      role: msg.role,
+      content: msg.content
+    }));
 
-    // Add the new user message
-    messages.push({ role: 'user', content: userMessage });
+    // Add current user message
+    historyMessages.push({ role: 'user', content: userMessage });
 
-    // Get response from OpenAI
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: messages,
-      max_tokens: 500,
-      temperature: 0.7,
-    });
+    let assistantMessage;
+    let provider = 'Gemini';
 
-    const assistantMessage = completion.choices[0].message.content;
+    // --- Try GEMINI FIRST, then OpenAI as fallback ---
+    try {
+      let geminiSucceeded = false;
+      if (process.env.GEMINI_API_KEY) {
+        provider = 'Gemini';
 
-    // Update conversation history
-    history.push(
-      { role: 'user', content: userMessage },
-      { role: 'assistant', content: assistantMessage }
-    );
+        // Helper: list models from v1, fallback to v1beta
+        const listModels = async () => {
+          const results = [];
+          try {
+            const { data } = await axios.get(`https://generativelanguage.googleapis.com/v1/models?key=${process.env.GEMINI_API_KEY}`, { timeout: 15000 });
+            results.push(...(data.models || []));
+          } catch (_) {}
+          if (results.length === 0) {
+            try {
+              const { data } = await axios.get(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`, { timeout: 15000 });
+              results.push(...(data.models || []));
+            } catch (_) {}
+          }
+          return results;
+        };
 
-    // Keep only last 10 exchanges (20 messages) to prevent memory issues
-    if (history.length > 20) {
-      history = history.slice(-20);
+        // Preferred order
+        const preferred = [
+          process.env.GEMINI_MODEL, // allow override
+          'gemini-1.5-flash-latest',
+          'gemini-1.5-pro-latest',
+          'gemini-1.5-flash',
+          'gemini-1.5-pro',
+          'gemini-1.0-pro',
+          'gemini-pro',
+        ].filter(Boolean);
+
+        // Discover available models
+        const available = await listModels();
+        const genModels = available
+          .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent'))
+          .map(m => (m.name || '').replace(/^models\//, ''));
+
+        // Merge candidates: preferred first, then discovered
+        const seen = new Set();
+        const candidates = [];
+        for (const m of [...preferred, ...genModels]) {
+          if (m && !seen.has(m)) { seen.add(m); candidates.push(m); }
+        }
+        if (candidates.length === 0) {
+          candidates.push('gemini-1.5-flash-latest');
+        }
+
+        // Build conversation for Gemini - simpler approach
+        const contents = [];
+        if (history.length === 0) {
+          contents.push({ role: 'user', parts: [{ text: systemPrompt + '\n\nUser: ' + userMessage }] });
+        } else {
+          contents.push({ role: 'user', parts: [{ text: systemPrompt + '\n\nUser: ' + history[0].content }] });
+          for (let i = 1; i < history.length; i++) {
+            contents.push({
+              role: history[i].role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: history[i].content }]
+            });
+          }
+          contents.push({ role: 'user', parts: [{ text: userMessage }] });
+        }
+
+        let lastErr;
+        for (const model of candidates) {
+          // Try v1 first
+          const v1 = `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+          const v1beta = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+          const tryEndpoint = async (endpoint) => {
+            return axios.post(
+              endpoint,
+              {
+                contents,
+                generationConfig: {
+                  temperature: 0.7,
+                  maxOutputTokens: 800,
+                  topP: 0.95,
+                  topK: 40
+                },
+                safetySettings: [
+                  { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+                  { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+                  { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+                  { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+                ]
+              },
+              { headers: { 'Content-Type': 'application/json' }, timeout: 30000 }
+            );
+          };
+
+          try {
+            let resp;
+            try {
+              resp = await tryEndpoint(v1);
+            } catch (e1) {
+              const status = e1?.response?.status;
+              if (status === 404) {
+                // fallback to v1beta
+                resp = await tryEndpoint(v1beta);
+              } else {
+                throw e1;
+              }
+            }
+
+            const data = resp.data;
+            assistantMessage = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (assistantMessage) {
+              console.log(`Gemini responded using model: ${model}`);
+              geminiSucceeded = true;
+              break;
+            }
+            lastErr = new Error('Empty response from Gemini');
+          } catch (err) {
+            lastErr = err;
+            const status = err?.response?.status;
+            if (status === 404) {
+              console.warn(`Model not found or unsupported: ${model}. Trying next.`);
+              continue;
+            }
+            // For non-404 errors, stop trying
+            throw err;
+          }
+        }
+
+        if (!assistantMessage) {
+          // Gemini key exists but all attempts failed
+          console.warn('Gemini attempts failed; considering OpenAI fallback...');
+        }
+      }
+
+      // If Gemini didn't succeed, and OpenAI key is present, fallback to OpenAI
+      if (!geminiSucceeded) {
+        if (process.env.OPENAI_API_KEY) {
+          provider = 'OpenAI';
+          const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...historyMessages
+            ],
+            max_tokens: 800,
+            temperature: 0.7
+          });
+          assistantMessage = completion.choices[0].message.content;
+        } else if (!process.env.GEMINI_API_KEY) {
+          throw new Error('No API key configured');
+        } else if (!assistantMessage) {
+          // Gemini key exists but failed, and no OpenAI fallback
+          throw new Error('Failed to get response from Gemini');
+        }
+      }
+    } catch (error) {
+      console.error('❌ AI API error:', error.message);
+      if (error.response?.data) {
+        console.error('API Error details:', JSON.stringify(error.response.data, null, 2));
+      }
+      
+      // User-friendly error message
+      throw new Error('Unable to get response from AI assistant. Please check the backend logs and verify your API key is valid.');
     }
+
+    console.log(`Assistant responded using ${provider}`);
+
+    // Update conversation
+    history.push({ role: 'user', content: userMessage }, { role: 'assistant', content: assistantMessage });
+    if (history.length > 20) history = history.slice(-20);
     conversations.set(convId, history);
 
-    // Auto-cleanup old conversations (older than 1 hour)
+    // Auto-cleanup old conversations
     const oneHourAgo = Date.now() - 3600000;
     for (const [id, _] of conversations.entries()) {
       const timestamp = parseInt(id.split('_')[1]);
-      if (timestamp < oneHourAgo) {
-        conversations.delete(id);
-      }
+      if (timestamp < oneHourAgo) conversations.delete(id);
     }
 
-    res.json({
-      assistantMessage,
-      conversationId: convId,
-      timestamp: new Date().toISOString()
-    });
-
+    res.json({ assistantMessage, conversationId: convId, timestamp: new Date().toISOString() });
   } catch (error) {
     console.error('Assistant API error:', error);
-    res.status(500).json({
-      error: 'Failed to get assistant response',
-      message: error.message || 'An error occurred while processing your request'
-    });
+    res.status(500).json({ error: 'Failed to get assistant response', message: error.message });
   }
 });
 
-/**
- * DELETE /api/assistant/:conversationId
- * Clear a conversation history
- */
+// DELETE /api/assistant/:conversationId
 router.delete('/:conversationId', (req, res) => {
   const { conversationId } = req.params;
-  
   if (conversations.has(conversationId)) {
     conversations.delete(conversationId);
     res.json({ message: 'Conversation cleared successfully' });

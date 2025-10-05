@@ -1,189 +1,453 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams, useNavigate, Navigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from '@/components/ui/dream-card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Check, Upload, CheckCircle, AlertCircle, ArrowLeft, Crown, Zap } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { fetchActiveSubscription } from '@/services/payments';
 
-// Build a UPI URL string
-const buildUpiUrl = ({ pa, pn, am, tn }) => {
-  const params = new URLSearchParams();
-  params.set('pa', pa);
-  params.set('pn', pn);
-  params.set('am', String(am));
-  params.set('cu', 'INR');
-  if (tn) params.set('tn', tn);
-  return 'upi://pay?' + params.toString();
-};
-
-const generateTxnNote = (uid) => `ADJ_${uid || 'guest'}_${Date.now()}`;
-
-export default function Upgrade() {
-  const { user, loading } = useAuth();
-  const [params] = useSearchParams();
+const Upgrade = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [screenshot, setScreenshot] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [upiData, setUpiData] = useState(null);
+  const [currentSubscription, setCurrentSubscription] = useState(null);
 
-  const [prices, setPrices] = useState({ currency: 'INR', pro_inr: 415, premium_inr: 830 });
-  const [selectedPlan, setSelectedPlan] = useState(params.get('plan') === 'premium' ? 'premium' : 'pro');
-  const [txnNote, setTxnNote] = useState('');
-  const [qrUrl, setQrUrl] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [file, setFile] = useState(null);
+  // UPI Configuration
+  const UPI_ID = '6361698728@slc';
+  const MERCHANT_NAME = 'DreamVision';
+  
+  // USD to INR conversion rate (approximate)
+  const USD_TO_INR = 83;
 
-  const UPI_ID = import.meta.env.VITE_UPI_ID || '6361698728@slc';
-  const UPI_NAME = import.meta.env.VITE_UPI_NAME || 'Adaptive Dream Journey';
-  const API_BASE = import.meta.env.VITE_DEMO_API || 'http://localhost:4000';
+  const plans = [
+    {
+      id: 'free',
+      name: 'Free',
+      priceUSD: 0,
+      priceINR: 0,
+      duration: 'forever',
+      features: [
+        'AI dream analysis',
+        'Dream gallery & saving',
+        'Video: up to 5s',
+        'Basic support'
+      ],
+      color: 'from-gray-500 to-slate-500',
+      disabled: true
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      priceUSD: 5,
+      priceINR: 5 * USD_TO_INR,
+      duration: 'month',
+      features: [
+        'Everything in Free',
+        'Priority video generation',
+        'Video duration: up to 10s',
+        'HD thumbnails',
+        'Email support',
+        'No watermark'
+      ],
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      id: 'premium',
+      name: 'Premium',
+      priceUSD: 10,
+      priceINR: 10 * USD_TO_INR,
+      duration: 'month',
+      features: [
+        'Everything in Pro',
+        'Priority support 24/7',
+        'Video duration: up to 15s',
+        'Full HD quality (1080p)',
+        'Advanced analytics',
+        'Early access to features',
+        'Custom dream themes'
+      ],
+      color: 'from-purple-500 to-pink-500',
+      popular: true
+    }
+  ];
 
+  // Load current subscription
   useEffect(() => {
-    const load = async () => {
+    const loadSubscription = async () => {
+      if (!user) return;
       try {
-        const res = await fetch(`${API_BASE}/prices`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.pro_inr && data?.premium_inr) setPrices(data);
-        }
-      } catch (_) {}
+        const sub = await fetchActiveSubscription(user.id);
+        setCurrentSubscription(sub);
+      } catch (error) {
+        console.error('Failed to load subscription:', error);
+      }
     };
-    load();
-  }, []);
+    loadSubscription();
+  }, [user]);
 
+  // Auto-select plan from URL params
   useEffect(() => {
-    // Generate QR each time plan changes
-    const uid = user?.id || 'guest';
-    const note = generateTxnNote(uid);
-    setTxnNote(note);
-    const amount = selectedPlan === 'premium' ? prices.premium_inr : prices.pro_inr;
-    const upi = buildUpiUrl({ pa: UPI_ID, pn: UPI_NAME, am: amount, tn: note });
-    const img = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(upi)}`;
-    setQrUrl(img);
-  }, [selectedPlan, prices, user]);
+    const planParam = searchParams.get('plan');
+    if (planParam && !showPayment) {
+      const plan = plans.find(p => p.id === planParam);
+      if (plan && !plan.disabled) {
+        handleSelectPlan(plan);
+      }
+    }
+  }, [searchParams]);
 
-  if (!loading && !user) return <Navigate to="/auth" replace />;
+  const handleSelectPlan = async (plan) => {
+    if (!user) {
+      toast.error('Please login to upgrade');
+      navigate('/auth');
+      return;
+    }
 
-  const amount = selectedPlan === 'premium' ? prices.premium_inr : prices.pro_inr;
+    setSelectedPlan(plan);
+    
+    // Generate UPI payment details with INR amount
+    const amount = Math.round(plan.priceINR); // Round to nearest rupee
+    const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${MERCHANT_NAME}&am=${amount}&cu=INR&tn=${encodeURIComponent(`${plan.name} Plan - ${plan.priceUSD}USD - User: ${user.id}`)}`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(upiUrl)}`;
 
-  const uploadScreenshot = async () => {
-    try {
-      if (!user?.id) {
-        toast.error('Please sign in first');
+    setUpiData({
+      upiUrl,
+      qrCodeUrl,
+      upiId: UPI_ID,
+      amount,
+      amountUSD: plan.priceUSD,
+      currency: 'INR'
+    });
+
+    setShowPayment(true);
+  };
+
+  const handleScreenshotUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Screenshot size should be less than 5MB');
         return;
       }
-      if (!file) {
-        toast.error('Please select a payment screenshot');
-        return;
-      }
-      setUploading(true);
-      const form = new FormData();
-      form.append('userId', user.id);
-      form.append('plan', selectedPlan.toUpperCase());
-      form.append('amount', String(amount));
-      form.append('txnNote', txnNote);
-      form.append('screenshot', file);
 
-      const res = await fetch(`${API_BASE}/upload-screenshot`, { method: 'POST', body: form });
-      if (!res.ok) throw new Error('Upload failed');
-      const json = await res.json();
-
-      const serverPlan = (json?.subscription?.plan || '').toLowerCase(); // 'pro' | 'premium'
-      const subscriptionId = json?.subscription?.subscription_id || '';
-
-      // Mirror to auth metadata so app recognizes plan
-      await supabase.auth.updateUser({ data: { plan: serverPlan || selectedPlan, subscription_status: 'active' } });
-
-      toast.success(`✅ Payment verified, plan upgraded to ${serverPlan || selectedPlan}.`);
-      const ref = encodeURIComponent(subscriptionId || `${serverPlan}-${Date.now()}`);
-      navigate(`/payment-success?subscription_id=${ref}`);
-    } catch (e) {
-      toast.error(e?.message || 'Upload failed. Is the demo backend running on port 4000?');
-    } finally {
-      setUploading(false);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshot({
+          file,
+          preview: reader.result,
+          name: file.name
+        });
+        toast.success('Screenshot uploaded successfully!');
+      };
+      reader.readAsDataURL(file);
     }
   };
 
+  const handleConfirmPayment = async () => {
+    if (!screenshot) {
+      toast.error('Please upload payment screenshot');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      
+      // Send payment verification request to backend
+      const response = await fetch(`${BACKEND_URL}/api/verify-upi-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          plan: selectedPlan.id,
+          amount: upiData.amount,
+          amountUSD: selectedPlan.priceUSD,
+          upiId: UPI_ID,
+          screenshotName: screenshot.name,
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment verification failed');
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.status === 'active') {
+        toast.success('🎉 Payment confirmed! Your subscription is now active.');
+        
+        setTimeout(() => {
+          navigate('/subscription');
+        }, 2000);
+      } else {
+        throw new Error(result.message || 'Payment verification failed');
+      }
+
+    } catch (error) {
+      console.error('Payment confirmation error:', error);
+      toast.error('Failed to confirm payment. Please contact support.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (showPayment && selectedPlan && upiData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <Button
+            onClick={() => {
+              setShowPayment(false);
+              setScreenshot(null);
+            }}
+            variant="ghost"
+            className="mb-4 text-white hover:text-blue-300"
+          >
+            ← Back to Plans
+          </Button>
+
+          <Card className="border-blue-500/30 bg-slate-900/90 backdrop-blur">
+            <CardHeader>
+              <CardTitle className="text-3xl text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Complete Your Payment
+              </CardTitle>
+              <CardDescription className="text-center text-lg text-gray-300">
+                {selectedPlan.name} Plan - ${selectedPlan.priceUSD} USD (₹{upiData.amount}) per {selectedPlan.duration}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              {/* UPI QR Code */}
+              <div className="bg-white rounded-2xl p-8 text-center">
+                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  Scan QR Code to Pay
+                </h3>
+                <img
+                  src={upiData.qrCodeUrl}
+                  alt="UPI QR Code"
+                  className="mx-auto w-80 h-80 rounded-xl shadow-2xl"
+                />
+                <p className="mt-4 text-gray-600 font-medium">
+                  UPI ID: <span className="text-blue-600 font-mono">{upiData.upiId}</span>
+                </p>
+                <p className="text-2xl font-bold text-gray-800 mt-2">
+                  Amount: ₹{upiData.amount}
+                </p>
+              </div>
+
+              {/* Payment Instructions */}
+              <div className="bg-blue-900/30 border border-blue-500/30 rounded-xl p-6">
+                <h4 className="font-semibold text-blue-300 mb-3 flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5" />
+                  Payment Instructions
+                </h4>
+                <ol className="space-y-2 text-gray-300 text-sm">
+                  <li>1. Open any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                  <li>2. Scan the QR code above</li>
+                  <li>3. Pay exactly ₹{upiData.amount} (${selectedPlan.priceUSD} USD)</li>
+                  <li>4. Take a screenshot of the payment confirmation</li>
+                  <li>5. Upload the screenshot below to activate your plan</li>
+                </ol>
+              </div>
+
+              {/* Screenshot Upload */}
+              <div className="space-y-4">
+                <h4 className="font-semibold text-white">Upload Payment Screenshot</h4>
+                
+                <div className="border-2 border-dashed border-blue-500/50 rounded-xl p-8 text-center bg-slate-800/50 hover:border-blue-400/70 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleScreenshotUpload}
+                    className="hidden"
+                    id="screenshot-upload"
+                  />
+                  <label
+                    htmlFor="screenshot-upload"
+                    className="cursor-pointer flex flex-col items-center gap-3"
+                  >
+                    {screenshot ? (
+                      <>
+                        <CheckCircle className="w-12 h-12 text-green-400" />
+                        <p className="text-green-400 font-medium">{screenshot.name}</p>
+                        <img
+                          src={screenshot.preview}
+                          alt="Payment Screenshot"
+                          className="mt-4 max-w-full h-auto rounded-lg border-2 border-green-500"
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-12 h-12 text-blue-400" />
+                        <p className="text-gray-300">Click to upload screenshot</p>
+                        <p className="text-sm text-gray-500">PNG, JPG up to 5MB</p>
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              {/* Confirm Button */}
+              <Button
+                onClick={handleConfirmPayment}
+                disabled={!screenshot || isProcessing}
+                className="w-full h-14 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:opacity-50"
+              >
+                {isProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Confirm Payment & Activate Subscription
+                  </>
+                )}
+              </Button>
+
+              <p className="text-sm text-gray-400 text-center">
+                Your subscription will be activated automatically after confirmation
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  const currentPlanId = currentSubscription?.plan || 'free';
+
   return (
-    <div className="pt-20 pb-12 min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-blue-900 dark:to-emerald-900">
-      <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto space-y-8">
-          <div className="text-center space-y-2">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Upgrade Plan</h1>
-            <p className="text-muted-foreground">Scan the QR, pay the plan amount, then upload the payment screenshot to activate.</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
+        <Button
+          onClick={() => navigate('/subscription')}
+          variant="ghost"
+          className="mb-6 text-white hover:text-blue-300"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Subscription
+        </Button>
+
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-gray-300">
+            Unlock the full power of AI dream generation
+          </p>
+          {currentSubscription && (
+            <p className="text-sm text-blue-300 mt-2">
+              Current Plan: <span className="font-bold uppercase">{currentPlanId}</span>
+            </p>
+          )}
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {plans.map((plan) => {
+            const isCurrentPlan = plan.id === currentPlanId;
+            const isDowngrade = (currentPlanId === 'premium' && plan.id === 'pro') || 
+                               (currentPlanId === 'pro' && plan.id === 'free');
+            
+            return (
+              <Card
+                key={plan.id}
+                className={`relative border-2 ${
+                  plan.popular ? 'border-purple-500' : 'border-blue-500/30'
+                } ${isCurrentPlan ? 'ring-2 ring-green-500' : ''} bg-slate-900/90 backdrop-blur hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                      ⭐ Most Popular
+                    </span>
+                  </div>
+                )}
+
+                {isCurrentPlan && (
+                  <div className="absolute -top-4 right-4">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                      Current Plan
+                    </span>
+                  </div>
+                )}
+
+                <CardHeader>
+                  <CardTitle className={`text-3xl bg-gradient-to-r ${plan.color} bg-clip-text text-transparent flex items-center gap-2`}>
+                    {plan.id === 'premium' && <Crown className="w-6 h-6 text-purple-400" />}
+                    {plan.id === 'pro' && <Zap className="w-6 h-6 text-blue-400" />}
+                    {plan.name}
+                  </CardTitle>
+                  <CardDescription>
+                    {plan.priceUSD > 0 ? (
+                      <>
+                        <span className="text-4xl font-bold text-white">${plan.priceUSD}</span>
+                        <span className="text-gray-400"> USD</span>
+                        <div className="text-sm text-gray-400 mt-1">
+                          (₹{Math.round(plan.priceINR)} INR per {plan.duration})
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-4xl font-bold text-white">Free</span>
+                    )}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-6">
+                  <ul className="space-y-3">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-gray-300">
+                        <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button
+                    onClick={() => handleSelectPlan(plan)}
+                    disabled={plan.disabled || isCurrentPlan}
+                    className={`w-full h-12 text-lg bg-gradient-to-r ${plan.color} hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isCurrentPlan ? 'Current Plan' : isDowngrade ? 'Contact Support' : plan.priceUSD > 0 ? 'Upgrade Now' : 'Free Plan'}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Trust Badges */}
+        <div className="mt-16 text-center space-y-4">
+          <div className="flex justify-center gap-8 text-gray-400 text-sm">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-400" />
+              <span>Secure UPI Payment</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-400" />
+              <span>Instant Activation</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-green-400" />
+              <span>Cancel Anytime</span>
+            </div>
           </div>
-
-          <DreamCard>
-            <DreamCardHeader>
-              <DreamCardTitle>Choose Plan</DreamCardTitle>
-            </DreamCardHeader>
-            <DreamCardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className={`p-4 rounded-lg border ${selectedPlan === 'pro' ? 'border-primary' : 'border-border/30'} bg-card/50`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-semibold">Pro</div>
-                      <div className="text-2xl font-bold">₹{prices.pro_inr}</div>
-                      <div className="text-sm text-muted-foreground">~$5</div>
-                    </div>
-                    {selectedPlan === 'pro' && <Badge variant="cosmic">Selected</Badge>}
-                  </div>
-                  <Button className="mt-3" variant={selectedPlan === 'pro' ? 'cosmic' : 'outline'} onClick={() => setSelectedPlan('pro')}>Select Pro</Button>
-                </div>
-
-                <div className={`p-4 rounded-lg border ${selectedPlan === 'premium' ? 'border-primary' : 'border-border/30'} bg-card/50`}>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-semibold">Premium</div>
-                      <div className="text-2xl font-bold">₹{prices.premium_inr}</div>
-                      <div className="text-sm text-muted-foreground">~$10</div>
-                    </div>
-                    {selectedPlan === 'premium' && <Badge variant="cosmic">Selected</Badge>}
-                  </div>
-                  <Button className="mt-3" variant={selectedPlan === 'premium' ? 'cosmic' : 'outline'} onClick={() => setSelectedPlan('premium')}>Select Premium</Button>
-                </div>
-              </div>
-            </DreamCardContent>
-          </DreamCard>
-
-          <DreamCard>
-            <DreamCardHeader>
-              <DreamCardTitle>Pay via UPI</DreamCardTitle>
-            </DreamCardHeader>
-            <DreamCardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col items-center gap-3">
-                  <img src={qrUrl} alt="UPI QR" width={240} height={240} className="rounded-lg border border-border/30" />
-                  <div className="text-xs text-muted-foreground">Scan with any UPI app and pay the exact amount.</div>
-                </div>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <div className="text-muted-foreground">UPI ID</div>
-                    <div className="font-mono">{UPI_ID}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Amount (INR)</div>
-                    <div className="font-semibold">₹{amount}</div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">Transaction Note</div>
-                    <div className="font-mono break-all">{txnNote}</div>
-                  </div>
-
-                  <div className="pt-1">
-                    <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="nebula" disabled={!file || uploading} onClick={uploadScreenshot}>
-                      {uploading ? 'Uploading...' : 'Upload & Activate'}
-                    </Button>
-                    <Button variant="ghost" onClick={() => navigate('/subscription')}>Back</Button>
-                  </div>
-                  <div className="text-xs text-muted-foreground">After upload, your plan will be activated automatically.</div>
-                </div>
-              </div>
-            </DreamCardContent>
-          </DreamCard>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Upgrade;

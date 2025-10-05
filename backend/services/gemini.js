@@ -10,7 +10,8 @@ async function generateDreamAnalysis(dreamText) {
   if (!apiKey) throw new Error('GEMINI_API_KEY is not set');
   if (!dreamText || !dreamText.trim()) throw new Error('dreamText is required');
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+  // Using gemini-2.0-flash (free tier compatible, faster than older models)
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
   const prompt = `You are an expert story writer and cinematic prompt engineer.
 Return STRICT JSON only, no prose. Keys: title, story, video_prompt, keywords, emotions.

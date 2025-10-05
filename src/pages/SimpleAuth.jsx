@@ -161,7 +161,7 @@ export default function SimpleAuth() {
 
   if (showVerification) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <Mail className="w-12 h-12 text-purple-600 mx-auto mb-4" />
@@ -215,13 +215,13 @@ export default function SimpleAuth() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 rounded-full bg-highlight flex items-center justify-center mx-auto mb-4">
             <User className="w-6 h-6 text-white" />
           </div>
-          <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <CardTitle className="text-2xl text-highlight">
             Dream Journey
           </CardTitle>
           <CardDescription>

@@ -402,12 +402,12 @@ export default function Auth() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900 flex items-center justify-center p-4 pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-background to-card dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 pt-20">
       <Card className="w-full max-w-md border-primary/20 bg-card/80 backdrop-blur-md shadow-2xl">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center"><Sparkles className="w-4 h-4 text-white" /></div>
-            <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Dream Journey</CardTitle>
+            <div className="w-8 h-8 rounded-full bg-highlight flex items-center justify-center"><Sparkles className="w-4 h-4 text-white" /></div>
+            <CardTitle className="text-2xl text-highlight">Dream Journey</CardTitle>
           </div>
           <CardDescription>Sign in to your account or create a new one</CardDescription>
         </CardHeader>
@@ -468,7 +468,7 @@ export default function Auth() {
                     <div ref={signInCaptchaRef} id="signin-hcaptcha" style={{ minHeight: '78px' }} />
                   </div>
                 )}
-                <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600" disabled={isLoading}>{isLoading ? "Signing in..." : "Sign In"}</Button>
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isLoading}>{isLoading ? "Signing in..." : "Sign In"}</Button>
                 <div className="text-center">
                   <Button type="button" variant="link" onClick={handleForgotPassword} disabled={isResetEmailSending} className="h-auto p-0">
                     {isResetEmailSending ? 'Sending reset link...' : 'Forgot password?'}
@@ -520,7 +520,7 @@ export default function Auth() {
                 {/* Email, Password, Confirm Password Inputs */}
                 <div className="relative"><Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required /></div>
                 <div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input type={showPassword ? "text" : "password"} placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 pr-10" required minLength={8} /><button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button></div>
-                {password && (!validatePassword(password) ? <p className="text-xs text-orange-500"><AlertCircle className="inline w-3 h-3 mr-1"/>8+ chars, upper, lower, number, special</p> : <p className="text-xs text-green-500"><CheckCircle className="inline w-3 h-3 mr-1"/>Strong password</p>)}
+                {password && (!validatePassword(password) ? <p className="text-xs text-primary"><AlertCircle className="inline w-3 h-3 mr-1"/>8+ chars, upper, lower, number, special</p> : <p className="text-xs text-green-500"><CheckCircle className="inline w-3 h-3 mr-1"/>Strong password</p>)}
                 <div className="relative"><Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input type={showConfirmPassword ? "text" : "password"} placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="pl-10 pr-10" required minLength={8} /><button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">{showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button></div>
                 {confirmPassword && (password !== confirmPassword ? <p className="text-xs text-red-500">Passwords do not match</p> : <p className="text-xs text-green-500">Passwords match</p>)}
                 {hcaptchaSiteKey && (
@@ -528,7 +528,7 @@ export default function Auth() {
                     <div ref={signUpCaptchaRef} id="signup-hcaptcha" style={{ minHeight: '78px' }} />
                   </div>
                 )}
-                <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-pink-600" disabled={isLoading || (password && confirmPassword && password !== confirmPassword) || !validatePassword(password)}>{isLoading ? "Creating account..." : "Sign Up"}</Button>
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isLoading || (password && confirmPassword && password !== confirmPassword) || !validatePassword(password)}>{isLoading ? "Creating account..." : "Sign Up"}</Button>
               </form>
             </TabsContent>
 

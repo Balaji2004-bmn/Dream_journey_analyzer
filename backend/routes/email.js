@@ -454,7 +454,21 @@ router.post('/confirm-email', async (req, res) => {
         }
         const users = authData?.users || [];
         const user = users.find(u => (u.email || '').toLowerCase() === targetEmail);
+        
+        // Check demo users if not found in Supabase
         if (!user) {
+          const { demoUsers } = require('../routes/auth');
+          const demoUser = demoUsers.get(targetEmail);
+          if (demoUser && !demoUser.email_confirmed_at) {
+            demoUser.email_confirmed_at = new Date().toISOString();
+            logger.info(`Demo user email confirmed: ${targetEmail}`);
+            return res.json({
+              success: true,
+              message: 'Email confirmed successfully! You can now sign in.',
+              confirmed: true,
+              demo: true
+            });
+          }
           logger.warn(`Email confirmation requested but user not found for email: ${targetEmail}`);
           return res.status(404).json({
             error: 'User Not Found',
@@ -504,19 +518,38 @@ router.get('/confirm-email', async (req, res) => {
     if (!email) {
       return res.status(400).json({ error: 'Missing email', message: 'Email is required' });
     }
+    
+    // Check demo users first (for fallback mode)
+    const { demoUsers } = require('../routes/auth');
+    const demoUser = demoUsers.get(email);
+    if (demoUser && !demoUser.email_confirmed_at) {
+      demoUser.email_confirmed_at = new Date().toISOString();
+      logger.info(`Demo user email confirmed: ${email}`);
+      const redirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth?verified=1`;
+      return res.redirect(302, redirect);
+    }
+    
+    // Try Supabase
     const { createClient } = require('@supabase/supabase-js');
     const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
     const { data: authData } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
     const user = (authData?.users || []).find(u => (u.email || '').toLowerCase() === email);
     if (!user) {
-      return res.status(404).send('User not found for provided email');
+      // If neither demo nor Supabase user found
+      if (!demoUser) {
+        return res.status(404).send('User not found for provided email');
+      }
+      // Demo user already confirmed above
+      const redirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth?verified=1`;
+      return res.redirect(302, redirect);
     }
 
     await supabaseAdmin.auth.admin.updateUserById(user.id, {
       email_confirmed_at: new Date().toISOString(),
     });
 
+    logger.info(`Supabase user email confirmed: ${email}`);
     // Redirect to frontend sign-in page with success message
     const redirect = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth?verified=1`;
     return res.redirect(302, redirect);

@@ -616,11 +616,11 @@ export default function DreamAnalyzer() {
       <div className="max-w-4xl mx-auto px-4 space-y-8">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-3">
-            <Brain className="w-8 h-8 text-purple-400" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <Brain className="w-8 h-8 text-highlight" />
+            <h1 className="text-4xl md:text-5xl font-bold text-highlight">
               Dream Analyzer
             </h1>
-            <Moon className="w-8 h-8 text-blue-400" />
+            <Moon className="w-8 h-8 text-highlight" />
           </div>
           <p className="text-xl text-muted-foreground">
             Transform your dreams into insights with AI-powered analysis
@@ -721,7 +721,7 @@ export default function DreamAnalyzer() {
                     {isPublic ? (
                       <Eye className="w-5 h-5 text-green-500" />
                     ) : (
-                      <EyeOff className="w-5 h-5 text-orange-500" />
+                      <EyeOff className="w-5 h-5 text-primary" />
                     )}
                     <Label htmlFor="privacy-toggle" className="text-sm font-medium">
                       {isPublic ? "Public Dream" : "Private Dream"}
