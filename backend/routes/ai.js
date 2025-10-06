@@ -5,13 +5,14 @@ const apiClient = require('../utils/apiClient');
 const { authenticateUser } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const { createClient } = require('@supabase/supabase-js');
+const { generateDreamAnalysis } = require('../services/gemini'); // Use Gemini instead
 
 const router = express.Router();
 
-// Initialize OpenAI
-const openai = new OpenAI({
+// Initialize OpenAI (fallback only if Gemini fails)
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 const NLP_URL = process.env.NLP_URL || process.env.PYTHON_NLP_URL || 'http://localhost:5000';
 
@@ -68,71 +69,33 @@ router.post('/analyze-dream', authenticateUser, validateDreamAnalysis, async (re
       return res.json({ success: true, analysis: nlpResult, source: 'nlp' });
     }
 
-    // Fallback: Create AI prompt for dream analysis via OpenAI
-    const prompt = `
-    Analyze the following dream and provide a comprehensive analysis in JSON format:
-
-    Dream Title: ${title || 'Untitled Dream'}
-    Dream Content: ${content}
-
-    Please provide analysis in this exact JSON structure:
-    {
-      "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-      "emotions": [
-        {"emotion": "emotion_name", "intensity": 85, "color": "#hex_color"},
-        {"emotion": "emotion_name", "intensity": 72, "color": "#hex_color"}
-      ],
-      "summary": "A detailed interpretation of the dream's meaning and symbolism",
-      "themes": ["Theme 1", "Theme 2", "Theme 3"],
-      "symbols": [
-        {"symbol": "symbol_name", "meaning": "interpretation of the symbol"}
-      ],
-      "psychological_insights": "Deep psychological analysis of the dream",
-      "actionable_advice": "Practical advice based on the dream analysis"
-    }
-
-    Make the analysis insightful, positive, and psychologically meaningful. Use vibrant hex colors for emotions.
-    `;
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert dream analyst and psychologist. Provide detailed, insightful, and positive dream interpretations in valid JSON format only."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 1500
-    });
-
-    const analysisText = completion.choices[0].message.content;
+    // Use Gemini for dream analysis (FREE!)
+    const geminiResult = await generateDreamAnalysis(content);
     
-    // Parse the JSON response
-    let analysis;
-    try {
-      analysis = JSON.parse(analysisText);
-    } catch (parseError) {
-      logger.error('Failed to parse AI response as JSON:', parseError);
-      throw new Error('Invalid AI response format');
-    }
+    // Format Gemini result to match expected structure
+    const analysis = {
+      keywords: geminiResult.keywords || [],
+      emotions: (geminiResult.emotions || []).map(e => ({
+        emotion: e.emotion,
+        intensity: e.intensity,
+        color: '#' + Math.floor(Math.random()*16777215).toString(16) // Random color
+      })),
+      summary: geminiResult.story || '',
+      themes: geminiResult.keywords?.slice(0, 3) || [],
+      title: geminiResult.title || title || 'Untitled Dream',
+      video_prompt: geminiResult.video_prompt || ''
+    };
 
-    // Log successful analysis
-    logger.info(`Dream analysis completed via OpenAI for user ${req.user.id}`);
+    logger.info(`Dream analysis completed via Gemini for user ${req.user.id}`);
 
     res.json({
       success: true,
       analysis,
       metadata: {
-        model: "gpt-4",
-        timestamp: new Date().toISOString(),
-        tokens_used: completion.usage?.total_tokens || 0
+        model: "gemini-2.0-flash",
+        timestamp: new Date().toISOString()
       },
-      source: 'openai'
+      source: 'gemini'
     });
 
   } catch (error) {

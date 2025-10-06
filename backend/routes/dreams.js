@@ -305,6 +305,7 @@ router.post('/', authenticateUser, validateDream, async (req, res) => {
     // Real sessions: save to primary dreams table
     const dreamData = {
       user_id: req.user.id,
+      user_email: req.user.email, // Add user email for privacy filtering
       title,
       content,
       analysis,
@@ -412,6 +413,7 @@ router.post('/generate', authenticateUser, async (req, res) => {
     } else {
       const payload = {
         user_id: userId,
+        user_email: req.user?.email, // Add user email for privacy filtering
         title: analysis.title,
         content: String(dream_text),
         analysis: analysis,
@@ -519,6 +521,7 @@ router.post('/with-video', async (req, res) => {
     // First create the dream
     const dreamData = {
       user_id: user_id || 'demo-user',
+      user_email: req.body.user_email || null, // Add user email if provided
       title,
       content,
       analysis: typeof analysis === 'object' ? analysis : null,

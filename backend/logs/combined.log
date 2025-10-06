@@ -8337,3 +8337,183 @@
 {"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-05 20:13:24"}
 {"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-05 20:13:24"}
 {"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-05 20:13:24"}
+{"level":"info","message":"Dream Journey Admin Server running on port 3002","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:38"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:38"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:38"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:43"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:43"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-05 21:05:43"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 16:39:54"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:40:08"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:40:27"}
+{"level":"info","message":"POST /api/assistant - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:40:53"}
+{"level":"info","message":"POST /api/assistant - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:41:22"}
+{"level":"info","message":"DELETE /api/assistant/conv_1759749053711_y5dz9a51zuh - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:41:37"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:41:44"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:41:44"}
+{"level":"info","message":"POST /api/ai/analyze-dream - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:44:44"}
+{"level":"info","message":"POST /api/generate-video - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:44:59"}
+{"level":"info","message":"POST /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:45:31"}
+{"level":"info","message":"POST /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:45:44"}
+{"level":"info","message":"POST /api/auth/signin - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:24"}
+{"level":"info","message":"Admin sign-in check for bmn636169@gmail.com: isAdminEmail=true, isMasterPassword=true","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:24"}
+{"level":"info","message":"Attempting admin override for bmn636169@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:24"}
+{"level":"info","message":"Admin bmn636169@gmail.com signed in successfully via override","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:24"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:27"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:29"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:30"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:32"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:34"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:36"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:37"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:46:39"}
+{"level":"info","message":"PATCH /api/admin/users/94b4500c-187b-436b-9253-090e71357f6b/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:10"}
+{"level":"info","message":"PATCH /api/admin/users/94b4500c-187b-436b-9253-090e71357f6b/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:10"}
+{"level":"info","message":"PATCH /api/admin/users/94b4500c-187b-436b-9253-090e71357f6b/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:12"}
+{"action":"change_user_status","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{"is_active":true},"ip":"::1","level":"info","message":"Admin Action:","method":"PATCH","path":"/users/94b4500c-187b-436b-9253-090e71357f6b/status","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:16","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:16"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:18"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:21"}
+{"level":"info","message":"PATCH /api/admin/users/99d6c969-8f55-49e2-9a60-dcf3b710d3f4/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:30"}
+{"level":"info","message":"PATCH /api/admin/users/99d6c969-8f55-49e2-9a60-dcf3b710d3f4/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:30"}
+{"level":"info","message":"PATCH /api/admin/users/99d6c969-8f55-49e2-9a60-dcf3b710d3f4/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:30"}
+{"action":"change_user_status","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{"is_active":true},"ip":"::1","level":"info","message":"Admin Action:","method":"PATCH","path":"/users/99d6c969-8f55-49e2-9a60-dcf3b710d3f4/status","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:33","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:33"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:35"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:36"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:36"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:47:38"}
+{"level":"info","message":"POST /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:48:05"}
+{"level":"info","message":"Dream saved successfully for user 99d6c969-8f55-49e2-9a60-dcf3b710d3f4: 761c7cb9-09cc-4e52-9b38-09bc401f42c5","service":"dream-journey-backend","timestamp":"2025-10-06 16:48:05"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:48:10"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:48:10"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:33"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:33"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:33"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:50"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:50"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 16:50:50"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:04:03"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:04:25"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:04:28"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:04:28"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:04:28"}
+{"level":"info","message":"POST /api/ai/analyze-dream - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:07"}
+{"level":"info","message":"API Request: POST http://localhost:5000/analyze","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:08"}
+{"level":"error","message":"API Response Error: undefined Error","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:08"}
+{"level":"warn","message":"NLP service call failed (/analyze):","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:08"}
+{"code":"insufficient_quota","error":{"code":"insufficient_quota","message":"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.","param":null,"type":"insufficient_quota"},"headers":{"alt-svc":"h3=\":443\"; ma=86400","cf-cache-status":"DYNAMIC","cf-ray":"98a4da955dc67f37-MAA","connection":"keep-alive","content-length":"337","content-type":"application/json; charset=utf-8","date":"Mon, 06 Oct 2025 11:35:11 GMT","server":"cloudflare","set-cookie":"__cf_bm=5MPzPecUisiwG30SDn2YIoxBwIuJYwaDLdyGE9qN5TY-1759750511-1.0.1.1-okP3gjkM9lLW6vIeoIkiMdEpFNg3UQNzkiqQ_Xf6jW0CBhGXOUciE.DCTVSjs.OtPRlUs21WIF9IaEDnoGyX.sWNl.LbnNicRORJOc1wpQE; path=/; expires=Mon, 06-Oct-25 12:05:11 GMT; domain=.api.openai.com; HttpOnly; Secure; SameSite=None, _cfuvid=9t_esltk_yVSysvFRm3qj3NFrC9mW5tjDf0RyAFzU_4-1759750511861-0.0.1.1-604800000; path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"Origin","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"200","x-openai-proxy-wasm":"v0.1","x-request-id":"req_bd9ef91c178948528a931256feaa2092"},"level":"error","message":"Dream analysis error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.","param":null,"request_id":"req_bd9ef91c178948528a931256feaa2092","service":"dream-journey-backend","stack":"Error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.\n    at APIError.generate (C:\\Users\\Prasanna\\Dream_journey_analyzer\\backend\\node_modules\\openai\\error.js:63:20)\n    at OpenAI.makeStatusError (C:\\Users\\Prasanna\\Dream_journey_analyzer\\backend\\node_modules\\openai\\core.js:302:33)\n    at OpenAI.makeRequest (C:\\Users\\Prasanna\\Dream_journey_analyzer\\backend\\node_modules\\openai\\core.js:346:30)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Prasanna\\Dream_journey_analyzer\\backend\\routes\\ai.js:97:24","status":429,"timestamp":"2025-10-06 17:05:12","type":"insufficient_quota"}
+{"level":"info","message":"POST /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:22"}
+{"level":"info","message":"Dream saved successfully for user e41c191f-f7dc-4060-8a7b-b4d1cb1f367a: bd7a8f08-5e83-48cf-b08c-6278e6d5ba57","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:22"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:27"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:27"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:27"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:42"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:45"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:45"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:05:45"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:08:38"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}

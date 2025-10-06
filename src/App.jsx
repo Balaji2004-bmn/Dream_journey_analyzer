@@ -21,6 +21,8 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import Subscription from './pages/Subscription';
 import Upgrade from './pages/Upgrade';
 import MockPayment from './pages/MockPayment';
+import AdminAuth from './pages/AdminAuth';
+import AdminDashboard from './pages/AdminDashboard';
 import Footer from './components/Footer';
 import ProjectAssistant from './components/ProjectAssistant';
 
@@ -56,6 +58,8 @@ const App = () => {
                 <Route path="/subscription" element={<Subscription />} />
                 <Route path="/upgrade" element={<Upgrade />} />
                 <Route path="/mock-payment" element={<MockPayment />} />
+                <Route path="/admin/auth" element={<AdminAuth />} />
+                <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />

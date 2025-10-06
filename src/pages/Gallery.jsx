@@ -155,19 +155,19 @@ export default function Gallery() {
     setLoading(true);
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
-
-      // Fetch public dreams
-      const publicResponse = await fetch(`${backendUrl}/api/dreams/public/gallery`);
       let allDreams = [];
 
+      // Fetch public dreams from everyone (is_public = true)
+      const publicResponse = await fetch(`${backendUrl}/api/dreams/public/gallery`);
       if (publicResponse.ok) {
         const publicResult = await publicResponse.json();
         if (publicResult.success && Array.isArray(publicResult.dreams)) {
           allDreams = publicResult.dreams;
+          console.log(`Loaded ${allDreams.length} public dreams`);
         }
       }
 
-      // If user is logged in, also fetch their own dreams (both public and private)
+      // If user is logged in, also fetch their private dreams (is_public = false)
       if (user && session) {
         try {
           const userResponse = await fetch(`${backendUrl}/api/dreams`, {
@@ -179,14 +179,17 @@ export default function Gallery() {
           if (userResponse.ok) {
             const userResult = await userResponse.json();
             if (userResult.success && Array.isArray(userResult.dreams)) {
-              // Merge user dreams with public dreams, avoiding duplicates
-              const userDreamIds = new Set(userResult.dreams.map(d => d.id));
-              const uniquePublicDreams = allDreams.filter(d => !userDreamIds.has(d.id));
-              allDreams = [...uniquePublicDreams, ...userResult.dreams];
+              // Filter out user's private dreams (public ones already included above)
+              const userPrivateDreams = userResult.dreams.filter(d => d.is_public !== true);
+              
+              // Merge: Public dreams from everyone + User's private dreams
+              allDreams = [...allDreams, ...userPrivateDreams];
+              console.log(`Added ${userPrivateDreams.length} private dreams for user ${user.email}`);
+              console.log(`Total dreams: ${allDreams.length} (public + your private)`);
             }
           }
         } catch (userError) {
-          console.warn('Failed to fetch user dreams:', userError);
+          console.error('Failed to fetch user dreams:', userError);
           // Continue with just public dreams
         }
       }
@@ -525,10 +528,12 @@ export default function Gallery() {
         matchesFilter = true;
     }
 
-    // Enhanced privacy filter: only show public dreams, user's own dreams, or private dreams if access granted
-    const isVisible = video.is_public !== false || video.isOwner || (video.is_public === false && hasPrivateAccess);
+    // Privacy filter: Show public dreams (everyone) OR user's own dreams (private+public)
+    // Public dreams (is_public = true): Visible to EVERYONE
+    // Private dreams (is_public = false): Visible ONLY to owner
+    const isVisible = video.is_public === true || video.isOwner;
 
-    console.log(`Filtering video ${video.id}: search=${matchesSearch}, filter=${matchesFilter}, visible=${isVisible}, hasPrivateAccess=${hasPrivateAccess}`);
+    console.log(`Filtering video ${video.id}: search=${matchesSearch}, filter=${matchesFilter}, visible=${isVisible}, isPublic=${video.is_public}, isOwner=${video.isOwner}`);
 
     return matchesSearch && matchesFilter && isVisible;
   });
