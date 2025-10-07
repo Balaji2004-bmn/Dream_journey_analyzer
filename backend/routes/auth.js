@@ -76,10 +76,18 @@ router.post('/signup', async (req, res) => {
 
     // Enforce hCaptcha if configured (skip in development for testing)
     if (process.env.HCAPTCHA_SECRET && process.env.NODE_ENV === 'production') {
-      const token = req.body.hcaptchaToken;
-      const result = await verifyHCaptcha(token, req.ip);
-      if (!result.ok) {
-        return res.status(400).json({ error: 'CaptchaFailed', message: result.message || 'hCaptcha verification failed' });
+      // Skip captcha for mobile clients in production
+      const isMobileClient = req.headers['x-client-type'] === 'mobile' ||
+                           req.headers['user-agent']?.includes('DreamJourneyMobile');
+
+      if (!isMobileClient) {
+        const token = req.body.hcaptchaToken;
+        const result = await verifyHCaptcha(token, req.ip);
+        if (!result.ok) {
+          return res.status(400).json({ error: 'CaptchaFailed', message: result.message || 'hCaptcha verification failed' });
+        }
+      } else {
+        logger.info('Skipping captcha verification for mobile client');
       }
     }
 
@@ -435,6 +443,22 @@ router.post('/signin', async (req, res) => {
     } else {
       // Production mode standard login
       logger.info(`Attempting standard sign-in for ${normalizedEmail}`);
+
+      // Check if mobile client - skip captcha for mobile
+      const isMobileClient = req.headers['x-client-type'] === 'mobile' ||
+                           req.headers['user-agent']?.includes('DreamJourneyMobile');
+
+      if (!isMobileClient && process.env.HCAPTCHA_SECRET && process.env.NODE_ENV === 'production') {
+        const token = req.body.hcaptchaToken;
+        const result = await verifyHCaptcha(token, req.ip);
+        if (!result.ok) {
+          logger.warn(`Captcha verification failed for ${normalizedEmail}`);
+          return res.status(400).json({ error: 'CaptchaFailed', message: result.message || 'hCaptcha verification failed' });
+        }
+      } else if (isMobileClient) {
+        logger.info('Skipping captcha verification for mobile client');
+      }
+
       const { data: standardData, error: standardError } = await supabase.auth.signInWithPassword({
         email: normalizedEmail,
         password,
@@ -1001,6 +1025,102 @@ router.post('/refresh', async (req, res) => {
   }
 });
 
+// Google OAuth sign-in
+router.post('/google', async (req, res) => {
+  try {
+    const { access_token, id_token, user } = req.body;
+
+    if (!access_token || !user || !user.email) {
+      return res.status(400).json({
+        error: 'Invalid Request',
+        message: 'Access token and user info are required'
+      });
+    }
+
+    // Verify the Google token (optional but recommended)
+    try {
+      const googleResponse = await fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${access_token}`);
+      if (!googleResponse.ok) {
+        return res.status(401).json({
+          error: 'Invalid Token',
+          message: 'Invalid Google access token'
+        });
+      }
+    } catch (error) {
+      logger.warn('Could not verify Google token:', error.message);
+    }
+
+    // Check if user exists in Supabase
+    const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    const existingUser = existingUsers?.users?.find(u => u.email?.toLowerCase() === user.email.toLowerCase());
+
+    let supabaseUser;
+    if (existingUser) {
+      supabaseUser = existingUser;
+    } else {
+      // Create new user in Supabase
+      const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+        email: user.email,
+        email_confirm: true,
+        user_metadata: {
+          full_name: user.name,
+          avatar_url: user.picture,
+          provider: 'google'
+        }
+      });
+
+      if (createError) {
+        logger.error('Error creating Google user:', createError);
+        return res.status(500).json({
+          error: 'User Creation Failed',
+          message: 'Failed to create user account'
+        });
+      }
+
+      supabaseUser = newUser.user;
+    }
+
+    // Create session for the user
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    const session = {
+      access_token: sessionToken,
+      refresh_token: crypto.randomBytes(32).toString('hex'),
+      expires_at: Date.now() + (60 * 60 * 1000), // 1 hour
+      user: {
+        id: supabaseUser.id,
+        email: supabaseUser.email,
+        email_confirmed_at: supabaseUser.email_confirmed_at,
+        user_metadata: supabaseUser.user_metadata
+      }
+    };
+
+    // Store in demo sessions for now (should use proper session storage)
+    demoSessions.set(sessionToken, session);
+
+    logger.info(`Google user signed in: ${user.email}`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Signed in with Google successfully',
+      user: session.user,
+      session: {
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_at: session.expires_at
+      },
+      demo: true
+    });
+
+  } catch (error) {
+    logger.error('Google sign-in error:', error);
+    return res.status(500).json({
+      error: 'Google Sign-In Failed',
+      message: 'An error occurred during Google sign-in'
+    });
+  }
+});
+
 // GET token verification endpoint to support Authorization header usage
 router.get('/verify', async (req, res) => {
   try {
@@ -1031,7 +1151,7 @@ router.get('/verify', async (req, res) => {
     return res.json({ success: true, user: { id: user.id, email: user.email, metadata: user.user_metadata }, isAdmin });
   } catch (error) {
     logger.error('Token verification exception (GET):', error);
-    return res.status(500).json({ error: 'Verification Failed', message: 'Failed to verify authentication token' });
+    return res.status(500).json({ error: 'Verification Failed', message: 'Failed to verify authentication token', details: error.message });
   }
 });
 

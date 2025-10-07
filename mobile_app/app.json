@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Dream Journey",
+    "slug": "dream-journey-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#6366f1"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dreamjourney.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#6366f1"
+      },
+      "package": "com.dreamjourney.mobile",
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}

@@ -21,8 +21,14 @@ out/
 .env.production.local
 .env.*.local
 **/.env
+**/.env.local
+**/.env.*.local
 backend/.env
+nlp_backend/.env
+payments_flask/.env
+mobile_app/.env
 **/*.env
+.env.backup
 
 # API Keys and Secrets - NEVER COMMIT THESE
 **/config/secrets.json

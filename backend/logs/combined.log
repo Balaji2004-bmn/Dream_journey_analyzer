@@ -8517,3 +8517,296 @@
 {"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}
 {"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}
 {"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:09:25"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-06 17:10:23"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:11:46"}
+{"level":"info","message":"POST /api/ai/analyze-dream - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:35"}
+{"level":"info","message":"API Request: POST http://localhost:5000/analyze","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:35"}
+{"level":"error","message":"API Response Error: undefined Error","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:35"}
+{"level":"warn","message":"NLP service call failed (/analyze):","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:35"}
+{"level":"info","message":"Dream analysis completed via Gemini for user 99d6c969-8f55-49e2-9a60-dcf3b710d3f4","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:38"}
+{"level":"info","message":"POST /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:48"}
+{"level":"info","message":"Dream saved successfully for user 99d6c969-8f55-49e2-9a60-dcf3b710d3f4: 4848fb43-4272-4e89-a0fc-8bcd8be156bb","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:48"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:52"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:52"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:12:52"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:13:13"}
+{"level":"info","message":"POST /api/assistant - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:13:24"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-06 17:22:54"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:37"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:02:46"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:00"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:00"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:00"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:34"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:34"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:03:35"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:04:47"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:05:02"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:06:37"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:06:37"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:06:38"}
+{"level":"info","message":"POST /api/auth/signin - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:53"}
+{"level":"info","message":"Admin sign-in check for bmn636169@gmail.com: isAdminEmail=true, isMasterPassword=true","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:53"}
+{"level":"info","message":"Attempting admin override for bmn636169@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:53"}
+{"level":"info","message":"Admin bmn636169@gmail.com signed in successfully via override","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:53"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:57"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:08:59"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:01"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:04"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:06"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:08"}
+{"level":"info","message":"PATCH /api/admin/users/9e3a0a35-f73b-4f28-80d7-def83f31e238/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:28"}
+{"level":"info","message":"PATCH /api/admin/users/9e3a0a35-f73b-4f28-80d7-def83f31e238/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:28"}
+{"level":"info","message":"PATCH /api/admin/users/9e3a0a35-f73b-4f28-80d7-def83f31e238/status - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:28"}
+{"action":"change_user_status","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{"is_active":false},"ip":"::1","level":"info","message":"Admin Action:","method":"PATCH","path":"/users/9e3a0a35-f73b-4f28-80d7-def83f31e238/status","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:31","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:31"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:33"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:34"}
+{"level":"info","message":"GET /api/admin/users - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"warn","message":"RPC function not available, using fallback query:","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"GET /api/admin/insights/stats - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"GET /api/admin/content/dreams/flagged - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"GET /api/admin/content/audit/dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"GET /api/admin/content/dreams/consented - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"GET /api/admin/insights/sentiment - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"action":"view_flagged_content","admin_email":"admin@demo.com","admin_id":"550e8400-e29b-41d4-a716-446655440000","body":{},"ip":"::1","level":"info","message":"Admin Action:","method":"GET","path":"/dreams/flagged","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"code":"23503","details":"Key (admin_id)=(550e8400-e29b-41d4-a716-446655440000) is not present in table \"users\".","hint":null,"level":"error","message":"Failed to log admin action: insert or update on table \"admin_audit_logs\" violates foreign key constraint \"admin_audit_logs_admin_id_fkey\"","service":"dream-journey-backend","timestamp":"2025-10-07 17:09:36"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:12"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:12"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:12"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:17"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:17"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 17:10:17"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 18:12:32"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:12:32"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:12:32"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:27"}
+{"level":"info","message":"Admin sign-in check for bn3736407@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:27"}
+{"level":"info","message":"Attempting standard sign-in for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:27"}
+{"level":"warn","message":"Standard sign-in failed for bn3736407@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:27"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:27"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:35"}
+{"level":"info","message":"Admin sign-in check for bn3736407@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:35"}
+{"level":"info","message":"Attempting standard sign-in for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:35"}
+{"level":"warn","message":"Standard sign-in failed for bn3736407@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:35"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:31:35"}
+{"level":"info","message":"POST /api/auth/signup - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:17"}
+{"level":"info","message":"Production signup for bmn636169@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:17"}
+{"level":"info","message":"Checking for existing user...","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:17"}
+{"level":"info","message":"Existing user check: FOUND","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:17"}
+{"level":"info","message":"User exists and is confirmed: bmn636169@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:17"}
+{"level":"info","message":"POST /api/auth/signup - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Production signup for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Checking for existing user...","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Existing user check: NOT FOUND","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Creating new user: bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Email transporter created: true","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Sending NEW USER confirmation email to bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:44"}
+{"level":"info","message":"Confirmation email sent to bnidavanche@gmail.com in production mode","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:48"}
+{"level":"info","message":"New user signed up: bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:32:48"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:33"}
+{"level":"info","message":"Admin sign-in check for bn3736407@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:33"}
+{"level":"info","message":"Attempting standard sign-in for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:33"}
+{"level":"warn","message":"Standard sign-in failed for bn3736407@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:34"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bn3736407@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:34"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:46"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:46"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:46"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:46"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:46"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:58"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:58"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:58"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:59"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:33:59"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:34:27"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:34:27"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:34:27"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:34:27"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:34:27"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 18:35:50"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:35:50"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:35:50"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:05"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:05"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:05"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:05"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:05"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:10"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:10"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:10"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:36:57"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:37:24"}
+{"level":"info","message":"POST /api/auth/signup - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Production signup for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Checking for existing user...","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Existing user check: FOUND","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"User exists but NOT confirmed: bnidavanche@gmail.com. Will resend confirmation.","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Attempting to resend confirmation email to bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Returning success response for existing unconfirmed user: bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:08"}
+{"level":"info","message":"Confirmation email resent successfully to bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:11"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:35"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:48"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:38:59"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:56"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:56"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:56"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:56"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:57"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:39:57"}
+{"level":"info","message":"GET /health - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:40:12"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 18:41:56"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:41:56"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:41:56"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:51"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:51"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:51"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:51"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:52"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:42:52"}
+{"level":"info","message":"POST /api/auth/signup - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Production signup for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Checking for existing user...","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Existing user check: FOUND","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"User exists but NOT confirmed: bnidavanche@gmail.com. Will resend confirmation.","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Attempting to resend confirmation email to bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Returning success response for existing unconfirmed user: bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:30"}
+{"level":"info","message":"Confirmation email resent successfully to bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:44:33"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:11"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:45:23"}
+{"level":"info","message":"POST /api/auth/signin - ::ffff:192.168.30.119","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"info","message":"Admin sign-in check for bnidavanche@gmail.com: isAdminEmail=false, isMasterPassword=false","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"info","message":"Attempting standard sign-in for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"info","message":"Skipping captcha verification for mobile client","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"warn","message":"Standard sign-in failed for bnidavanche@gmail.com: captcha verification process failed","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"info","message":"Captcha error detected, trying demo fallback for bnidavanche@gmail.com","service":"dream-journey-backend","timestamp":"2025-10-07 18:46:14"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:18"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:18"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:18"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:37"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:37"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:37"}
+{"level":"info","message":"Dream Journey Admin Server running on port 5174","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"Dream Journey Backend running on port 3001","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"Environment: development","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"Frontend URL: http://localhost:5173","service":"dream-journey-backend","timestamp":"2025-10-07 18:48:48"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:50:54"}
+{"level":"info","message":"POST /api/auth/verify - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:51:16"}
+{"level":"info","message":"GET /api/dreams/public/gallery - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:51:20"}
+{"level":"info","message":"GET /api/email/private-dream-access - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:51:20"}
+{"level":"info","message":"GET /api/dreams - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:51:20"}
+{"level":"info","message":"POST /api/assistant - ::1","service":"dream-journey-backend","timestamp":"2025-10-07 18:51:30"}
