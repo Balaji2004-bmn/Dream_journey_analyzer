@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Project Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 30px;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .test-section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .question-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+        }
+        .response.success {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        .response.error {
+            border-color: #f44336;
+            background: #fef1f0;
+        }
+        .response-header {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .response-content {
+            color: #333;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge.gemini {
+            background: #4285f4;
+            color: white;
+        }
+        .badge.openai {
+            background: #10a37f;
+            color: white;
+        }
+        .badge.error {
+            background: #f44336;
+            color: white;
+        }
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .quick-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .quick-question {
+            padding: 8px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: transform 0.2s;
+        }
+        .quick-question:hover {
+            transform: scale(1.05);
+            background: #5568d3;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status.checking {
+            background: #fff3e0;
+        }
+        .status.error {
+            background: #ffebee;
+        }
+        .status-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Project Assistant Tester</h1>
+        <p class="subtitle">Test your AI-powered project assistant with both Gemini and OpenAI APIs</p>
+
+        <div id="statusBox" class="status checking">
+            <div class="loading"></div>
+            <div class="status-text">Checking API connection...</div>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Ask Questions</h2>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                Ask about platform features, subscriptions, or any general question.
+            </p>
+            
+            <div class="question-box">
+                <input 
+                    type="text" 
+                    id="questionInput" 
+                    placeholder="Type your question here..."
+                    value="What features does Dream Journey Analyzer have?"
+                />
+                <button onclick="askQuestion()" id="askBtn">
+                    Ask
+                </button>
+            </div>
+
+            <div class="quick-questions">
+                <div class="quick-question" onclick="setQuestion('What is Dream Journey Analyzer?')">
+                    What is this platform?
+                </div>
+                <div class="quick-question" onclick="setQuestion('What are the subscription plans?')">
+                    Subscription plans
+                </div>
+                <div class="quick-question" onclick="setQuestion('How does video generation work?')">
+                    Video generation
+                </div>
+                <div class="quick-question" onclick="setQuestion('How do I pay with UPI?')">
+                    UPI payment
+                </div>
+                <div class="quick-question" onclick="setQuestion('What is quantum computing?')">
+                    General question
+                </div>
+            </div>
+
+            <div id="responseBox"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 API Status</h2>
+            <div id="apiStatus">
+                <p style="color: #666;">Testing API endpoints...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001';
+        let conversationId = null;
+
+        async function checkStatus() {
+            const statusBox = document.getElementById('statusBox');
+            const apiStatus = document.getElementById('apiStatus');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/health`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusBox.className = 'status';
+                    statusBox.innerHTML = `
+                        <span style="color: #4caf50; font-size: 20px;">✅</span>
+                        <div class="status-text">
+                            <strong>Backend Connected</strong><br>
+                            <small>Server is running on port 3001</small>
+                        </div>
+                    `;
+
+                    // Show API configuration
+                    apiStatus.innerHTML = `
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                                <strong>OpenAI API</strong><br>
+                                <span style="color: ${data.services?.nlp ? '#4caf50' : '#f44336'};">
+                                    ${data.services?.nlp ? '✅ Configured' : '❌ Not configured'}
+                                </span>
+                            </div>
+                            <div style="padding: 12px; background: #f5f5f5; border-radius: 6px;">
+                                <strong>Gemini API</strong><br>
+                                <span style="color: ${data.services?.nlp ? '#4caf50' : '#f44336'};">
+                                    ${data.services?.nlp ? '✅ Configured' : '❌ Not configured'}
+                                </span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 10px; color: #666; font-size: 13px;">
+                            💡 Tip: Assistant tries Gemini first, then falls back to OpenAI
+                        </p>
+                    `;
+                } else {
+                    throw new Error('Backend returned non-200 status');
+                }
+            } catch (error) {
+                statusBox.className = 'status error';
+                statusBox.innerHTML = `
+                    <span style="color: #f44336; font-size: 20px;">❌</span>
+                    <div class="status-text">
+                        <strong>Backend Not Connected</strong><br>
+                        <small>Start backend: cd backend && npm run dev</small>
+                    </div>
+                `;
+
+                apiStatus.innerHTML = `
+                    <p style="color: #f44336;">⚠️ Cannot connect to backend server</p>
+                `;
+            }
+        }
+
+        function setQuestion(question) {
+            document.getElementById('questionInput').value = question;
+        }
+
+        async function askQuestion() {
+            const input = document.getElementById('questionInput');
+            const askBtn = document.getElementById('askBtn');
+            const responseBox = document.getElementById('responseBox');
+            const question = input.value.trim();
+
+            if (!question) {
+                alert('Please enter a question');
+                return;
+            }
+
+            // Disable button and show loading
+            askBtn.disabled = true;
+            askBtn.innerHTML = '<div class="loading"></div>';
+
+            responseBox.innerHTML = `
+                <div class="response">
+                    <div class="response-header">
+                        <div class="loading"></div>
+                        Getting response...
+                    </div>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/assistant`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userMessage: question,
+                        conversationId: conversationId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    conversationId = data.conversationId;
+
+                    responseBox.innerHTML = `
+                        <div class="response success">
+                            <div class="response-header">
+                                <span style="color: #4caf50;">✅</span>
+                                <strong>Assistant Response</strong>
+                                <span class="badge gemini">Gemini / OpenAI</span>
+                            </div>
+                            <div class="response-content">${data.assistantMessage}</div>
+                            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e0e0e0; font-size: 12px; color: #666;">
+                                Conversation ID: ${data.conversationId}<br>
+                                Timestamp: ${new Date(data.timestamp).toLocaleString()}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(data.message || 'Failed to get response');
+                }
+            } catch (error) {
+                responseBox.innerHTML = `
+                    <div class="response error">
+                        <div class="response-header">
+                            <span style="color: #f44336;">❌</span>
+                            <strong>Error</strong>
+                            <span class="badge error">Failed</span>
+                        </div>
+                        <div class="response-content">
+                            ${error.message}
+                            
+                            <strong style="display: block; margin-top: 10px;">Possible reasons:</strong>
+                            • Backend not running
+                            • API keys not configured in backend/.env
+                            • Network connection issues
+                            • CORS not configured
+                            
+                            <strong style="display: block; margin-top: 10px;">How to fix:</strong>
+                            1. Start backend: cd backend && npm run dev
+                            2. Check backend/.env has GEMINI_API_KEY or OPENAI_API_KEY
+                            3. Restart backend after adding keys
+                        </div>
+                    </div>
+                `;
+            } finally {
+                askBtn.disabled = false;
+                askBtn.textContent = 'Ask';
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('questionInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                askQuestion();
+            }
+        });
+
+        // Check status on load
+        checkStatus();
+    </script>
+</body>
+</html>

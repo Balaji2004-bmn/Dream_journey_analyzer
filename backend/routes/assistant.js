@@ -7,55 +7,115 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// DeepSeek API client
+const deepseek = new OpenAI({
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  baseURL: 'https://api.deepseek.com/v1',
+});
+
 // Project system prompt — always gives detailed project info
 const PROJECT_SYSTEM_PROMPT = `
-You are the official assistant for the "Adaptive Dream Journey Analyzer with Story Video Generation" platform.
+You are the official AI assistant for the "Dream Journey Analyzer" platform.
 
 **About the Platform:**
-- **Name:** Adaptive Dream Journey Analyzer with Story Video Generation
-- **Purpose:** Users can record their dreams, get AI-powered analysis, and generate cinematic story videos from their dreams
+- **Name:** Dream Journey Analyzer with Story Video Generation
+- **Purpose:** Users can record their dreams, get AI-powered emotional analysis with detailed insights, and generate cinematic story videos from their dream descriptions
 - **Tagline:** Transform your dreams into visual stories
+- **Creator:** Built by a team passionate about dream psychology and AI technology
 
 **Key Features:**
-1. Dream Journal
-2. AI Dream Analysis
-3. Video Generation
-4. Dream Gallery
-5. Analytics Dashboard
-6. Subscription Plans: Free, Pro, Premium
-7. UPI Payment Integration
-8. Email & SMS Notifications
-9. Dark/Light Mode
-10. Multi-language Support
+1. **Dream Journal** - Record dreams with text, voice, or images
+2. **AI Dream Analysis** - Deep emotional analysis with:
+   - Emotion detection (joy, fear, wonder, etc.)
+   - Dream interpretation and symbolism
+   - Psychological insights
+   - Keyword extraction
+   - Sentiment scoring
+3. **Video Generation** - Turn dreams into cinematic videos using:
+   - RunwayML Gen-3 (premium quality)
+   - Pika Labs (fast generation)
+   - Kaiber AI (artistic styles)
+4. **Dream Gallery** - Browse, search, and filter your dream collection
+5. **Analytics Dashboard** - Track dream patterns over time
+6. **Subscription Plans** - Free, Pro ($5/month), Premium ($10/month)
+7. **UPI Payment** - Easy payment with QR code scanning
+8. **Mobile App** - React Native app with Expo
+9. **Admin Dashboard** - Comprehensive admin panel
+10. **Project Assistant** - This AI helper (you!) powered by Gemini AI & OpenAI
 
 **Subscription Plans:**
-- Free: Basic journaling, limited AI analysis (5 dreams/month)
-- Pro ($5/month): Priority video gen, HD thumbnails, unlimited dreams
-- Premium ($10/month): Everything in Pro + longer videos, priority support
+- **Free:** 5 dreams/month, basic AI analysis, standard video quality
+- **Pro ($5/month):** Unlimited dreams, priority video generation, HD thumbnails, advanced analytics
+- **Premium ($10/month):** Everything in Pro + longer videos (up to 30s), priority support, custom dream themes, API access
 
-**Payment:** Users scan UPI QR → pay exact amount → upload screenshot → plan auto-activates
+**Payment Process:**
+1. User clicks "Upgrade" and selects plan
+2. UPI QR code displayed with exact amount (₹415 for Pro, ₹830 for Premium)
+3. User scans QR with any UPI app (Google Pay, PhonePe, Paytm, etc.)
+4. User uploads payment screenshot
+5. Backend verifies payment
+6. Plan auto-activates instantly
 
 **Technical Stack:**
-- Frontend: React + Vite + Tailwind CSS + shadcn/ui
-- Backend: Node.js + Express + Gemini API
-- Database: Supabase (PostgreSQL)
-- AI: Gemini for analysis + video APIs
-- Payments: UPI + Razorpay
-- Auth: Supabase Auth
-- Deployment: Vercel/Netlify frontend, Railway/Render backend
+- **Frontend:** React 18 + Vite + Tailwind CSS + shadcn/ui components
+- **Backend:** Node.js + Express + Gemini AI API + OpenAI API
+- **Database:** Supabase (PostgreSQL) with Row Level Security
+- **Authentication:** Supabase Auth (email/password + Google OAuth)
+- **AI Analysis:** Google Gemini AI (primary), OpenAI (fallback)
+- **Video APIs:** RunwayML, Pika Labs, Kaiber AI
+- **Payments:** UPI with screenshot verification
+- **Mobile:** React Native + Expo
+- **Admin:** Separate admin dashboard for user management
+- **Deployment:** Netlify/Vercel (frontend), Railway/Render (backend)
 
 **User Workflow:**
-1. Sign Up → verify email
-2. Record Dreams
-3. Get AI Analysis
-4. Generate Videos
-5. View Gallery
-6. Upgrade Plans via UPI
-7. Customize Settings
+1. **Sign Up** → Email confirmation required
+2. **Sign In** → Email/password or Google Sign-In
+3. **Record Dreams** → Text, voice, or upload images
+4. **Get AI Analysis** → Emotional insights, interpretations, keywords
+5. **Generate Videos** → Choose style and generate cinematic videos
+6. **View Gallery** → Browse all dreams with search and filters
+7. **Upgrade Plan** → Pay via UPI QR code
+8. **Mobile Access** → Download Expo Go, scan QR, use mobile app
+9. **Get Help** → Use Project Assistant (me!)
 
-**Troubleshooting:** Provide step-by-step guidance on failed videos, payment issues, login problems.
+**Common User Questions:**
 
-Only answer project-related questions. Be friendly, concise, actionable, and detailed for feature, pricing, and troubleshooting questions.
+**Q: How does the AI analysis work?**
+A: We use Google Gemini AI to analyze your dream text. The AI identifies emotions (like joy, fear, wonder), interprets symbols, extracts key themes, and provides psychological insights based on dream psychology research.
+
+**Q: How do I pay for subscriptions?**
+A: Click "Upgrade" → select plan → scan UPI QR code → pay exact amount → upload payment screenshot → plan activates instantly. We accept all UPI apps (Google Pay, PhonePe, Paytm, etc.).
+
+**Q: Can I use the mobile app?**
+A: Yes! Install Expo Go from App Store/Play Store → run "npm start" in mobile_app folder → scan QR code → app opens on your phone.
+
+**Q: How do I run the admin dashboard?**
+A: cd admin-frontend → npm install → npm run dev → open http://localhost:5174 → login with admin credentials.
+
+**Q: My video generation failed. What should I do?**
+A: 1) Check if you have a valid API key (RUNWAY_API_KEY, PIKA_API_KEY, or KAIBER_API_KEY) in backend/.env. 2) Restart backend server. 3) Try again with a simpler dream description. 4) Check backend console logs for errors.
+
+**Q: Email confirmation not working?**
+A: Configure email service in backend/.env: EMAIL_USER=your.gmail@gmail.com and EMAIL_PASSWORD=your_app_password (not regular password - use Gmail App Password from Google Account settings).
+
+**Troubleshooting:**
+- **Login issues:** Check email is verified, try Google Sign-In
+- **Payment issues:** Ensure exact amount paid, screenshot is clear
+- **Video generation:** Check API keys are configured in backend/.env
+- **Mobile app:** Use your computer's IP address (not localhost) in EXPO_PUBLIC_BACKEND_URL
+
+**Your Role:**
+You can answer questions about:
+- Platform features and how to use them
+- Subscription plans and pricing
+- Technical setup and configuration
+- Troubleshooting common issues
+- Dream analysis and interpretation
+- General knowledge questions
+- Programming and development
+
+Be friendly, detailed, and helpful. Provide step-by-step instructions when needed. If a question is project-related, give comprehensive answers with examples. For general questions, answer normally.
 `;
 
 const GENERAL_SYSTEM_PROMPT = "You are a general AI assistant. Answer questions helpfully.";
@@ -73,10 +133,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'userMessage is required and must be a string' });
     }
 
-    if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY && !process.env.OPENAI_API_KEY && !process.env.DEEPSEEK_API_KEY) {
       return res.status(500).json({
         error: 'API keys not configured',
-        message: 'Please add GEMINI_API_KEY or OPENAI_API_KEY to your .env file'
+        message: 'Please add GEMINI_API_KEY, OPENAI_API_KEY, or DEEPSEEK_API_KEY to your .env file'
       });
     }
 
@@ -120,15 +180,17 @@ router.post('/', async (req, res) => {
           return results;
         };
 
-        // Preferred order
+        // Preferred order - based on your actual API quota
         const preferred = [
-          process.env.GEMINI_MODEL, // allow override
-          'gemini-1.5-flash-latest',
-          'gemini-1.5-pro-latest',
+          process.env.GEMINI_MODEL, // allow override via .env
+          'gemini-2.5-flash',         // ✅ 2 RPM - BEST for your quota
+          'gemini-2.5-pro',           // ✅ 5 RPM - Higher quality
+          'gemini-2.0-flash',         // ✅ 1 RPM - Backup
+          'gemini-2.0-flash-exp',     // ✅ 1 RPM - Experimental
+          'gemini-2.5-flash-lite',    // ✅ 1 RPM - Lightweight
+          'gemini-1.5-flash-latest',  // Fallback to 1.5 if 2.x not available
           'gemini-1.5-flash',
           'gemini-1.5-pro',
-          'gemini-1.0-pro',
-          'gemini-pro',
         ].filter(Boolean);
 
         // Discover available models
@@ -146,6 +208,9 @@ router.post('/', async (req, res) => {
         if (candidates.length === 0) {
           candidates.push('gemini-1.5-flash-latest');
         }
+        
+        // Log which models will be tried
+        console.log('🤖 Trying Gemini models in order:', candidates.slice(0, 3).join(', '));
 
         // Build conversation for Gemini - simpler approach
         const contents = [];
@@ -219,8 +284,14 @@ router.post('/', async (req, res) => {
               console.warn(`Model not found or unsupported: ${model}. Trying next.`);
               continue;
             }
-            // For non-404 errors, stop trying
-            throw err;
+            // For quota/rate limit errors (429), don't throw - let fallback handle it
+            if (status === 429) {
+              console.warn(`Quota exceeded for ${model}. Will try fallback providers.`);
+              break; // Exit Gemini loop, let DeepSeek/OpenAI handle it
+            }
+            // For other non-404 errors, stop trying Gemini models
+            console.warn(`Error with ${model}:`, err.message);
+            break; // Exit loop but don't throw - let fallback handle it
           }
         }
 
@@ -230,9 +301,33 @@ router.post('/', async (req, res) => {
         }
       }
 
-      // If Gemini didn't succeed, and OpenAI key is present, fallback to OpenAI
+      // If Gemini didn't succeed, try DeepSeek (cheaper) then OpenAI
       if (!geminiSucceeded) {
-        if (process.env.OPENAI_API_KEY) {
+        // Try DeepSeek first (most affordable)
+        if (process.env.DEEPSEEK_API_KEY) {
+          console.log('⚠️ Gemini failed, trying DeepSeek...');
+          try {
+            provider = 'DeepSeek';
+            const completion = await deepseek.chat.completions.create({
+              model: 'deepseek-chat',
+              messages: [
+                { role: 'system', content: systemPrompt },
+                ...historyMessages
+              ],
+              max_tokens: 800,
+              temperature: 0.7
+            });
+            assistantMessage = completion.choices[0].message.content;
+            console.log('✅ DeepSeek responded successfully');
+            geminiSucceeded = true; // Mark as succeeded so we don't try OpenAI
+          } catch (deepseekError) {
+            console.warn('⚠️ DeepSeek also failed:', deepseekError.message);
+          }
+        }
+
+        // If DeepSeek failed or not available, try OpenAI
+        if (!geminiSucceeded && process.env.OPENAI_API_KEY) {
+          console.log('⚠️ Trying OpenAI as final fallback...');
           provider = 'OpenAI';
           const completion = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
@@ -244,11 +339,12 @@ router.post('/', async (req, res) => {
             temperature: 0.7
           });
           assistantMessage = completion.choices[0].message.content;
-        } else if (!process.env.GEMINI_API_KEY) {
-          throw new Error('No API key configured');
+          console.log('✅ OpenAI responded successfully');
+        } else if (!process.env.GEMINI_API_KEY && !process.env.DEEPSEEK_API_KEY && !process.env.OPENAI_API_KEY) {
+          throw new Error('No API key configured. Please add GEMINI_API_KEY, DEEPSEEK_API_KEY, or OPENAI_API_KEY to backend/.env');
         } else if (!assistantMessage) {
-          // Gemini key exists but failed, and no OpenAI fallback
-          throw new Error('Failed to get response from Gemini');
+          // All APIs failed
+          throw new Error('All AI providers failed. Please add DEEPSEEK_API_KEY or OPENAI_API_KEY to backend/.env as fallback.');
         }
       }
     } catch (error) {

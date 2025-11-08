@@ -99,12 +99,12 @@ router.post('/signup', async (req, res) => {
 
       const userId = crypto.randomUUID();
       const confirmationToken = crypto.randomBytes(32).toString('hex');
-
+      // Email confirmation is ALWAYS required - users must verify email
       const user = {
         id: userId,
         email: normalizedEmail,
         password: password, // In production, hash this!
-        email_confirmed_at: null,
+        email_confirmed_at: null, // Always require email confirmation
         created_at: new Date().toISOString(),
         user_metadata: { signup_method: 'web_app' },
         confirmation_token: confirmationToken
@@ -404,7 +404,7 @@ router.post('/signin', async (req, res) => {
         return res.status(401).json({ error: 'Invalid Credentials', message: 'Invalid email or password' });
       }
 
-      // Always enforce email confirmation (removed production-only check)
+      // Always require email confirmation
       if (!user.email_confirmed_at) {
         return res.status(401).json({ 
           error: 'Email Not Verified', 
@@ -471,7 +471,7 @@ router.post('/signin', async (req, res) => {
         if ((process.env.NODE_ENV || 'development') !== 'production') {
           const demoUser = demoUsers.get(normalizedEmail);
           if (demoUser && demoUser.password === password) {
-            // Always enforce email confirmation
+            // Always require email confirmation
             if (!demoUser.email_confirmed_at) {
               return res.status(401).json({ 
                 error: 'Email Not Verified', 

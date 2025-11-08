@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Manual Authentication</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success { background: #28a745; color: white; }
+        .status.error { background: #dc3545; color: white; }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Manual Authentication Tester</h1>
+        <p><strong>Backend URL:</strong> <span id="backendUrl">http://localhost:3001/api</span></p>
+        
+        <h2>📝 Sign Up (Create Account)</h2>
+        <div class="form-group">
+            <label for="signupEmail">Email:</label>
+            <input type="email" id="signupEmail" placeholder="test@example.com" value="test@example.com">
+        </div>
+        <div class="form-group">
+            <label for="signupPassword">Password:</label>
+            <input type="password" id="signupPassword" placeholder="Test@123" value="Test@123">
+        </div>
+        <button onclick="testSignup()">🚀 Test Sign Up</button>
+        <button onclick="clearResponse('signupResponse')">Clear</button>
+        <div id="signupResponse"></div>
+
+        <h2>🔑 Sign In (Login)</h2>
+        <div class="form-group">
+            <label for="signinEmail">Email:</label>
+            <input type="email" id="signinEmail" placeholder="test@example.com" value="test@example.com">
+        </div>
+        <div class="form-group">
+            <label for="signinPassword">Password:</label>
+            <input type="password" id="signinPassword" placeholder="Test@123" value="Test@123">
+        </div>
+        <button onclick="testSignin()">🔓 Test Sign In</button>
+        <button onclick="clearResponse('signinResponse')">Clear</button>
+        <div id="signinResponse"></div>
+
+        <h2>🧪 Quick Test</h2>
+        <p>Test both signup and signin in sequence:</p>
+        <button onclick="runFullTest()">▶️ Run Full Test</button>
+        <button onclick="clearAll()">🗑️ Clear All</button>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:3001/api';
+
+        function showLoading(elementId) {
+            const el = document.getElementById(elementId);
+            el.className = 'response info';
+            el.innerHTML = '⏳ Loading...<div class="loading"></div>';
+        }
+
+        function showResponse(elementId, data, isError = false) {
+            const el = document.getElementById(elementId);
+            el.className = isError ? 'response error' : 'response success';
+            el.innerHTML = '<strong>' + (isError ? '❌ Error:' : '✅ Success:') + '</strong>\n' + 
+                          JSON.stringify(data, null, 2);
+        }
+
+        function clearResponse(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        function clearAll() {
+            clearResponse('signupResponse');
+            clearResponse('signinResponse');
+        }
+
+        async function testSignup() {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            if (!email || !password) {
+                showResponse('signupResponse', { error: 'Please fill in all fields' }, true);
+                return;
+            }
+
+            showLoading('signupResponse');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResponse('signupResponse', {
+                        status: 'SUCCESS',
+                        message: data.message,
+                        user: data.user,
+                        emailConfirmed: !!data.user?.email_confirmed_at,
+                        note: data.user?.email_confirmed_at 
+                            ? '✅ Email auto-confirmed (development mode)' 
+                            : '⚠️ Email confirmation required'
+                    });
+                    
+                    // Auto-fill signin form
+                    document.getElementById('signinEmail').value = email;
+                    document.getElementById('signinPassword').value = password;
+                } else {
+                    showResponse('signupResponse', {
+                        status: 'FAILED',
+                        error: data.error,
+                        message: data.message
+                    }, true);
+                }
+            } catch (error) {
+                showResponse('signupResponse', {
+                    status: 'NETWORK ERROR',
+                    message: error.message,
+                    hint: 'Is the backend server running on port 3001?'
+                }, true);
+            }
+        }
+
+        async function testSignin() {
+            const email = document.getElementById('signinEmail').value;
+            const password = document.getElementById('signinPassword').value;
+
+            if (!email || !password) {
+                showResponse('signinResponse', { error: 'Please fill in all fields' }, true);
+                return;
+            }
+
+            showLoading('signinResponse');
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/auth/signin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResponse('signinResponse', {
+                        status: 'SUCCESS',
+                        message: data.message,
+                        user: {
+                            id: data.user?.id,
+                            email: data.user?.email,
+                            emailConfirmed: !!data.user?.email_confirmed_at
+                        },
+                        session: {
+                            hasAccessToken: !!data.session?.access_token,
+                            hasRefreshToken: !!data.session?.refresh_token,
+                            expiresAt: data.session?.expires_at
+                        },
+                        isAdmin: data.isAdmin || false,
+                        isDemo: data.demo || false
+                    });
+                } else {
+                    showResponse('signinResponse', {
+                        status: 'FAILED',
+                        error: data.error,
+                        message: data.message,
+                        hint: data.error === 'Email Not Verified' 
+                            ? '💡 Backend is requiring email confirmation. Check AUTH_TROUBLESHOOTING.md for fixes.'
+                            : data.error === 'Invalid Credentials'
+                            ? '💡 Wrong email/password or account doesn\'t exist. Try signing up first.'
+                            : '💡 Check backend console for more details.'
+                    }, true);
+                }
+            } catch (error) {
+                showResponse('signinResponse', {
+                    status: 'NETWORK ERROR',
+                    message: error.message,
+                    hint: 'Is the backend server running on port 3001?'
+                }, true);
+            }
+        }
+
+        async function runFullTest() {
+            clearAll();
+            
+            // Generate random test email
+            const randomEmail = `test${Math.floor(Math.random() * 10000)}@example.com`;
+            document.getElementById('signupEmail').value = randomEmail;
+            document.getElementById('signupPassword').value = 'Test@123';
+            
+            console.log('🧪 Running full authentication test...');
+            console.log('Step 1: Testing signup with:', randomEmail);
+            
+            await testSignup();
+            
+            // Wait 2 seconds
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            console.log('Step 2: Testing signin with:', randomEmail);
+            await testSignin();
+            
+            console.log('✅ Full test complete!');
+        }
+
+        // Check backend on load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`, { method: 'GET' });
+                if (response.ok) {
+                    console.log('✅ Backend is reachable');
+                } else {
+                    console.warn('⚠️ Backend returned non-200 status');
+                }
+            } catch (error) {
+                console.error('❌ Backend is not reachable:', error.message);
+                alert('⚠️ Backend server not reachable at ' + BACKEND_URL + '\n\nPlease start the backend server:\ncd backend\nnpm run dev');
+            }
+        });
+    </script>
+</body>
+</html>

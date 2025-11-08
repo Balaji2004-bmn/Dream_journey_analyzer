@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test DeepSeek API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .status.checking {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
+        }
+        
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #f87171;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .response {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .provider-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .provider-badge.gemini {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .provider-badge.deepseek {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .provider-badge.openai {
+            background: #fae8ff;
+            color: #86198f;
+        }
+        
+        .logs {
+            background: #1f2937;
+            color: #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-line {
+            margin-bottom: 4px;
+        }
+        
+        .log-line.error {
+            color: #fca5a5;
+        }
+        
+        .log-line.success {
+            color: #86efac;
+        }
+        
+        .log-line.warn {
+            color: #fde047;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Test DeepSeek API Integration</h1>
+        <p class="subtitle">Check if DeepSeek fallback is working correctly</p>
+        
+        <div id="status" class="status checking">
+            ⏳ Checking backend connection...
+        </div>
+        
+        <div class="test-section">
+            <label for="backendUrl">Backend URL:</label>
+            <input 
+                type="text" 
+                id="backendUrl" 
+                value="http://localhost:3001/api"
+                placeholder="http://localhost:3001/api"
+            >
+        </div>
+        
+        <div class="test-section">
+            <label for="question">Ask a Question:</label>
+            <textarea 
+                id="question" 
+                placeholder="Type your question here... e.g., What is Dream Journey Analyzer?"
+            >What is Dream Journey Analyzer?</textarea>
+        </div>
+        
+        <button id="testBtn" onclick="testAssistant()">
+            🧪 Test Assistant
+        </button>
+        
+        <div id="response" style="display: none;"></div>
+        <div id="logs" style="display: none;"></div>
+    </div>
+    
+    <script>
+        let logs = [];
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logs.push({ timestamp, message, type });
+            updateLogsDisplay();
+        }
+        
+        function updateLogsDisplay() {
+            const logsDiv = document.getElementById('logs');
+            if (logs.length > 0) {
+                logsDiv.style.display = 'block';
+                logsDiv.innerHTML = `
+                    <strong>Backend Logs:</strong>
+                    <div class="logs">
+                        ${logs.map(log => `
+                            <div class="log-line ${log.type}">
+                                [${log.timestamp}] ${log.message}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        
+        async function checkBackend() {
+            const statusDiv = document.getElementById('status');
+            const backendUrl = document.getElementById('backendUrl').value;
+            
+            try {
+                addLog('Checking backend connection...');
+                const response = await fetch(`${backendUrl.replace('/api', '')}/health`);
+                
+                if (response.ok) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ Backend is running and reachable!';
+                    addLog('Backend connected successfully', 'success');
+                } else {
+                    throw new Error(`Status ${response.status}`);
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = `❌ Cannot connect to backend: ${error.message}. Make sure backend is running on port 3001.`;
+                addLog(`Backend connection failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAssistant() {
+            const button = document.getElementById('testBtn');
+            const responseDiv = document.getElementById('response');
+            const question = document.getElementById('question').value;
+            const backendUrl = document.getElementById('backendUrl').value;
+            
+            if (!question.trim()) {
+                alert('Please enter a question!');
+                return;
+            }
+            
+            button.disabled = true;
+            button.textContent = '⏳ Sending request...';
+            responseDiv.style.display = 'none';
+            logs = [];
+            
+            addLog('Sending question to assistant...');
+            
+            try {
+                const response = await fetch(`${backendUrl}/assistant`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userMessage: question
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || data.message || 'Unknown error');
+                }
+                
+                addLog('✅ Response received successfully!', 'success');
+                addLog(`Provider used: ${data.provider || 'Unknown'}`, 'success');
+                
+                const providerClass = (data.provider || '').toLowerCase();
+                
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `
+                    <strong>Response:</strong>
+                    <div class="response">
+                        ${data.response}
+                    </div>
+                    <span class="provider-badge ${providerClass}">
+                        Powered by ${data.provider || 'AI'}
+                    </span>
+                `;
+                
+                // Check backend console for specific logs
+                if (data.provider === 'DeepSeek') {
+                    addLog('🎉 SUCCESS! DeepSeek is working as fallback!', 'success');
+                } else if (data.provider === 'Gemini') {
+                    addLog('ℹ️ Gemini is working (unexpected - should have quota issues)', 'warn');
+                } else if (data.provider === 'OpenAI') {
+                    addLog('⚠️ OpenAI used. Check if DEEPSEEK_API_KEY is in .env', 'warn');
+                }
+                
+            } catch (error) {
+                addLog(`❌ Error: ${error.message}`, 'error');
+                responseDiv.style.display = 'block';
+                responseDiv.innerHTML = `
+                    <div class="status error">
+                        <strong>Error:</strong><br>
+                        ${error.message}
+                        <br><br>
+                        <strong>Troubleshooting:</strong><br>
+                        1. Check backend/.env has DEEPSEEK_API_KEY<br>
+                        2. Restart backend: npm run dev<br>
+                        3. Check backend console logs<br>
+                        4. Verify DeepSeek API key is valid
+                    </div>
+                `;
+            } finally {
+                button.disabled = false;
+                button.textContent = '🧪 Test Assistant';
+            }
+        }
+        
+        // Check backend on load
+        window.addEventListener('load', () => {
+            checkBackend();
+        });
+    </script>
+</body>
+</html>

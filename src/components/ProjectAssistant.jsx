@@ -211,7 +211,7 @@ export default function ProjectAssistant() {
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2">
-              Powered by OpenAI
+              Powered by Gemini AI & OpenAI
             </p>
           </div>
         </DreamCardContent>
