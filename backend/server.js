@@ -48,7 +48,10 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     if (allowedOrigins.has(origin)) return callback(null, true);
+    // Allow localhost for development
     if (/^http:\/\/localhost:\d+$/.test(origin)) return callback(null, true);
+    // Allow Netlify deployments
+    if (/^https:\/\/.*\.netlify\.app$/.test(origin)) return callback(null, true);
     return callback(new Error('CORS not allowed'), false);
   },
   credentials: true,
