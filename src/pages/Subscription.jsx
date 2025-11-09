@@ -159,7 +159,7 @@ export default function Subscription() {
           return;
         }
 
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
         
         const response = await fetch(`${BACKEND_URL}/api/verify-upi-payment`, {
           method: 'POST',

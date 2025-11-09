@@ -82,7 +82,7 @@ export default function DreamAnalyzer() {
     
     try {
       // First try backend NLP for real analysis
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const aiRes = await fetch(`${backendUrl}/api/ai/analyze-dream`, {
         method: 'POST',
         headers: {
@@ -154,7 +154,7 @@ export default function DreamAnalyzer() {
         return;
       }
 
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
 
       // Prefer a cinematic storyline if available, else fall back to user text
       const basePrompt = (analysis?.storyline || dreamText || '').trim();
@@ -457,7 +457,7 @@ export default function DreamAnalyzer() {
     }
 
     try {
-      const backendRoot = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendRoot = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
 
       const dreamData = {
         title: dreamText.slice(0, 80),
@@ -538,7 +538,7 @@ export default function DreamAnalyzer() {
 
   const sendDreamEmail = async (email, dream) => {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       
       const response = await fetch(`${backendUrl}/api/email/send-dream-video`, {
         method: 'POST',

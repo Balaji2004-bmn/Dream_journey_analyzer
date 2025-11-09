@@ -29,7 +29,7 @@ export const NewAuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
   const requireVerified = String(import.meta.env.VITE_REQUIRE_EMAIL_VERIFIED ?? 'true').toLowerCase() === 'true';
 
   useEffect(() => {

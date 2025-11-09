@@ -14,7 +14,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onVerified }) 
   const handleSendConfirmation = async () => {
     setIsSending(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/send-confirmation`, {
         method: 'POST',
         headers: {
@@ -51,7 +51,7 @@ export default function EmailVerificationModal({ isOpen, onClose, onVerified }) 
   const handleConfirmEmail = async () => {
     setIsLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/confirm-email`, {
         method: 'POST',
         headers: {

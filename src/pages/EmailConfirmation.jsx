@@ -46,7 +46,7 @@ export default function EmailConfirmation() {
 
           if (token && email) {
             // Handle custom email confirmation
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api'}/email/confirm-email`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com'}/api/email/confirm-email`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',

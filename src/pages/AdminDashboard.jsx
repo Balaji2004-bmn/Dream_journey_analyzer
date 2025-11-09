@@ -66,9 +66,8 @@ export default function AdminDashboard() {
   const getAdminBaseCandidates = () => [
     // Prefer dedicated admin server first (separate port)
     import.meta.env.VITE_ADMIN_BACKEND_URL,
-    'http://localhost:5174',
     import.meta.env.VITE_BACKEND_URL,
-    'http://localhost:3001',
+    'https://dream-journey-backend.onrender.com',
   ].filter(Boolean);
 
   const chooseAdminBase = async (token) => {
@@ -82,7 +81,7 @@ export default function AdminDashboard() {
       }
     }
     // As a last resort, return the first candidate; downstream fetches will error and be surfaced to the UI
-    return getAdminBaseCandidates()[0] || 'http://localhost:3001';
+    return getAdminBaseCandidates()[0] || 'https://dream-journey-backend.onrender.com';
   };
 
   // Helper: perform admin fetch, trying all bases and tokens to avoid CORS/preflight failures

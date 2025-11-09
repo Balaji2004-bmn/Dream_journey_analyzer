@@ -2,7 +2,7 @@ import { apiClient } from '@/utils/apiClient';
 
 class DreamVideoService {
   constructor() {
-    this.baseURL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+    this.baseURL = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com/api';
   }
 
   /**

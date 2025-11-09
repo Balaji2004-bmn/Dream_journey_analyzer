@@ -45,7 +45,7 @@ export default function AdminAuth() {
 
     try {
       // For admin login, call the backend auth endpoint directly
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/auth/signin`, {
         method: 'POST',
         headers: {

@@ -58,7 +58,7 @@ export default function Gallery() {
     if (!user || !session) return;
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/private-dream-access`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
@@ -85,7 +85,7 @@ export default function Gallery() {
 
     setIsRequestingCode(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/send-private-dream-code`, {
         method: 'POST',
         headers: {
@@ -120,7 +120,7 @@ export default function Gallery() {
 
     setIsVerifyingCode(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/verify-private-dream-code`, {
         method: 'POST',
         headers: {
@@ -154,7 +154,7 @@ export default function Gallery() {
   const fetchDreamVideos = async () => {
     setLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       let allDreams = [];
 
       // Fetch public dreams from everyone (is_public = true)
@@ -626,7 +626,7 @@ export default function Gallery() {
       ));
 
       // Send to backend (optional - for persistence)
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/dreams/${video.id}/like`, {
         method: 'POST',
         headers: {
@@ -709,7 +709,7 @@ export default function Gallery() {
       toast.info("Sending dream video to your email...");
 
       // Send email via backend
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       const response = await fetch(`${backendUrl}/api/email/send-dream-video`, {
         method: 'POST',
         headers: {
@@ -762,7 +762,7 @@ export default function Gallery() {
     }
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
       
       // Try backend deletion first
       const response = await fetch(`${backendUrl}/api/dreams/${video.id}`, {

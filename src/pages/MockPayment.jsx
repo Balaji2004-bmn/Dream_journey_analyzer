@@ -15,7 +15,7 @@ export default function MockPayment() {
     setLastResponse(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/create-payment', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com'}/api/create-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

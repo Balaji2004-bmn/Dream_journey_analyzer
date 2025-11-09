@@ -4,7 +4,6 @@ import { supabase } from '@/integrations/supabase/client';
 // Create axios instance for backend API
 // Prefer env var; as a last resort use production backend (avoid baking localhost into build)
 const root = (import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com').replace(/\/+$/, '');
-
 const api = axios.create({
   baseURL: `${root}/api`,
   timeout: 30000,

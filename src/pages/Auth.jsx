@@ -13,7 +13,7 @@ export default function Auth() {
   const { toast } = useToast();
   const { user, session, signUp, signIn, signInWithGoogle, checkVerificationStatus, sendVerificationEmail } = useAuth();
   const location = useLocation();
-  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
   const hcaptchaSiteKey = import.meta.env.VITE_HCAPTCHA_SITEKEY || '';
 
   // Form states

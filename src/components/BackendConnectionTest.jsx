@@ -16,7 +16,7 @@ export const BackendConnectionTest = () => {
 
     try {
       // Test 1: Health check
-      const healthResponse = await fetch('http://localhost:3002/health');
+      const healthResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com'}/health`);
       if (!healthResponse.ok) {
         throw new Error('Backend health check failed');
       }
@@ -32,7 +32,7 @@ export const BackendConnectionTest = () => {
         health: healthData,
         publicDreams: publicDreamsResponse.data,
         videoStyles: videoStylesResponse.data,
-        backendUrl: import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api'
+        backendUrl: import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com'
       });
 
       setConnectionStatus('connected');
@@ -117,7 +117,7 @@ export const BackendConnectionTest = () => {
 
         <div className="text-xs text-muted-foreground">
           <p>Frontend: {window.location.origin}</p>
-          <p>Backend: {import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api'}</p>
+          <p>Backend: {import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com'}</p>
         </div>
       </CardContent>
     </Card>

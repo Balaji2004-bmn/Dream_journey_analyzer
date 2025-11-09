@@ -1,6 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001').replace(/\/+$/, '');
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com').replace(/\/+$/, '');
 const PAYMENTS_URL = (import.meta.env.VITE_PAYMENTS_URL || '').replace(/\/+$/, '');
 
 export async function createCheckoutSession(plan, userId, tokenOverride) {

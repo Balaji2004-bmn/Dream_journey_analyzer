@@ -4,7 +4,7 @@ import { DreamCard, DreamCardContent, DreamCardHeader, DreamCardTitle } from '@/
 import { MessageCircle, Send, Trash2, X, Minimize2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com';
 
 export default function ProjectAssistant() {
   const [isOpen, setIsOpen] = useState(false);

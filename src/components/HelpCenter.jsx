@@ -47,7 +47,7 @@ export default function HelpCenter() {
     
     setLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com/api';
       const response = await fetch(`${backendUrl}/help/feedback/my`, {
         headers: {
           'Authorization': `Bearer ${session?.access_token}`,
@@ -84,7 +84,7 @@ export default function HelpCenter() {
 
     setSubmitting(true);
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com/api';
       const response = await fetch(`${backendUrl}/help/feedback`, {
         method: 'POST',
         headers: {
@@ -127,7 +127,7 @@ export default function HelpCenter() {
     }
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dream-journey-backend.onrender.com/api';
       const response = await fetch(`${backendUrl}/help/report`, {
         method: 'POST',
         headers: {
